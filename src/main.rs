@@ -1,6 +1,7 @@
 mod scheme;
+mod leftSideBar;
 
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use eframe::egui;
 use rand::Rng;
 
@@ -32,7 +33,7 @@ fn main() {
     eframe::run_native(
         "Simulation Controller",
         native_options,
-        Box::new(|cc| Ok(Box::new(MyEguiApp::new(cc, nodi, neighbours)))),
+        Box::new(|cc| Ok(Box::new(SimulationController::new(cc, nodi, neighbours)))),
     );
 }
 
@@ -72,32 +73,48 @@ impl Node {
                 dist < 100.}) {
                 break;
             }
-
         }
         (x, y)
     }
 }
 
 #[derive(Default)]
-struct MyEguiApp {
+struct SimulationController {
     nodi: Vec<Node>,
     neighbours: HashSet<(u8,u8)>,
+    left_panel: bool,
 }
 
-impl MyEguiApp {
+struct SimulationControllerFromNetwork{
+
+}
+
+impl SimulationController {
+
+    fn create<T>(node_vec: HashSet<T>, sim_command_channels: HashMap<NodeId, Sender<DroneCommands>>) -> Self{
+
+    }
     fn new(cc: &eframe::CreationContext<'_>, nodi: Vec<Node>, neighbours: HashSet<(u8, u8)>) -> Self {
         Self {
             nodi,
             neighbours,
+            left_panel: false,
         }
     }
 }
 
-impl eframe::App for MyEguiApp {
+impl eframe::App for SimulationController {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        egui::CentralPanel::default().show(ctx, |ui| {
-            self.draw_ui(ui);
+
+        if self.left_panel{
+            egui::SidePanel::left("side_panel").resizable(false).show(ctx, |ui| {
+                self.left_side_panel(ui);
+            });
+        }
+
+        egui::CentralPanel::default().frame(egui::Frame::none()).show(ctx, |ui| {
+
+            self.central_panel(ui);
         });
     }
 }
-
