@@ -1,8 +1,8 @@
 use eframe::egui;
 use eframe::egui::{Color32, Pos2, Stroke};
-use crate::{simulation_controller, NodeType};
+use crate::{simulation_controller, NodeType, SimulationController};
 
-impl simulation_controller {
+impl SimulationController {
     pub fn central_panel(&mut self, ui: &mut egui::Ui) {
         let (response, painter) = ui.allocate_painter(ui.available_size(), egui::Sense::drag());
         let background_color = Color32::GRAY;
@@ -21,18 +21,6 @@ impl simulation_controller {
             self.left_panel = !self.left_panel;
         }
 
-        for (id1, id2) in &self.neighbours{
-            let xy1 = self.nodi.iter().find(|node| node.node_id == *id1).unwrap().xy;
-            let xy2 = self.nodi.iter().find(|node| node.node_id == *id2).unwrap().xy;
-
-            painter.line_segment(
-                [
-                    Pos2::new(xy1.0 + panel_offset.x,xy1.1 + panel_offset.y),
-                    Pos2::new(xy2.0 + panel_offset.x, xy2.1 + panel_offset.y)
-                ],
-                Stroke::new(2.0, Color32::BLACK),
-            );
-        }
         for elem in &mut self.nodi{
             for neighbour in elem.neighbours{
                 let xy1 = self.nodi.iter().find(|node| node.node_id == *neighbour).unwrap().xy;

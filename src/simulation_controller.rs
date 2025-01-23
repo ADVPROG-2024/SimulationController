@@ -15,11 +15,11 @@ pub enum NodeType {
 }
 
 #[derive(Clone)]
-struct Node {
-    node_type: NodeType,
-    node_id: NodeId,
+pub struct Node {
+    pub node_type: NodeType,
+    pub node_id: NodeId,
     neighbours: HashSet<NodeId>,
-    xy: (f32, f32),
+    pub xy: (f32, f32),
 }
 
 impl Node {
@@ -54,8 +54,8 @@ impl Node {
 pub struct SimulationController {
     //sim_controller_event_recv: Receiver<DroneEvent>,
     //sim_controller_command_send: HashMap<NodeId, Sender<DroneCommand>>,
-    nodi: HashSet<Node>,
-    left_panel: bool,
+    pub(crate) nodi: HashSet<Node>,
+    pub(crate) left_panel: bool,
 }
 
 impl SimulationController {
