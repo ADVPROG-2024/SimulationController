@@ -21,7 +21,7 @@ impl SimulationController {
             self.left_panel = !self.left_panel;
         }
 
-        for mut elem in self.nodi{
+        for mut elem in self.nodi.clone(){
             for neighbour in elem.neighbours{
                 let xy1 = self.nodi.iter().find(|node| node.node_id == neighbour).unwrap().xy;
 
