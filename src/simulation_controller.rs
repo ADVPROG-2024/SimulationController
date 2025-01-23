@@ -6,6 +6,9 @@ use rand::Rng;
 use wg_2024::controller::{DroneCommand, DroneEvent};
 use wg_2024::network::NodeId;
 use wg_2024::config::Config;
+use eframe::EventLoopBuilderHook;
+use winit::platform::wayland::EventLoopBuilderExtWayland;
+
 
 #[derive(Eq, PartialEq, Debug, Clone)]
 pub enum NodeType {
@@ -63,6 +66,12 @@ impl DronegowskiSimulationController {
     pub fn new(config: Config, ){
         let mut nodi = Vec::new();
         Self::parse_file(config, &mut nodi);
+
+        let event_loop_builder: Option<EventLoopBuilderHook> = Some(Box::new(|event_loop_builder| {
+            event_loop_builder.with_any_thread(true);
+        }));
+
+        let event_loop = event_loop_builder.build();
 
         let native_options = eframe::NativeOptions::default();
         eframe::run_native(
