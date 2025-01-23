@@ -1,5 +1,6 @@
 use wg_2024;
 use crossbeam_channel::{unbounded, Receiver, Sender};
+use dronegowski::Dronegowski;
 use eframe::egui;
 use rand::Rng;
 use wg_2024::controller::{DroneCommand, DroneEvent};
@@ -50,14 +51,14 @@ impl Node {
 }
 
 #[derive(Default)]
-pub struct SimulationController {
+pub struct DronegowskiSimulationController {
     //sim_controller_event_recv: Receiver<DroneEvent>,
     //sim_controller_command_send: HashMap<NodeId, Sender<DroneCommand>>,
     pub nodi: Vec<Node>,
     pub left_panel: bool,
 }
 
-impl SimulationController {
+impl DronegowskiSimulationController {
     //nodes_channels: HashMap<NodeId, Sender<DroneCommand>>, sim_controller_event_recv: Receiver<DroneEvent>, sim_controller_event_send: Sender<DroneCommand>,
     pub fn new(config: Config, ){
         let mut nodi = Vec::new();
@@ -67,7 +68,7 @@ impl SimulationController {
         eframe::run_native(
             "Simulation Controller",
             native_options,
-            Box::new(|cc| Ok(Box::new(SimulationController::create(cc, nodi)))),
+            Box::new(|cc| Ok(Box::new(DronegowskiSimulationController::create(cc, nodi)))),
         );
     }
 
@@ -105,7 +106,7 @@ impl SimulationController {
     }
 }
 
-impl eframe::App for SimulationController {
+impl eframe::App for DronegowskiSimulationController {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
 
         if self.left_panel{

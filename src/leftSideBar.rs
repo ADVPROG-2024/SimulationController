@@ -1,7 +1,7 @@
 use eframe::egui;
-use crate::{simulation_controller, SimulationController};
+use crate::{simulation_controller, DronegowskiSimulationController};
 
-impl SimulationController{
+impl DronegowskiSimulationController{
     pub fn left_side_panel(&mut self, ui: &mut egui::Ui){
         for node in &self.nodi {
             ui.label(format!(

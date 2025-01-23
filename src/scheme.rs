@@ -1,8 +1,8 @@
 use eframe::egui;
 use eframe::egui::{Color32, Pos2, Stroke};
-use crate::{simulation_controller, NodeType, SimulationController};
+use crate::{simulation_controller, NodeType, DronegowskiSimulationController};
 
-impl SimulationController {
+impl DronegowskiSimulationController {
     pub fn central_panel(&mut self, ui: &mut egui::Ui) {
         let (response, painter) = ui.allocate_painter(ui.available_size(), egui::Sense::drag());
         let background_color = Color32::GRAY;
