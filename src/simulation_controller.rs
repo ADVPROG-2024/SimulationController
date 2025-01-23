@@ -23,18 +23,18 @@ pub struct Node {
 }
 
 impl Node {
-    fn new(node_type: NodeType, node_id: NodeId, neighbours: Vec<NodeId>, nodi: &mut HashSet<Node>) -> Self {
+    fn new(node_type: NodeType, node_id: NodeId, neighbours: Vec<NodeId>, nodi: &mut Vec<Node>) -> Self {
         let node = Self {
             node_type,
             node_id,
             neighbours,
             xy: Self::set_coordinates(nodi),
         };
-        nodi.insert(node.clone());
+        nodi.push(node.clone());
         node
     }
 
-    fn set_coordinates(nodi: &mut HashSet<Node>) -> (f32, f32){
+    fn set_coordinates(nodi: &mut Vec<Node>) -> (f32, f32){
         let mut x;
         let mut y;
         loop{
@@ -79,7 +79,7 @@ impl SimulationController {
         }
     }
 
-    fn parse_file(config: Config,  nodi: &mut HashSet<Node>){
+    fn parse_file(config: Config,  nodi: &mut Vec<Node>){
         for drone in config.drone{
             let mut neighbours = Vec::new();
             for neighbour in drone.connected_node_ids{
