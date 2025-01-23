@@ -1,5 +1,4 @@
 use wg_2024;
-use std::collections::{HashMap, HashSet};
 use crossbeam_channel::{unbounded, Receiver, Sender};
 use eframe::egui;
 use rand::Rng;
@@ -54,14 +53,14 @@ impl Node {
 pub struct SimulationController {
     //sim_controller_event_recv: Receiver<DroneEvent>,
     //sim_controller_command_send: HashMap<NodeId, Sender<DroneCommand>>,
-    pub nodi: HashSet<Node>,
+    pub nodi: Vec<Node>,
     pub left_panel: bool,
 }
 
 impl SimulationController {
     //nodes_channels: HashMap<NodeId, Sender<DroneCommand>>, sim_controller_event_recv: Receiver<DroneEvent>, sim_controller_event_send: Sender<DroneCommand>,
     pub fn new(config: Config, ){
-        let mut nodi = HashSet::new();
+        let mut nodi = Vec::new();
         Self::parse_file(config, &mut nodi);
 
         let native_options = eframe::NativeOptions::default();
@@ -72,7 +71,7 @@ impl SimulationController {
         );
     }
 
-    fn create(cc: &eframe::CreationContext<'_>, nodi: HashSet<Node>) -> Self {
+    fn create(cc: &eframe::CreationContext<'_>, nodi: Vec<Node>) -> Self {
         Self {
             nodi,
             left_panel: false,
