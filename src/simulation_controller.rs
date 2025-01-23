@@ -8,7 +8,7 @@ use wg_2024::network::NodeId;
 use wg_2024::config::Config;
 
 #[derive(Eq, PartialEq, Debug, Clone)]
-enum NodeType {
+pub enum NodeType {
     SERVER,
     CLIENT,
     DRONE,
