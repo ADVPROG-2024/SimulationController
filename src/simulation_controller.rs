@@ -8,7 +8,7 @@ use wg_2024::network::NodeId;
 use wg_2024::config::Config;
 
 #[derive(Eq, PartialEq, Debug, Clone)]
-pub enum NodeType {
+enum NodeType {
     SERVER,
     CLIENT,
     DRONE,
@@ -51,7 +51,7 @@ impl Node {
 }
 
 #[derive(Default)]
-struct SimulationController {
+pub struct SimulationController {
     //sim_controller_event_recv: Receiver<DroneEvent>,
     //sim_controller_command_send: HashMap<NodeId, Sender<DroneCommand>>,
     nodi: HashSet<Node>,
@@ -60,7 +60,7 @@ struct SimulationController {
 
 impl SimulationController {
     //nodes_channels: HashMap<NodeId, Sender<DroneCommand>>, sim_controller_event_recv: Receiver<DroneEvent>, sim_controller_event_send: Sender<DroneCommand>,
-    fn new(config: Config, ){
+    pub fn new(config: Config, ){
         let mut nodi = HashSet::new();
         Self::parse_file(config, &mut nodi);
 
