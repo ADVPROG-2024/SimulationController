@@ -21,6 +21,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e43b7c85-4216-4c71-830f-a5bc5342c111" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/simulation_controller.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/simulation_controller.rs" afterDir="false" />
     </list>
@@ -59,7 +60,7 @@
     <option name="directoryName" value="n63ruawf" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
@@ -173,6 +174,8 @@
       <workItem from="1737653595554" duration="1028000" />
       <workItem from="1737654636666" duration="62000" />
       <workItem from="1737654711976" duration="539000" />
+      <workItem from="1737655256661" duration="796000" />
+      <workItem from="1737656058080" duration="537000" />
     </task>
     <servers />
   </component>

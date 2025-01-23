@@ -1,13 +1,12 @@
 use wg_2024;
 use crossbeam_channel::{unbounded, Receiver, Sender};
 use dronegowski::Dronegowski;
-use winit::platform::wayland::EventLoopBuilderExtWayland;
 use eframe::{egui, EventLoopBuilderHook};
 use rand::Rng;
 use wg_2024::controller::{DroneCommand, DroneEvent};
 use wg_2024::network::NodeId;
 use wg_2024::config::Config;
-
+use winit::platform::wayland::EventLoopBuilderExtWayland;
 
 #[derive(Eq, PartialEq, Debug, Clone)]
 pub enum NodeType {
