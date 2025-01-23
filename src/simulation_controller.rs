@@ -6,7 +6,6 @@ use rand::Rng;
 use wg_2024::controller::{DroneCommand, DroneEvent};
 use wg_2024::network::NodeId;
 use wg_2024::config::Config;
-use network_initializer;
 
 #[derive(Eq, PartialEq, Debug, Clone)]
 pub enum NodeType {
