@@ -71,9 +71,11 @@ impl DronegowskiSimulationController {
             event_loop_builder.with_any_thread(true);
         }));
 
-        let event_loop = event_loop_builder.build();
 
-        let native_options = eframe::NativeOptions::default();
+        let native_options = eframe::NativeOptions {
+            event_loop_builder,
+            ..Default::default()
+        };
         eframe::run_native(
             "Simulation Controller",
             native_options,
