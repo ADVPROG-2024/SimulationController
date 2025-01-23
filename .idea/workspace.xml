@@ -20,7 +20,9 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e43b7c85-4216-4c71-830f-a5bc5342c111" name="Changes" comment="" />
+    <list default="true" id="e43b7c85-4216-4c71-830f-a5bc5342c111" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -56,7 +58,7 @@
     <option name="directoryName" value="n63ruawf" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
@@ -167,6 +169,8 @@
       <workItem from="1737652813187" duration="373000" />
       <workItem from="1737653196301" duration="66000" />
       <workItem from="1737653278432" duration="153000" />
+      <workItem from="1737653595554" duration="1028000" />
+      <workItem from="1737654636666" duration="62000" />
     </task>
     <servers />
   </component>
