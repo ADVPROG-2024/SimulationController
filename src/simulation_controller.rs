@@ -18,7 +18,7 @@ pub enum NodeType {
 pub struct Node {
     pub node_type: NodeType,
     pub node_id: NodeId,
-    neighbours: HashSet<NodeId>,
+    pub neighbours: HashSet<NodeId>,
     pub xy: (f32, f32),
 }
 
@@ -30,7 +30,7 @@ impl Node {
             neighbours,
             xy: Self::set_coordinates(nodi),
         };
-        nodi.push(node.clone());
+        nodi.insert(node.clone());
         node
     }
 
