@@ -23,7 +23,7 @@ impl SimulationController {
 
         for mut elem in self.nodi{
             for neighbour in elem.neighbours{
-                let xy1 = self.nodi.iter().find(|node| node.node_id == *neighbour).unwrap().xy;
+                let xy1 = self.nodi.iter().find(|node| node.node_id == neighbour).unwrap().xy;
 
                 painter.line_segment(
                     [

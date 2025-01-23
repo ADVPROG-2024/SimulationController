@@ -18,12 +18,12 @@ pub enum NodeType {
 pub struct Node {
     pub node_type: NodeType,
     pub node_id: NodeId,
-    pub neighbours: HashSet<NodeId>,
+    pub neighbours: Vec<NodeId>,
     pub xy: (f32, f32),
 }
 
 impl Node {
-    fn new(node_type: NodeType, node_id: NodeId, neighbours: HashSet<NodeId>, nodi: &mut HashSet<Node>) -> Self {
+    fn new(node_type: NodeType, node_id: NodeId, neighbours: Vec<NodeId>, nodi: &mut HashSet<Node>) -> Self {
         let node = Self {
             node_type,
             node_id,
@@ -54,8 +54,8 @@ impl Node {
 pub struct SimulationController {
     //sim_controller_event_recv: Receiver<DroneEvent>,
     //sim_controller_command_send: HashMap<NodeId, Sender<DroneCommand>>,
-    pub(crate) nodi: HashSet<Node>,
-    pub(crate) left_panel: bool,
+    pub nodi: HashSet<Node>,
+    pub left_panel: bool,
 }
 
 impl SimulationController {
@@ -81,25 +81,25 @@ impl SimulationController {
 
     fn parse_file(config: Config,  nodi: &mut HashSet<Node>){
         for drone in config.drone{
-            let mut neighbours = HashSet::new();
+            let mut neighbours = Vec::new();
             for neighbour in drone.connected_node_ids{
-                neighbours.insert(neighbour);
+                neighbours.push(neighbour);
             }
             Node::new(NodeType::DRONE, drone.id, neighbours, nodi);
         }
 
         for client in config.client{
-            let mut neighbours = HashSet::new();
+            let mut neighbours = Vec::new();
             for neighbour in client.connected_drone_ids{
-                neighbours.insert(neighbour);
+                neighbours.push(neighbour);
             }
             Node::new(NodeType::CLIENT, client.id, neighbours, nodi);
         }
 
         for server in config.server{
-            let mut neighbours = HashSet::new();
+            let mut neighbours = Vec::new();
             for neighbour in server.connected_drone_ids{
-                neighbours.insert(neighbour);
+                neighbours.push(neighbour);
             }
             Node::new(NodeType::SERVER, server.id, neighbours, nodi);
         }
