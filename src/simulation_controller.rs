@@ -65,15 +65,15 @@ impl DronegowskiSimulationController {
         let mut nodi = Vec::new();
         Self::parse_file(config, &mut nodi);
 
-        let event_loop_builder: Option<EventLoopBuilderHook> = Some(Box::new(|event_loop_builder| {
+        /*let event_loop_builder: Option<EventLoopBuilderHook> = Some(Box::new(|event_loop_builder| {
             event_loop_builder.with_any_thread(true);
         }));
 
         let native_options = eframe::NativeOptions {
             event_loop_builder,
             ..Default::default()
-        };
-
+        };*/
+        let native_options = eframe::NativeOptions::default();
         eframe::run_native(
             "Simulation Controller",
             native_options,
