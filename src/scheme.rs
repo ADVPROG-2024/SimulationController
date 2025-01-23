@@ -1,8 +1,8 @@
 use eframe::egui;
 use eframe::egui::{Color32, Pos2, Stroke};
-use crate::{SimulationController, NodeType};
+use crate::{simulation_controller, NodeType};
 
-impl SimulationController {
+impl simulation_controller {
     pub fn central_panel(&mut self, ui: &mut egui::Ui) {
         let (response, painter) = ui.allocate_painter(ui.available_size(), egui::Sense::drag());
         let background_color = Color32::GRAY;
@@ -34,6 +34,18 @@ impl SimulationController {
             );
         }
         for elem in &mut self.nodi{
+            for neighbour in elem.neighbours{
+                let xy1 = self.nodi.iter().find(|node| node.node_id == *neighbour).unwrap().xy;
+
+                painter.line_segment(
+                    [
+                        Pos2::new(elem.xy.0 + panel_offset.x,elem.xy.1 + panel_offset.y),
+                        Pos2::new(xy1.0 + panel_offset.x, xy1.1 + panel_offset.y)
+                    ],
+                    Stroke::new(2.0, Color32::BLACK),
+                );
+            }
+
             let fill_color = match elem.node_type {
                 NodeType::SERVER => Color32::LIGHT_RED,
                 NodeType::CLIENT => Color32::LIGHT_GREEN,
@@ -52,6 +64,7 @@ impl SimulationController {
                 fill_color,   // Fill color
                 Stroke::new(1.0, Color32::BLACK),
             );
+
             let letter = match elem.node_type {
                 NodeType::SERVER => "S",
                 NodeType::CLIENT => "C",
