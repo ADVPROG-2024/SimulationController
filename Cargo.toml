@@ -9,6 +9,7 @@ dronegowski = { git = "https://github.com/ADVPROG-2024/Dronegowski.git" }
 rand = "0.8"
 image = "0.24"
 crossbeam-channel = "0.5.14"
+toml = "0.8.19"
 
 [dependencies.winit]
 default-features = false

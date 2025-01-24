@@ -1,3 +1,4 @@
+use std::fs;
 use wg_2024;
 use crossbeam_channel::{unbounded, Receiver, Sender};
 use dronegowski::Dronegowski;
@@ -8,6 +9,17 @@ use wg_2024::network::NodeId;
 use wg_2024::config::Config;
 use winit::platform::wayland::EventLoopBuilderExtWayland;
 
+#[test]
+fn test(){
+    let config = parse_config("config.toml");
+    DronegowskiSimulationController::new(config);
+}
+
+pub fn parse_config(file: &str) -> Config {
+    let file_str = fs::read_to_string(file).expect("error reading config file");
+    println!("Parsing configuration file...");
+    toml::from_str(&file_str).expect("Error occurred during config file parsing")
+}
 #[derive(Eq, PartialEq, Debug, Clone)]
 pub enum NodeType {
     SERVER,
