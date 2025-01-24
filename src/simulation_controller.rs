@@ -77,11 +77,10 @@ impl DronegowskiSimulationController {
             "Simulation Controller",
             native_options,
             Box::new(|cc| Ok(Box::new(DronegowskiSimulationController::create(cc, nodi)))),
-        );
+        ).expect("TODO: panic message");
     }
 
     fn create(cc: &eframe::CreationContext<'_>, nodi: Vec<Node>) -> Self {
-        println!("CIAO");
         Self {
             nodi,
             left_panel: false,
