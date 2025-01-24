@@ -12,7 +12,7 @@ crossbeam-channel = "0.5.14"
 
 [dependencies.winit]
 default-features = false
-features = ["wayland"]
+features = ["wayland", "x11"]
 version = "0.30.8"
 
 [dependencies.eframe]
