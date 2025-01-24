@@ -73,6 +73,7 @@ impl DronegowskiSimulationController {
             event_loop_builder,
             ..Default::default()
         };
+        println!("CIAO");
         eframe::run_native(
             "Simulation Controller",
             native_options,
