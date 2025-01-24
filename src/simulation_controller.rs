@@ -73,7 +73,6 @@ impl DronegowskiSimulationController {
             event_loop_builder,
             ..Default::default()
         };
-        println!("CIAO");
         eframe::run_native(
             "Simulation Controller",
             native_options,
@@ -82,6 +81,7 @@ impl DronegowskiSimulationController {
     }
 
     fn create(cc: &eframe::CreationContext<'_>, nodi: Vec<Node>) -> Self {
+        println!("CIAO");
         Self {
             nodi,
             left_panel: false,
