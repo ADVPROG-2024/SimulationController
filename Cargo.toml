@@ -12,6 +12,10 @@ crossbeam-channel = "0.5.14"
 toml = "0.8.19"
 eframe = "0.30.0"
 
+[lib]
+name = "SimulationController"
+path = "src/lib.rs"
+
 #[dependencies.winit]
 #default-features = false
 #features = ["wayland", "x11"]
