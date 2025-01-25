@@ -1,4 +1,3 @@
-use std::collections::HashSet;
 use std::fs;
 use wg_2024;
 use crossbeam_channel::{unbounded, Receiver, Sender};
@@ -32,12 +31,12 @@ pub enum NodeType {
 pub struct Node {
     pub node_type: NodeType,
     pub node_id: NodeId,
-    pub neighbours: HashSet<NodeId>,
+    pub neighbours: Vec<NodeId>,
     pub xy: (f32, f32),
 }
 
 impl Node {
-    fn new(node_type: NodeType, node_id: NodeId, neighbours: HashSet<NodeId>, nodi: &mut Vec<Node>) -> Self {
+    fn new(node_type: NodeType, node_id: NodeId, neighbours: Vec<NodeId>, nodi: &mut Vec<Node>) -> Self {
         let node = Self {
             node_type,
             node_id,
@@ -68,14 +67,14 @@ impl Node {
 pub struct DronegowskiSimulationController {
     //sim_controller_event_recv: Receiver<DroneEvent>,
     //sim_controller_command_send: HashMap<NodeId, Sender<DroneCommand>>,
-    pub nodi: HashSet<Node>,
+    pub nodi: Vec<Node>,
     pub left_panel: bool,
 }
 
 impl DronegowskiSimulationController {
     //nodes_channels: HashMap<NodeId, Sender<DroneCommand>>, sim_controller_event_recv: Receiver<DroneEvent>, sim_controller_event_send: Sender<DroneCommand>,
     pub fn new(config: Config){
-        let mut nodi = HashSet::new();
+        let mut nodi = Vec::new();
         Self::parse_file(config, &mut nodi);
 
         /*let event_loop_builder: Option<EventLoopBuilderHook> = Some(Box::new(|event_loop_builder| {
@@ -94,7 +93,7 @@ impl DronegowskiSimulationController {
         );
     }
 
-    fn create(cc: &eframe::CreationContext<'_>, nodi: HashSet<Node>) -> Self {
+    fn create(cc: &eframe::CreationContext<'_>, nodi: Vec<Node>) -> Self {
         Self {
             nodi,
             left_panel: false,
@@ -103,25 +102,25 @@ impl DronegowskiSimulationController {
 
     fn parse_file(config: Config,  nodi: &mut Vec<Node>){
         for drone in config.drone{
-            let mut neighbours = HashSet::new();
+            let mut neighbours = Vec::new();
             for neighbour in drone.connected_node_ids{
-                neighbours.insert(neighbour);
+                neighbours.push(neighbour);
             }
             Node::new(NodeType::DRONE, drone.id, neighbours, nodi);
         }
 
         for client in config.client{
-            let mut neighbours = HashSet::new();
+            let mut neighbours = Vec::new();
             for neighbour in client.connected_drone_ids{
-                neighbours.insert(neighbour);
+                neighbours.push(neighbour);
             }
             Node::new(NodeType::CLIENT, client.id, neighbours, nodi);
         }
 
         for server in config.server{
-            let mut neighbours = HashSet::new();
+            let mut neighbours = Vec::new();
             for neighbour in server.connected_drone_ids{
-                neighbours.insert(neighbour);
+                neighbours.push(neighbour);
             }
             Node::new(NodeType::SERVER, server.id, neighbours, nodi);
         }
