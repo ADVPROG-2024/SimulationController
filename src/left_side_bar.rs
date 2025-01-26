@@ -4,7 +4,7 @@ use crate::{simulation_controller, DronegowskiSimulationController};
 
 impl DronegowskiSimulationController {
 
-    pub fn left_side_panel(ui: &mut Ui) {
+    pub fn left_side_panel(&mut self, ui: &mut Ui) {
         let mut active_button = 0; // Indice del pulsante attivo
         let buttons = vec![
             "Visualizzazione network",
