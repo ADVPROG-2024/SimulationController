@@ -32,9 +32,18 @@ impl DronegowskiSimulationController {
 
             // Disegniamo il bottone
             let response = ui.add(
-                egui::Button::new(*label)
+                egui::Button::new(" ") // Creiamo un bottone vuoto
                     .fill(button_color) // Sfondo
                     .stroke(egui::Stroke::new(1.0, Color32::BLACK)), // Bordo
+            );
+
+            // Disegniamo il testo nero al centro del pulsante
+            ui.painter().text(
+                response.rect.center(), // Centro del pulsante
+                Align2::CENTER_CENTER,  // Allineamento centrato
+                label,                  // Testo del pulsante
+                egui::TextStyle::Button.resolve(ui.style()), // Stile del testo
+                Color32::BLACK,         // Colore del testo
             );
 
             // Aggiorniamo lo stato se il pulsante è cliccato
