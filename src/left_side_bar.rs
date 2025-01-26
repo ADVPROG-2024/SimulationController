@@ -32,13 +32,17 @@ impl DronegowskiSimulationController {
             };
 
             // Calcoliamo una dimensione adeguata per il bottone in base al testo
-            let button_size = ui
-                .fonts()
-                .layout_no_wrap(label.to_string(), egui::TextStyle::Button.resolve(ui.style()), f32::INFINITY)
-                .size;
+            let button_size = ui.fonts(|fonts| {
+                fonts.layout_no_wrap(
+                    label.to_string(),
+                    egui::TextStyle::Button.resolve(ui.style()),
+                    f32::INFINITY,
+                )
+                    .size
+            });
 
             let response = ui.add_sized(
-                [button_size.x + 20.0, button_size.y + 10.0], // Aggiungiamo padding per una dimensione comoda
+                [button_size.x + 20.0, button_size.y + 10.0], // Aggiungiamo padding
                 egui::Button::new(" ") // Bottone vuoto
                     .fill(button_color) // Sfondo
                     .stroke(egui::Stroke::new(1.0, Color32::BLACK)), // Bordo
