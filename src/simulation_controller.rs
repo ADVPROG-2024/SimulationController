@@ -73,7 +73,7 @@ impl DronegowskiSimulationController {
 impl eframe::App for DronegowskiSimulationController {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
 
-        egui::SidePanel::left("side_panel").resizable(false).show(ctx, |ui| {
+        egui::SidePanel::left("side_panel").frame(egui::Frame::none()).show(ctx, |ui| {
             self.left_side_panel(ui);
         });
 
