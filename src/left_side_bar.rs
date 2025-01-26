@@ -3,8 +3,6 @@ use eframe::egui::{Ui, Color32};
 use crate::{simulation_controller, DronegowskiSimulationController};
 
 impl DronegowskiSimulationController {
-
-
     pub fn left_side_panel(&mut self, ui: &mut Ui) {
         let mut active_button = 0;
         let buttons = vec![
@@ -23,7 +21,7 @@ impl DronegowskiSimulationController {
                 Color32::from_rgb(220, 220, 220) // Grigio chiaro per inattivo
             };
 
-            if ui.add(egui::Button::new(label).fill(button_color)).clicked() {
+            if ui.add(egui::Button::new(*label).fill(button_color)).clicked() {
                 active_button = i; // Cambia il bottone attivo
             }
         }
