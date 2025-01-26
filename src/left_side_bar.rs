@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use eframe::egui;
 use eframe::egui::Key::M;
-use egui::{Color32, Ui, Id};
+use egui::{Color32, Ui, Id, Align2};
 use crate::{simulation_controller, DronegowskiSimulationController};
 
 impl DronegowskiSimulationController {
