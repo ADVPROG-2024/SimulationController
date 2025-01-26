@@ -6,6 +6,7 @@ use crate::{simulation_controller, DronegowskiSimulationController};
 
 impl DronegowskiSimulationController {
 
+
     pub fn left_side_panel(&mut self, ui: &mut Ui) {
         // Definiamo i pulsanti
         let buttons = vec![
@@ -30,16 +31,22 @@ impl DronegowskiSimulationController {
                 Color32::WHITE // Bianco per i bottoni non selezionati
             };
 
-            // Disegniamo il bottone
-            let response = ui.add(
-                egui::Button::new(" ") // Creiamo un bottone vuoto
+            // Calcoliamo una dimensione adeguata per il bottone in base al testo
+            let button_size = ui
+                .fonts()
+                .layout_no_wrap(label.to_string(), egui::TextStyle::Button.resolve(ui.style()), f32::INFINITY)
+                .size;
+
+            let response = ui.add_sized(
+                [button_size.x + 20.0, button_size.y + 10.0], // Aggiungiamo padding per una dimensione comoda
+                egui::Button::new(" ") // Bottone vuoto
                     .fill(button_color) // Sfondo
                     .stroke(egui::Stroke::new(1.0, Color32::BLACK)), // Bordo
             );
 
-            // Disegniamo il testo nero al centro del pulsante
+            // Disegniamo il testo nero al centro del bottone
             ui.painter().text(
-                response.rect.center(), // Centro del pulsante
+                response.rect.center(), // Centro del bottone
                 Align2::CENTER_CENTER,  // Allineamento centrato
                 label,                  // Testo del pulsante
                 egui::TextStyle::Button.resolve(ui.style()), // Stile del testo
@@ -53,5 +60,4 @@ impl DronegowskiSimulationController {
             }
         }
     }
-
 }
