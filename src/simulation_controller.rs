@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fs;
 use wg_2024;
 use crossbeam_channel::{unbounded, Receiver, Sender};
@@ -7,7 +8,7 @@ use rand::Rng;
 use wg_2024::controller::{DroneCommand, DroneEvent};
 use wg_2024::network::NodeId;
 use wg_2024::config::Config;
-use dronegowski_utils::network::{utils, SimulationControllerNode, SimulationControllerNodeType};
+use dronegowski_utils::network::{SimulationControllerNode, SimulationControllerNodeType};
 
 pub fn parse_config(file: &str) -> Config {
     let file_str = fs::read_to_string(file).expect("error reading config file");
@@ -15,16 +16,15 @@ pub fn parse_config(file: &str) -> Config {
     toml::from_str(&file_str).expect("Error occurred during config file parsing")
 }
 
-#[derive(Default)]
 pub struct DronegowskiSimulationController {
-    //sim_controller_event_recv: Receiver<DroneEvent>,
-    //sim_controller_command_send: HashMap<NodeId, Sender<DroneCommand>>,
     pub nodi: Vec<SimulationControllerNode>,
+    pub sim_command_channels: HashMap<NodeId, Sender<DroneCommand>>,
+    pub sim_event_recv: Receiver<DroneEvent>
 }
 
 impl DronegowskiSimulationController {
     //nodes_channels: HashMap<NodeId, Sender<DroneCommand>>, sim_controller_event_recv: Receiver<DroneEvent>, sim_controller_event_send: Sender<DroneCommand>,
-    pub fn new(config: Config){
+    pub fn new(config: Config, sim_command_channels: HashMap<NodeId, Sender<DroneCommand>>, sim_event_recv: Receiver<DroneEvent>){
         let mut nodi = Vec::new();
         Self::parse_file(config, &mut nodi);
 
@@ -32,13 +32,15 @@ impl DronegowskiSimulationController {
         eframe::run_native(
             "Simulation Controller",
             native_options,
-            Box::new(|cc| Ok(Box::new(DronegowskiSimulationController::create(cc, nodi)))),
+            Box::new(|cc| Ok(Box::new(DronegowskiSimulationController::create(cc, nodi, sim_command_channels, sim_event_recv)))),
         ).expect("Error to run the Simulation Controller");
     }
 
-    fn create(cc: &eframe::CreationContext<'_>, nodi: Vec<SimulationControllerNode>) -> Self {
+    fn create(cc: &eframe::CreationContext<'_>, nodi: Vec<SimulationControllerNode>, sim_command_channels: HashMap<NodeId, Sender<DroneCommand>>, sim_event_recv: Receiver<DroneEvent>) -> Self {
         Self {
             nodi,
+            sim_command_channels,
+            sim_event_recv
         }
     }
 
