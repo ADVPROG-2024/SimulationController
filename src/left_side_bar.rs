@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use eframe::egui;
 use eframe::egui::Key::M;
+use eframe::egui::TextStyle;
 use egui::{Color32, Ui, Id, Align2};
 use crate::{simulation_controller, DronegowskiSimulationController};
 
@@ -31,29 +32,33 @@ impl DronegowskiSimulationController {
                 Color32::WHITE // Bianco per i bottoni non selezionati
             };
 
-            // Calcoliamo una dimensione adeguata per il bottone in base al testo
-            let button_size = ui.fonts(|fonts| {
-                fonts.layout_no_wrap(
-                    label.to_string(),
-                    egui::TextStyle::Button.resolve(ui.style()),
-                    f32::INFINITY,
-                )
-                    .size
-            });
+            // Calcolo della dimensione del testo
+            let button_size = ui
+                .fonts(|fonts| {
+                    fonts
+                        .layout_no_wrap(
+                            label.to_string(),
+                            TextStyle::Button.resolve(ui.style()),
+                            Color32::BLACK, // Colore del testo richiesto dalla nuova API
+                        )
+                        .rect
+                        .size()
+                });
 
+            // Disegno del bottone con dimensione calcolata
             let response = ui.add_sized(
-                [button_size.x + 20.0, button_size.y + 10.0], // Aggiungiamo padding
+                [button_size.x + 20.0, button_size.y + 10.0], // Aggiunta di padding
                 egui::Button::new(" ") // Bottone vuoto
                     .fill(button_color) // Sfondo
                     .stroke(egui::Stroke::new(1.0, Color32::BLACK)), // Bordo
             );
 
-            // Disegniamo il testo nero al centro del bottone
+            // Disegno del testo sopra il bottone
             ui.painter().text(
-                response.rect.center(), // Centro del bottone
+                response.rect.center(), // Centro del pulsante
                 Align2::CENTER_CENTER,  // Allineamento centrato
                 label,                  // Testo del pulsante
-                egui::TextStyle::Button.resolve(ui.style()), // Stile del testo
+                TextStyle::Button.resolve(ui.style()), // Stile del testo
                 Color32::BLACK,         // Colore del testo
             );
 
@@ -64,4 +69,6 @@ impl DronegowskiSimulationController {
             }
         }
     }
+
+
 }
