@@ -1,5 +1,5 @@
 use eframe::egui;
-use eframe::egui::{Ui, Color32};
+use egui::{Ui, Color32, Style, Visuals};
 use crate::{simulation_controller, DronegowskiSimulationController};
 
 impl DronegowskiSimulationController {
@@ -14,16 +14,25 @@ impl DronegowskiSimulationController {
         for (i, label) in buttons.iter().enumerate() {
             let is_active = active_button == i;
 
-            // Colore del bottone in base all'attività
+            // Colore dello sfondo del bottone
             let button_color = if is_active {
-                Color32::from_rgb(100, 150, 255) // Blu chiaro per attivo
+                Color32::from_gray(200) // Grigio chiaro per il bottone selezionato
             } else {
-                Color32::from_rgb(220, 220, 220) // Grigio chiaro per inattivo
+                Color32::WHITE // Bianco per i bottoni non selezionati
             };
 
-            if ui.add(egui::Button::new(*label).fill(button_color)).clicked() {
+            // Colore del testo: Nero
+            let text_color = Color32::BLACK;
+
+            if ui
+                .add(
+                    egui::Button::new(*label)
+                        .fill(button_color)
+                        .text_color(text_color),
+                )
+                .clicked()
+            {
                 active_button = i; // Cambia il bottone attivo
             }
         }
-    }
-}
+    }}
