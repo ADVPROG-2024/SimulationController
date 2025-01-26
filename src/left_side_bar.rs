@@ -21,18 +21,19 @@ impl DronegowskiSimulationController {
                 Color32::WHITE // Bianco per i bottoni non selezionati
             };
 
-            // Colore del testo: Nero
+            // Configurazione temporanea dello stile per il testo e il bottone
             let text_color = Color32::BLACK;
+            let visuals = ui.style_mut().visuals.clone();
 
-            if ui
-                .add(
-                    egui::Button::new(*label)
-                        .fill(button_color)
-                        .text_color(text_color),
-                )
-                .clicked()
-            {
+            ui.style_mut().visuals.widgets.inactive.bg_fill = button_color; // Sfondo del bottone
+            ui.style_mut().visuals.widgets.inactive.fg_stroke.color = text_color; // Colore del testo
+
+            if ui.button(*label).clicked() {
                 active_button = i; // Cambia il bottone attivo
             }
+
+            // Ripristina lo stile originale dopo aver disegnato il bottone
+            ui.style_mut().visuals = visuals;
         }
-    }}
+    }
+}
