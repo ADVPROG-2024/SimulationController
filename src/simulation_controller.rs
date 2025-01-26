@@ -23,7 +23,6 @@ pub struct DronegowskiSimulationController {
 }
 
 impl DronegowskiSimulationController {
-    //nodes_channels: HashMap<NodeId, Sender<DroneCommand>>, sim_controller_event_recv: Receiver<DroneEvent>, sim_controller_event_send: Sender<DroneCommand>,
     pub fn new(config: Config, sim_command_channels: HashMap<NodeId, Sender<DroneCommand>>, sim_event_recv: Receiver<DroneEvent>){
         let mut nodi = Vec::new();
         Self::parse_file(config, &mut nodi);
