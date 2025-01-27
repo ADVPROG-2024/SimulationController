@@ -5,11 +5,14 @@ use crate::{DronegowskiSimulationController};
 
 impl DronegowskiSimulationController {
     pub fn central_panel(&mut self, ui: &mut egui::Ui) {
-        let (response, painter) = ui.allocate_painter(ui.available_size(), egui::Sense::drag());
+        let (response, painter) = ui.allocate_painter(ui.available_size(), egui::Sense::click());
         let background_color = Color32::GRAY;
         painter.rect_filled(response.rect, 0.0, background_color);
 
         let panel_offset = response.rect.min;
+        let pointer_position = ui.input(|i| i.pointer.interact_pos());
+
+        let mut clicked_node_id: Option<u32> = None;
 
         // Disegna connessioni e nodi
         for elem in &self.nodi {
@@ -26,22 +29,25 @@ impl DronegowskiSimulationController {
             }
         }
 
-        for elem in &mut self.nodi {
+        for elem in &self.nodi {
             let fill_color = match elem.node_type {
                 SimulationControllerNodeType::SERVER { .. } => Color32::LIGHT_RED,
                 SimulationControllerNodeType::CLIENT { .. } => Color32::LIGHT_GREEN,
                 SimulationControllerNodeType::DRONE { .. } => Color32::LIGHT_BLUE,
             };
 
-            let rect = egui::Rect::from_center_size(
-                Pos2::new(elem.xy.0 + panel_offset.x, elem.xy.1 + panel_offset.y),
-                egui::vec2(60.0, 60.0),
-            );
+            let position = Pos2::new(elem.xy.0 + panel_offset.x, elem.xy.1 + panel_offset.y);
 
-            let response = ui.allocate_rect(rect, egui::Sense::click_and_drag());
+            // Determina se questo nodo è cliccato
+            if let Some(pointer) = pointer_position {
+                let distance = position.distance(pointer);
+                if distance <= 30.0 && ui.input(|i| i.pointer.any_click()) {
+                    clicked_node_id = Some(elem.node_id as u32);
+                }
+            }
 
             painter.circle(
-                Pos2::new(elem.xy.0 + panel_offset.x, elem.xy.1 + panel_offset.y),
+                position,
                 30.0,
                 fill_color,
                 Stroke::new(1.0, Color32::BLACK),
@@ -54,22 +60,18 @@ impl DronegowskiSimulationController {
             };
 
             painter.text(
-                Pos2::new(elem.xy.0 + panel_offset.x, elem.xy.1 + panel_offset.y),
+                position,
                 egui::Align2::CENTER_CENTER,
                 format!("{}{}", letter, elem.node_id),
                 egui::FontId::proportional(20.0),
                 Color32::BLACK,
             );
+        }
 
-            if response.dragged() {
-                let drag_delta = response.drag_delta();
-                elem.xy.0 += drag_delta.x;
-                elem.xy.1 += drag_delta.y;
-            }
-
-            if response.clicked() {
-                response.hovered();
-            }
+        // Stampa o usa il nodo cliccato
+        if let Some(node_id) = clicked_node_id {
+            println!("Nodo cliccato: {}", node_id);
+            // Puoi eseguire altre azioni qui, come evidenziare dinamicamente il nodo.
         }
     }
 }
