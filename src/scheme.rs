@@ -6,10 +6,9 @@ use crate::{DronegowskiSimulationController};
 
 impl DronegowskiSimulationController {
     pub fn central_panel(&mut self, ui: &mut egui::Ui) {
-        // Variabile statica per memorizzare l'ultimo nodo cliccato
         thread_local! {
-        static LAST_CLICKED_NODE: std::cell::RefCell<Option<NodeId>> = std::cell::RefCell::new(None);
-    }
+            static LAST_CLICKED_NODE: std::cell::RefCell<Option<NodeId>> = std::cell::RefCell::new(None);
+        }
 
         let (response, painter) = ui.allocate_painter(ui.available_size(), egui::Sense::click_and_drag());
         let background_color = Color32::GRAY;
@@ -18,18 +17,28 @@ impl DronegowskiSimulationController {
         let panel_offset = response.rect.min;
         let pointer_position = ui.input(|i| i.pointer.interact_pos());
 
-        // Determina il nodo cliccato
         let mut clicked_node_id: Option<NodeId> = None;
 
         for elem in &self.nodi {
             for &neighbour in &elem.neighbours {
                 if let Some(neighbour_node) = self.nodi.iter().find(|node| node.node_id == neighbour) {
+                    let is_connected_to_clicked = LAST_CLICKED_NODE.with(|last_clicked| {
+                        let last_clicked = *last_clicked.borrow();
+                        last_clicked == Some(elem.node_id) || last_clicked == Some(neighbour_node.node_id)
+                    });
+
+                    let line_color = if is_connected_to_clicked {
+                        Color32::RED
+                    } else {
+                        Color32::BLACK
+                    };
+
                     painter.line_segment(
                         [
                             Pos2::new(elem.xy.0 + panel_offset.x, elem.xy.1 + panel_offset.y),
                             Pos2::new(neighbour_node.xy.0 + panel_offset.x, neighbour_node.xy.1 + panel_offset.y),
                         ],
-                        Stroke::new(2.0, Color32::BLACK),
+                        Stroke::new(2.0, line_color),
                     );
                 }
             }
@@ -45,22 +54,18 @@ impl DronegowskiSimulationController {
             }
         }
 
-        // Aggiorna il nodo cliccato
         if ui.input(|i| i.pointer.any_click()) {
             if let Some(node_id) = clicked_node_id {
-                // Nodo cliccato
                 LAST_CLICKED_NODE.with(|last_clicked| {
                     *last_clicked.borrow_mut() = Some(node_id);
                 });
             } else {
-                // Spazio vuoto cliccato
                 LAST_CLICKED_NODE.with(|last_clicked| {
                     *last_clicked.borrow_mut() = None;
                 });
             }
         }
 
-        // Disegna i nodi
         for elem in &mut self.nodi {
             let rect = egui::Rect::from_center_size(
                 Pos2::new(elem.xy.0 + panel_offset.x, elem.xy.1 + panel_offset.y),
@@ -70,14 +75,12 @@ impl DronegowskiSimulationController {
 
             let position = Pos2::new(elem.xy.0 + panel_offset.x, elem.xy.1 + panel_offset.y);
 
-            // Determina il colore del nodo
             let fill_color = match elem.node_type {
                 SimulationControllerNodeType::SERVER { .. } => Color32::LIGHT_RED,
                 SimulationControllerNodeType::CLIENT { .. } => Color32::LIGHT_GREEN,
                 SimulationControllerNodeType::DRONE { .. } => Color32::LIGHT_BLUE,
             };
 
-            // Determina il colore del bordo
             let stroke_color = LAST_CLICKED_NODE.with(|last_clicked| {
                 if *last_clicked.borrow() == Some(elem.node_id) {
                     Color32::RED
@@ -90,7 +93,7 @@ impl DronegowskiSimulationController {
                 position,
                 30.0,
                 fill_color,
-                Stroke::new(2.0, stroke_color), // Imposta il colore del bordo
+                Stroke::new(2.0, stroke_color),
             );
 
             let letter = match elem.node_type {
@@ -114,5 +117,4 @@ impl DronegowskiSimulationController {
             }
         }
     }
-
 }
