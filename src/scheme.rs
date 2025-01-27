@@ -66,6 +66,10 @@ impl DronegowskiSimulationController {
                 elem.xy.0 += drag_delta.x;
                 elem.xy.1 += drag_delta.y;
             }
+
+            if response.clicked() {
+                response.hovered();
+            }
         }
     }
 }
