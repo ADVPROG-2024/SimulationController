@@ -11,12 +11,6 @@ use wg_2024::network::NodeId;
 use wg_2024::config::Config;
 use dronegowski_utils::network::{SimulationControllerNode, SimulationControllerNodeType};
 
-pub fn parse_config(file: &str) -> Config {
-    let file_str = fs::read_to_string(file).expect("error reading config file");
-    println!("Parsing configuration file...");
-    toml::from_str(&file_str).expect("Error occurred during config file parsing")
-}
-
 pub struct DronegowskiSimulationController {
     pub nodi: Vec<SimulationControllerNode>,
     pub sc_drone_channels: HashMap<NodeId, Sender<DroneCommand>>,
@@ -26,13 +20,11 @@ pub struct DronegowskiSimulationController {
 }
 
 impl DronegowskiSimulationController {
-    pub fn new(config: Config,
+    pub fn new(nodi: Vec<SimulationControllerNode>,
                sc_drone_channels: HashMap<NodeId, Sender<DroneCommand>>,
                sc_client_channels: HashMap<NodeId, Sender<ClientCommand>>,
                sc_drone_event_recv: Receiver<DroneEvent>,
                sc_client_event_recv: Receiver<ClientEvent>){
-        let mut nodi = Vec::new();
-        Self::parse_file(config, &mut nodi, sc_drone_channels, sc_client_channels);
 
         let native_options = eframe::NativeOptions::default();
         eframe::run_native(
@@ -54,41 +46,6 @@ impl DronegowskiSimulationController {
             sc_client_channels,
             sc_drone_event_recv,
             sc_client_event_recv,
-        }
-    }
-
-    fn parse_file(config: Config,
-                  nodi: &mut Vec<SimulationControllerNode>,
-                  sc_drone_channels: HashMap<NodeId, Sender<DroneCommand>>,
-                  sc_client_channels: HashMap<NodeId, Sender<ClientCommand>>,){
-
-        for drone in config.drone.clone(){
-            let mut neighbours = Vec::new();
-            let Some(sc_drone_command) = sc_drone_channels.get(&drone.id);
-
-            for neighbour in drone.connected_node_ids{
-                neighbours.push(neighbour);
-            }
-            SimulationControllerNode::new(SimulationControllerNodeType::DRONE{ drone_channel: *sc_drone_command.clone(), pdr: drone.pdr }, drone.id, neighbours, nodi);
-        }
-
-        for client in config.client{
-            let mut neighbours = Vec::new();
-            let Some(sc_client_command) = sc_client_channels.get(&client.id);
-
-            for neighbour in client.connected_drone_ids{
-                neighbours.push(neighbour);
-            }
-
-            SimulationControllerNode::new(SimulationControllerNodeType::CLIENT{ client_channel: *sc_client_command.clone()}, client.id, neighbours, nodi);
-        }
-
-        for server in config.server{
-            let mut neighbours = Vec::new();
-            for neighbour in server.connected_drone_ids{
-                neighbours.push(neighbour);
-            }
-            SimulationControllerNode::new(SimulationControllerNodeType::SERVER, server.id, neighbours, nodi);
         }
     }
 }
