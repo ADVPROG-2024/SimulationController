@@ -13,8 +13,6 @@ impl DronegowskiSimulationController {
         let panel_offset = response.rect.min;
         let pointer_position = ui.input(|i| i.pointer.interact_pos());
 
-        let mut clicked_node_id: Option<NodeId> = None;
-
         // Disegna connessioni e nodi
         for elem in &self.nodi {
             for &neighbour in &elem.neighbours {
@@ -30,7 +28,7 @@ impl DronegowskiSimulationController {
             }
         }
 
-        for mut elem in &mut self.nodi {
+        for elem in &mut self.nodi {
             let rect = egui::Rect::from_center_size(
                 Pos2::new(elem.xy.0 + panel_offset.x, elem.xy.1 + panel_offset.y),
                 egui::vec2(60.0, 60.0),
@@ -39,15 +37,16 @@ impl DronegowskiSimulationController {
 
             let position = Pos2::new(elem.xy.0 + panel_offset.x, elem.xy.1 + panel_offset.y);
 
-            // Determina se questo nodo è cliccato
-            if let Some(pointer) = pointer_position {
+            // Determina se questo nodo è cliccato in base alla posizione del puntatore e al clic
+            let is_node_clicked = if let Some(pointer) = pointer_position {
                 let distance = position.distance(pointer);
-                if distance <= 30.0 && ui.input(|i| i.pointer.any_click()) {
-                    clicked_node_id = Some(elem.node_id);
-                }
-            }
+                distance <= 30.0 && ui.input(|i| i.pointer.any_click())
+            } else {
+                false
+            };
 
-            let fill_color = if clicked_node_id == Some(elem.node_id) {
+            // Imposta il colore del nodo
+            let fill_color = if is_node_clicked {
                 Color32::YELLOW // Nodo cliccato evidenziato
             } else {
                 match elem.node_type {
@@ -56,7 +55,7 @@ impl DronegowskiSimulationController {
                     SimulationControllerNodeType::DRONE { .. } => Color32::LIGHT_BLUE,
                 }
             };
-            
+
             painter.circle(
                 position,
                 30.0,
@@ -83,14 +82,6 @@ impl DronegowskiSimulationController {
                 elem.xy.0 += drag_delta.x;
                 elem.xy.1 += drag_delta.y;
             }
-
-        }
-
-
-        // Stampa o usa il nodo cliccato
-        if let Some(node_id) = clicked_node_id {
-            println!("Nodo cliccato: {}", node_id);
-            // Puoi eseguire altre azioni qui, come evidenziare dinamicamente il nodo.
         }
     }
 }
