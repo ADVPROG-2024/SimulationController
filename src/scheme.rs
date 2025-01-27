@@ -80,9 +80,9 @@ impl DronegowskiSimulationController {
             // Determina il colore del bordo
             let stroke_color = LAST_CLICKED_NODE.with(|last_clicked| {
                 if *last_clicked.borrow() == Some(elem.node_id) {
-                    Color32::BLACK // Nodo selezionato ha un bordo nero
+                    Color32::RED
                 } else {
-                    Color32::RED // Nodo non selezionato ha un bordo rosso
+                    Color32::BLACK
                 }
             });
 
