@@ -30,9 +30,9 @@ impl DronegowskiSimulationController {
 
                     // Linee collegate al nodo selezionato diventano grigie
                     let line_color = if is_connected_to_clicked {
-                        Color32::GRAY
-                    } else {
                         Color32::WHITE
+                    } else {
+                        Color32::DARK_GRAY
                     };
 
                     painter.line_segment(
@@ -91,7 +91,7 @@ impl DronegowskiSimulationController {
 
             // Determina spessore e colore del bordo
             let stroke_thickness = if is_selected { 4.0 } else { 2.0 };
-            let stroke_color = Color32::WHITE;
+            let stroke_color = Color32::DARK_GRAY;
 
             // Disegna il cerchio
             painter.circle(
