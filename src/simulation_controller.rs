@@ -5,7 +5,7 @@ use dronegowski_utils::hosts::{ClientCommand, ClientEvent, ServerCommand, Server
 use eframe::egui;
 use wg_2024::controller::{DroneCommand, DroneEvent};
 use wg_2024::network::NodeId;
-use dronegowski_utils::network::{SimulationControllerNode, SimulationControllerNodeType};
+use dronegowski_utils::network::{SimulationControllerNode};
 
 pub struct DronegowskiSimulationController {
     pub nodi: Vec<SimulationControllerNode>,
@@ -26,7 +26,6 @@ impl DronegowskiSimulationController {
                sc_client_event_recv: Receiver<ClientEvent>,
                sc_server_event_recv: Receiver<ServerEvent>
     ){
-
         let native_options = eframe::NativeOptions::default();
         eframe::run_native(
             "Simulation Controller",
