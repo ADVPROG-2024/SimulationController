@@ -1,6 +1,7 @@
 use dronegowski_utils::network::SimulationControllerNodeType;
 use eframe::egui;
 use eframe::egui::{Color32, Pos2, Stroke};
+use wg_2024::network::NodeId;
 use crate::{DronegowskiSimulationController};
 
 impl DronegowskiSimulationController {
@@ -12,7 +13,8 @@ impl DronegowskiSimulationController {
         let panel_offset = response.rect.min;
         let pointer_position = ui.input(|i| i.pointer.interact_pos());
 
-        let mut clicked_node_id: Option<u32> = None;
+        // Variabile per memorizzare il nodo cliccato
+        let mut clicked_node_id: Option<NodeId> = None;
 
         // Disegna connessioni e nodi
         for elem in &self.nodi {
@@ -29,22 +31,27 @@ impl DronegowskiSimulationController {
             }
         }
 
-        for elem in &self.nodi {
-            let fill_color = match elem.node_type {
-                SimulationControllerNodeType::SERVER { .. } => Color32::LIGHT_RED,
-                SimulationControllerNodeType::CLIENT { .. } => Color32::LIGHT_GREEN,
-                SimulationControllerNodeType::DRONE { .. } => Color32::LIGHT_BLUE,
-            };
-
+        for elem in &mut self.nodi {
             let position = Pos2::new(elem.xy.0 + panel_offset.x, elem.xy.1 + panel_offset.y);
 
             // Determina se questo nodo è cliccato
             if let Some(pointer) = pointer_position {
                 let distance = position.distance(pointer);
                 if distance <= 30.0 && ui.input(|i| i.pointer.any_click()) {
-                    clicked_node_id = Some(elem.node_id as u32);
+                    clicked_node_id = Some(elem.node_id);
                 }
             }
+
+            // Determina il colore del nodo
+            let fill_color = if clicked_node_id == Some(elem.node_id) {
+                Color32::YELLOW // Nodo cliccato evidenziato
+            } else {
+                match elem.node_type {
+                    SimulationControllerNodeType::SERVER { .. } => Color32::LIGHT_RED,
+                    SimulationControllerNodeType::CLIENT { .. } => Color32::LIGHT_GREEN,
+                    SimulationControllerNodeType::DRONE { .. } => Color32::LIGHT_BLUE,
+                }
+            };
 
             painter.circle(
                 position,
@@ -71,7 +78,6 @@ impl DronegowskiSimulationController {
         // Stampa o usa il nodo cliccato
         if let Some(node_id) = clicked_node_id {
             println!("Nodo cliccato: {}", node_id);
-            // Puoi eseguire altre azioni qui, come evidenziare dinamicamente il nodo.
         }
     }
 }
