@@ -11,7 +11,7 @@ impl DronegowskiSimulationController {
         }
 
         let (response, painter) = ui.allocate_painter(ui.available_size(), egui::Sense::click_and_drag());
-        let background_color = Color32::GRAY;
+        let background_color = Color32::WHITE;
         painter.rect_filled(response.rect, 0.0, background_color);
 
         let panel_offset = response.rect.min;
