@@ -11,7 +11,7 @@ impl DronegowskiSimulationController {
         }
 
         let (response, painter) = ui.allocate_painter(ui.available_size(), egui::Sense::click_and_drag());
-        let background_color = Color32::BLACK; // Background nero
+        let background_color = Color32::LIGHT_GRAY; // Background nero
         painter.rect_filled(response.rect, 0.0, background_color);
 
         let panel_offset = response.rect.min;
@@ -30,9 +30,9 @@ impl DronegowskiSimulationController {
 
                     // Linee collegate al nodo selezionato diventano grigie
                     let line_color = if is_connected_to_clicked {
-                        Color32::WHITE
-                    } else {
                         Color32::DARK_GRAY
+                    } else {
+                        Color32::BLACK
                     };
 
                     painter.line_segment(
@@ -91,7 +91,7 @@ impl DronegowskiSimulationController {
 
             // Determina spessore e colore del bordo
             let stroke_thickness = if is_selected { 4.0 } else { 2.0 };
-            let stroke_color = Color32::DARK_GRAY;
+            let stroke_color = Color32::BLACK;
 
             // Disegna il cerchio
             painter.circle(
@@ -104,7 +104,7 @@ impl DronegowskiSimulationController {
             // Dimensione, stile e colore della label
             let font_size = if is_selected { 24.0 } else { 20.0 };
             let font_weight = if is_selected { egui::FontId::monospace(font_size) } else { egui::FontId::proportional(font_size) };
-            let label_color = Color32::GRAY;
+            let label_color = Color32::BLACK;
 
             // Label del nodo
             let letter = match elem.node_type {
