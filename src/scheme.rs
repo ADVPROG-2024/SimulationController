@@ -28,7 +28,7 @@ impl DronegowskiSimulationController {
                     });
 
                     let line_color = if is_connected_to_clicked {
-                        Color32::YELLOW
+                        Color32::LIGHT_GRAY
                     } else {
                         Color32::BLACK
                     };
@@ -83,7 +83,7 @@ impl DronegowskiSimulationController {
 
             let stroke_color = LAST_CLICKED_NODE.with(|last_clicked| {
                 if *last_clicked.borrow() == Some(elem.node_id) {
-                    Color32::YELLOW
+                    Color32::LIGHT_GRAY
                 } else {
                     Color32::BLACK
                 }
