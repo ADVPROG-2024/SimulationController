@@ -11,7 +11,7 @@ impl DronegowskiSimulationController {
         }
 
         let (response, painter) = ui.allocate_painter(ui.available_size(), egui::Sense::click_and_drag());
-        let background_color = Color32::WHITE;
+        let background_color = Color32::WHITE; // Background bianco
         painter.rect_filled(response.rect, 0.0, background_color);
 
         let panel_offset = response.rect.min;
@@ -19,6 +19,7 @@ impl DronegowskiSimulationController {
 
         let mut clicked_node_id: Option<NodeId> = None;
 
+        // Disegna le linee
         for elem in &self.nodi {
             for &neighbour in &elem.neighbours {
                 if let Some(neighbour_node) = self.nodi.iter().find(|node| node.node_id == neighbour) {
@@ -27,6 +28,7 @@ impl DronegowskiSimulationController {
                         last_clicked == Some(elem.node_id) || last_clicked == Some(neighbour_node.node_id)
                     });
 
+                    // Linee collegate al nodo selezionato diventano grigie
                     let line_color = if is_connected_to_clicked {
                         Color32::GRAY
                     } else {
@@ -44,6 +46,7 @@ impl DronegowskiSimulationController {
             }
         }
 
+        // Determina quale nodo è stato cliccato
         for elem in &self.nodi {
             let position = Pos2::new(elem.xy.0 + panel_offset.x, elem.xy.1 + panel_offset.y);
             if let Some(pointer) = pointer_position {
@@ -54,6 +57,7 @@ impl DronegowskiSimulationController {
             }
         }
 
+        // Aggiorna il nodo cliccato
         if ui.input(|i| i.pointer.any_click()) {
             if let Some(node_id) = clicked_node_id {
                 LAST_CLICKED_NODE.with(|last_clicked| {
@@ -66,6 +70,7 @@ impl DronegowskiSimulationController {
             }
         }
 
+        // Disegna i nodi
         for elem in &mut self.nodi {
             let rect = egui::Rect::from_center_size(
                 Pos2::new(elem.xy.0 + panel_offset.x, elem.xy.1 + panel_offset.y),
@@ -81,21 +86,26 @@ impl DronegowskiSimulationController {
                 SimulationControllerNodeType::DRONE { .. } => Color32::LIGHT_BLUE,
             };
 
-            let stroke_color = LAST_CLICKED_NODE.with(|last_clicked| {
-                if *last_clicked.borrow() == Some(elem.node_id) {
-                    Color32::GRAY
-                } else {
-                    Color32::BLACK
-                }
-            });
+            // Verifica se il nodo è selezionato
+            let is_selected = LAST_CLICKED_NODE.with(|last_clicked| *last_clicked.borrow() == Some(elem.node_id));
 
+            // Determina spessore e colore del bordo
+            let stroke_thickness = if is_selected { 4.0 } else { 2.0 };
+            let stroke_color = Color32::BLACK;
+
+            // Disegna il cerchio
             painter.circle(
                 position,
                 30.0,
                 fill_color,
-                Stroke::new(2.0, stroke_color),
+                Stroke::new(stroke_thickness, stroke_color),
             );
 
+            // Dimensione e colore della label
+            let font_size = if is_selected { 24.0 } else { 20.0 };
+            let label_color = Color32::BLACK;
+
+            // Label del nodo
             let letter = match elem.node_type {
                 SimulationControllerNodeType::SERVER { .. } => "S",
                 SimulationControllerNodeType::CLIENT { .. } => "C",
@@ -106,10 +116,11 @@ impl DronegowskiSimulationController {
                 position,
                 egui::Align2::CENTER_CENTER,
                 format!("{}{}", letter, elem.node_id),
-                egui::FontId::proportional(20.0),
-                Color32::BLACK,
+                egui::FontId::proportional(font_size),
+                label_color,
             );
 
+            // Aggiorna la posizione del nodo durante il drag
             if response.dragged() {
                 let drag_delta = response.drag_delta();
                 elem.xy.0 += drag_delta.x;
