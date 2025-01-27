@@ -30,7 +30,7 @@ impl DronegowskiSimulationController {
 
                     // Linee collegate al nodo selezionato diventano grigie
                     let line_color = if is_connected_to_clicked {
-                        Color32::DARK_GRAY
+                        Color32::GRAY
                     } else {
                         Color32::BLACK
                     };
