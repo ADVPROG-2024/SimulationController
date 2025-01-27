@@ -104,7 +104,7 @@ impl DronegowskiSimulationController {
             // Dimensione, stile e colore della label
             let font_size = if is_selected { 24.0 } else { 20.0 };
             let font_weight = if is_selected { egui::FontId::monospace(font_size) } else { egui::FontId::proportional(font_size) };
-            let label_color = Color32::WHITE;
+            let label_color = Color32::DARK_GRAY;
 
             // Label del nodo
             let letter = match elem.node_type {
