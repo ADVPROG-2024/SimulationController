@@ -27,7 +27,7 @@ impl DronegowskiSimulationController {
 
             // Stile del bottone
             let button_color = if is_active {
-                Color32::from_gray(300) // Grigio chiaro per bottone selezionato
+                Color32::from_gray(200) // Grigio chiaro per bottone selezionato
             } else {
                 Color32::WHITE // Bianco per i bottoni non selezionati
             };
