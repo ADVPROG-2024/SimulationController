@@ -22,6 +22,20 @@ impl DronegowskiSimulationController {
         let mut clicked_node_id: Option<NodeId> = None;
 
         for elem in &self.nodi {
+            for &neighbour in &elem.neighbours {
+                if let Some(neighbour_node) = self.nodi.iter().find(|node| node.node_id == neighbour) {
+                    painter.line_segment(
+                        [
+                            Pos2::new(elem.xy.0 + panel_offset.x, elem.xy.1 + panel_offset.y),
+                            Pos2::new(neighbour_node.xy.0 + panel_offset.x, neighbour_node.xy.1 + panel_offset.y),
+                        ],
+                        Stroke::new(2.0, Color32::BLACK),
+                    );
+                }
+            }
+        }
+        
+        for elem in &self.nodi {
             let position = Pos2::new(elem.xy.0 + panel_offset.x, elem.xy.1 + panel_offset.y);
             if let Some(pointer) = pointer_position {
                 let distance = position.distance(pointer);
