@@ -28,7 +28,7 @@ impl DronegowskiSimulationController {
 
         for elem in &mut self.nodi {
             let fill_color = match elem.node_type {
-                SimulationControllerNodeType::SERVER => Color32::LIGHT_RED,
+                SimulationControllerNodeType::SERVER { .. } => Color32::LIGHT_RED,
                 SimulationControllerNodeType::CLIENT { .. } => Color32::LIGHT_GREEN,
                 SimulationControllerNodeType::DRONE { .. } => Color32::LIGHT_BLUE,
             };
@@ -48,7 +48,7 @@ impl DronegowskiSimulationController {
             );
 
             let letter = match elem.node_type {
-                SimulationControllerNodeType::SERVER => "S",
+                SimulationControllerNodeType::SERVER { .. } => "S",
                 SimulationControllerNodeType::CLIENT { .. } => "C",
                 SimulationControllerNodeType::DRONE { .. } => "D",
             };
