@@ -8,7 +8,7 @@ impl DronegowskiSimulationController {
     pub fn central_panel(&mut self, ui: &mut egui::Ui) {
         // Variabile statica per memorizzare l'ultimo nodo cliccato
         thread_local! {
-            static LAST_CLICKED_NODE: std::cell::RefCell<Option<NodeId>> = std::cell::RefCell::new(None);
+        static LAST_CLICKED_NODE: std::cell::RefCell<Option<NodeId>> = std::cell::RefCell::new(None);
         }
 
         let (response, painter) = ui.allocate_painter(ui.available_size(), egui::Sense::click_and_drag());
@@ -34,7 +34,7 @@ impl DronegowskiSimulationController {
                 }
             }
         }
-        
+
         for elem in &self.nodi {
             let position = Pos2::new(elem.xy.0 + panel_offset.x, elem.xy.1 + panel_offset.y);
             if let Some(pointer) = pointer_position {
@@ -46,10 +46,18 @@ impl DronegowskiSimulationController {
         }
 
         // Aggiorna il nodo cliccato
-        if let Some(node_id) = clicked_node_id {
-            LAST_CLICKED_NODE.with(|last_clicked| {
-                *last_clicked.borrow_mut() = Some(node_id);
-            });
+        if ui.input(|i| i.pointer.any_click()) {
+            if let Some(node_id) = clicked_node_id {
+                // Nodo cliccato
+                LAST_CLICKED_NODE.with(|last_clicked| {
+                    *last_clicked.borrow_mut() = Some(node_id);
+                });
+            } else {
+                // Spazio vuoto cliccato
+                LAST_CLICKED_NODE.with(|last_clicked| {
+                    *last_clicked.borrow_mut() = None;
+                });
+            }
         }
 
         // Disegna i nodi
@@ -103,4 +111,5 @@ impl DronegowskiSimulationController {
             }
         }
     }
+
 }
