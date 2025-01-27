@@ -31,12 +31,6 @@ impl DronegowskiSimulationController {
         }
 
         for mut elem in &mut self.nodi {
-            let fill_color = match elem.node_type {
-                SimulationControllerNodeType::SERVER { .. } => Color32::LIGHT_RED,
-                SimulationControllerNodeType::CLIENT { .. } => Color32::LIGHT_GREEN,
-                SimulationControllerNodeType::DRONE { .. } => Color32::LIGHT_BLUE,
-            };
-
             let rect = egui::Rect::from_center_size(
                 Pos2::new(elem.xy.0 + panel_offset.x, elem.xy.1 + panel_offset.y),
                 egui::vec2(60.0, 60.0),
@@ -53,6 +47,16 @@ impl DronegowskiSimulationController {
                 }
             }
 
+            let fill_color = if clicked_node_id == Some(elem.node_id) {
+                Color32::YELLOW // Nodo cliccato evidenziato
+            } else {
+                match elem.node_type {
+                    SimulationControllerNodeType::SERVER { .. } => Color32::LIGHT_RED,
+                    SimulationControllerNodeType::CLIENT { .. } => Color32::LIGHT_GREEN,
+                    SimulationControllerNodeType::DRONE { .. } => Color32::LIGHT_BLUE,
+                }
+            };
+            
             painter.circle(
                 position,
                 30.0,
