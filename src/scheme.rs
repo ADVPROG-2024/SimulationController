@@ -38,7 +38,7 @@ impl DronegowskiSimulationController {
                 egui::vec2(60.0, 60.0),
             );
 
-            let response = ui.allocate_rect(rect, egui::Sense::drag());
+            let response = ui.allocate_rect(rect, egui::Sense::click_and_drag());
 
             painter.circle(
                 Pos2::new(elem.xy.0 + panel_offset.x, elem.xy.1 + panel_offset.y),
