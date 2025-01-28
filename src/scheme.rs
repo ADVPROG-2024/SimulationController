@@ -47,7 +47,7 @@ impl DronegowskiSimulationController {
         }
 
         // Determina quale nodo è stato cliccato
-        for elem in &mut self.nodi {
+        for elem in self.nodi.clone() {
             let position = Pos2::new(elem.xy.0 + panel_offset.x, elem.xy.1 + panel_offset.y);
             if let Some(pointer) = pointer_position {
                 let distance = position.distance(pointer);
@@ -55,7 +55,7 @@ impl DronegowskiSimulationController {
                     clicked_node_id = Some(elem.node_id);
 
                     if let SimulationControllerNodeType::CLIENT { .. } = elem.node_type {
-                        self.open_client_popup(elem);
+                        self.open_client_popup(*elem);
                     }
                 }
             }
