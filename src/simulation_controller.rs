@@ -73,6 +73,10 @@ impl eframe::App for DronegowskiSimulationController {
             self.central_panel(ui);
         });
 
+        egui::TopBottomPanel::bottom("bottom_bar").resizable(false).frame(egui::Frame::none().fill(Color32::from_rgb(0, 128, 0))).show(ctx, |ui| {
+            self.bottom_panel(ui);
+        });
+
         let mut popups_to_remove = vec![];
         for (node_id, node) in &self.active_popups {
             let mut selected_option = None;
