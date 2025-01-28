@@ -73,7 +73,7 @@ impl eframe::App for DronegowskiSimulationController {
             self.central_panel(ui);
         });
 
-        egui::TopBottomPanel::bottom("bottom_bar").show(ctx, |ui| {
+        egui::TopBottomPanel::bottom("bottom_bar").frame(egui::Frame::none()).show(ctx, |ui| {
             self.bottom_panel(ui);
         });
 
