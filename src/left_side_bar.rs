@@ -1,12 +1,9 @@
-use std::collections::HashMap;
 use eframe::egui;
-use eframe::egui::Key::M;
 use eframe::egui::TextStyle;
 use egui::{Color32, Ui, Id, Align2};
-use crate::{simulation_controller, DronegowskiSimulationController};
+use crate::{DronegowskiSimulationController};
 
 impl DronegowskiSimulationController {
-
 
     pub fn left_side_panel(&mut self, ui: &mut Ui) {
         // Definiamo i pulsanti
