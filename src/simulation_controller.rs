@@ -65,5 +65,17 @@ impl eframe::App for DronegowskiSimulationController {
         egui::CentralPanel::default().frame(egui::Frame::none()).show(ctx, |ui| {
             self.central_panel(ui);
         });
+        let mut open = true;
+        if open {
+            egui::Window::new("Pop-Up")
+                .collapsible(false)
+                .resizable(false)
+                .show(ctx, |ui| {
+                    ui.label("This is a pop-up window!");
+                    if ui.button("Close").clicked() {
+                        open = false; // Close the pop-up
+                    }
+                });
+        }
     }
 }
