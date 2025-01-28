@@ -14,7 +14,8 @@ pub struct DronegowskiSimulationController {
     pub sc_server_channels: HashMap<NodeId, Sender<ServerCommand>>,
     pub sc_drone_event_recv: Receiver<DroneEvent>,
     pub sc_client_event_recv: Receiver<ClientEvent>,
-    pub sc_server_event_recv: Receiver<ServerEvent>
+    pub sc_server_event_recv: Receiver<ServerEvent>,
+    pub active_popups: HashMap<NodeId, SimulationControllerNode>, // Popup attivi
 }
 
 impl DronegowskiSimulationController {
@@ -50,8 +51,14 @@ impl DronegowskiSimulationController {
             sc_server_channels,
             sc_drone_event_recv,
             sc_client_event_recv,
-            sc_server_event_recv
+            sc_server_event_recv,
+            active_popups: HashMap::new(), // Inizializzazione vuota
         }
+    }
+
+    fn open_client_popup(&mut self, node: &SimulationControllerNode) {
+        // Aggiungi un popup per il nodo specifico
+        self.active_popups.insert(node.node_id, node.clone());
     }
 }
 
@@ -65,17 +72,24 @@ impl eframe::App for DronegowskiSimulationController {
         egui::CentralPanel::default().frame(egui::Frame::none()).show(ctx, |ui| {
             self.central_panel(ui);
         });
-        let mut open = true;
-        if open {
-            egui::Window::new("Pop-Up")
+        let mut popups_to_remove = vec![];
+        for (node_id, node) in &self.active_popups {
+            egui::Window::new(format!("Client: {}", node_id))
                 .collapsible(false)
                 .resizable(false)
                 .show(ctx, |ui| {
-                    ui.label("This is a pop-up window!");
-                    if ui.button("Close").clicked() {
-                        open = false; // Close the pop-up
+                    ui.label(format!("ID: {}", node.node_id));
+                    ui.label(format!("Type: {:?}", node.node_type));
+                    // Aggiungi ulteriori informazioni qui
+                    if ui.button("Chiudi").clicked() {
+                        popups_to_remove.push(*node_id);
                     }
                 });
+        }
+
+        // Rimuovi i popup chiusi
+        for node_id in popups_to_remove {
+            self.active_popups.remove(&node_id);
         }
     }
 }

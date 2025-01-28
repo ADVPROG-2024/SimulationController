@@ -53,6 +53,10 @@ impl DronegowskiSimulationController {
                 let distance = position.distance(pointer);
                 if distance <= 30.0 && ui.input(|i| i.pointer.any_click()) {
                     clicked_node_id = Some(elem.node_id);
+
+                    if let SimulationControllerNodeType::CLIENT { .. } = elem.node_type {
+                        self.open_client_popup(elem);
+                    }
                 }
             }
         }
