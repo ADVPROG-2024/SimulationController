@@ -10,7 +10,7 @@ impl DronegowskiSimulationController {
             static LAST_CLICKED_NODE: std::cell::RefCell<Option<NodeId>> = std::cell::RefCell::new(None);
         }
 
-        let (response, painter) = ui.allocate_painter(ui.available_size(), egui::Sense::click_and_drag());
+        let (response, painter) = ui.allocate_painter(ui.ctx().screen_rect().size(), egui::Sense::click_and_drag());
         let background_color = Color32::LIGHT_GRAY; // Background nero
         painter.rect_filled(response.rect, 0.0, background_color);
 

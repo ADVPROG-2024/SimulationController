@@ -70,14 +70,14 @@ impl eframe::App for DronegowskiSimulationController {
             self.left_side_panel(ui);
         });
 
-        egui::TopBottomPanel::bottom("bottom_bar").resizable(false).min_height(100.0).default_height(100.0).show(ctx, |ui| {
+        egui::TopBottomPanel::bottom("bottom_bar").resizable(false).min_height(200.0).default_height(200.0).show(ctx, |ui| {
             self.bottom_panel(ui);
         });
 
         egui::CentralPanel::default().frame(egui::Frame::none()).show(ctx, |ui| {
             self.central_panel(ui);
         });
-        
+
         let mut popups_to_remove = vec![];
         for (node_id, node) in &self.active_popups {
             let mut selected_option = None;
