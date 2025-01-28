@@ -31,6 +31,5 @@ impl DronegowskiSimulationController {
         });
 
         // Aggiorna il cursore per far sapere al layout che l'altezza del pannello è stata occupata
-        ui.advance_cursor(panel_height);
     }
 }
