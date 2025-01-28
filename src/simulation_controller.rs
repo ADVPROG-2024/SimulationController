@@ -56,7 +56,7 @@ impl DronegowskiSimulationController {
         }
     }
 
-    fn open_client_popup(&mut self, node: &SimulationControllerNode) {
+    pub fn open_client_popup(&mut self, node: &SimulationControllerNode) {
         // Aggiungi un popup per il nodo specifico
         self.active_popups.insert(node.node_id, node.clone());
     }
