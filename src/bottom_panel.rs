@@ -8,9 +8,8 @@ impl DronegowskiSimulationController {
     pub fn bottom_panel(&mut self, ui: &mut egui::Ui) {
         ui.horizontal(|ui| {
             ui.add_space(10.0); // Margine a sinistra
-            if ui.button("Crash").clicked() {
+            if ui.button("Spawn").clicked() {
                 // Logica per il pulsante Crash
-                println!("Crash button clicked!");
             }
         });
     }
