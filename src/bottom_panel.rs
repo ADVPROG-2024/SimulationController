@@ -6,24 +6,17 @@ use crate::{DronegowskiSimulationController};
 
 impl DronegowskiSimulationController {
     pub fn bottom_panel(&mut self, ui: &mut egui::Ui) {
-        // Personalizzazione dello stile per il pannello
-        let original_visuals = ui.visuals().clone(); // Salviamo lo stile originale
-        let mut custom_visuals = original_visuals.clone();
-        custom_visuals.widgets.noninteractive.bg_fill = egui::Color32::from_rgb(94, 199, 113); // Verde #5EC771
-        ui.set_visuals(custom_visuals);
+        // Aumentiamo l'altezza e impostiamo il colore di sfondo
+        ui.add_space(20.0); // Altezza extra sopra
+        ui.painter()
+            .rect_filled(ui.max_rect(), 0.0, egui::Color32::from_rgb(94, 199, 113)); // Colore verde #5EC771
 
-        // Disegniamo il pannello con altezza aumentata
-        egui::TopBottomPanel::bottom("bottom_panel")
-            .exact_height(50.0) // Altezza maggiore
-            .show_inside(ui, |ui| {
-                ui.horizontal(|ui| {
-                    ui.add_space(10.0); // Margine a sinistra
-                    if ui.button("Spawn").clicked() {
-                        // Logica per il pulsante Spawn
-                    }
-                });
-            });
-
-        ui.set_visuals(original_visuals); // Ripristiniamo lo stile originale
+        ui.horizontal(|ui| {
+            ui.add_space(10.0); // Margine a sinistra
+            if ui.button("Spawn").clicked() {
+                // Logica per il pulsante Spawn
+            }
+        });
+        ui.add_space(20.0); // Altezza extra sotto
     }
 }
