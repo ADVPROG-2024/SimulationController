@@ -28,7 +28,8 @@ impl DronegowskiSimulationController {
                sc_client_event_recv: Receiver<ClientEvent>,
                sc_server_event_recv: Receiver<ServerEvent>
     ){
-        let native_options = eframe::NativeOptions::default();
+        let mut native_options = eframe::NativeOptions::default();
+
         eframe::run_native(
             "Simulation Controller",
             native_options,
@@ -69,14 +70,14 @@ impl eframe::App for DronegowskiSimulationController {
             self.left_side_panel(ui);
         });
 
-        egui::CentralPanel::default().frame(egui::Frame::none()).show(ctx, |ui| {
-            self.central_panel(ui);
-        });
-
         egui::TopBottomPanel::bottom("bottom_bar").resizable(false).min_height(100.0).default_height(100.0).show(ctx, |ui| {
             self.bottom_panel(ui);
         });
 
+        egui::CentralPanel::default().frame(egui::Frame::none()).show(ctx, |ui| {
+            self.central_panel(ui);
+        });
+        
         let mut popups_to_remove = vec![];
         for (node_id, node) in &self.active_popups {
             let mut selected_option = None;
