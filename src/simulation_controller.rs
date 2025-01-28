@@ -6,6 +6,7 @@ use eframe::egui;
 use wg_2024::controller::{DroneCommand, DroneEvent};
 use wg_2024::network::NodeId;
 use dronegowski_utils::network::{SimulationControllerNode};
+use eframe::egui::Color32;
 
 pub struct DronegowskiSimulationController {
     pub nodi: Vec<SimulationControllerNode>,
@@ -64,7 +65,6 @@ impl DronegowskiSimulationController {
 
 impl eframe::App for DronegowskiSimulationController {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-
         egui::SidePanel::left("side_panel").resizable(false).show(ctx, |ui| {
             self.left_side_panel(ui);
         });
@@ -72,17 +72,52 @@ impl eframe::App for DronegowskiSimulationController {
         egui::CentralPanel::default().frame(egui::Frame::none()).show(ctx, |ui| {
             self.central_panel(ui);
         });
+
         let mut popups_to_remove = vec![];
         for (node_id, node) in &self.active_popups {
+            let mut selected_option = None;
+
             egui::Window::new(format!("Client: {}", node_id))
                 .collapsible(false)
-                .resizable(false)
+                .resizable(true)
+                .frame(egui::Frame::window(&ctx.style()).fill(Color32::WHITE)) // Sfondo bianco
                 .show(ctx, |ui| {
-                    ui.label(format!("ID: {}", node.node_id));
-                    ui.label(format!("Type: {:?}", node.node_type));
-                    // Aggiungi ulteriori informazioni qui
-                    if ui.button("Chiudi").clicked() {
-                        popups_to_remove.push(*node_id);
+                    // Bottone per chiudere la finestra (in alto a destra)
+                    ui.horizontal(|ui| {
+                        ui.label(format!("Dettagli del nodo {}", node_id));
+                        ui.with_layout(egui::Layout::right_to_left(egui::Align::TOP), |ui| {
+                            if ui.add(egui::Button::new("X").fill(Color32::RED)).clicked() {
+                                popups_to_remove.push(*node_id);
+                            }
+                        });
+                    });
+
+                    ui.separator();
+
+                    // Menu a tendina
+                    ui.label("Scegli un'azione:");
+                    egui::ComboBox::from_label("Opzioni")
+                        .selected_text(selected_option.unwrap_or("Seleziona un'opzione"))
+                        .show_ui(ui, |ui| {
+                            for option in &[
+                                "ServerType",
+                                "FileList",
+                                "File",
+                                "Media",
+                                "ClientList",
+                                "RegistrationToChat",
+                                "MessageFor",
+                            ] {
+                                if ui.selectable_value(&mut selected_option, Option::from(*option), *option).clicked() {
+                                    selected_option = Some(*option);
+                                }
+                            }
+                        });
+
+                    // Pulsante "Invia"
+                    if ui.add_sized([ui.available_width(), 40.0], egui::Button::new("Invia")).clicked() {
+                        // Logica per il pulsante invia
+                        println!("Opzione selezionata: {:?}", selected_option);
                     }
                 });
         }
