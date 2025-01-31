@@ -5,8 +5,11 @@ use dronegowski_utils::hosts::{ClientCommand, ClientEvent, ServerCommand, Server
 use eframe::egui;
 use wg_2024::controller::{DroneCommand, DroneEvent};
 use wg_2024::network::NodeId;
-use dronegowski_utils::network::{SimulationControllerNode};
+use dronegowski_utils::network::{SimulationControllerNode, SimulationControllerNodeType};
+use eframe::egui::accesskit::Node;
 use eframe::egui::Color32;
+use eframe::egui::UiKind::BottomPanel;
+use crate::sc_utils::{Panel};
 
 pub struct DronegowskiSimulationController {
     pub nodi: Vec<SimulationControllerNode>,
@@ -17,6 +20,7 @@ pub struct DronegowskiSimulationController {
     pub sc_client_event_recv: Receiver<ClientEvent>,
     pub sc_server_event_recv: Receiver<ServerEvent>,
     pub active_popups: HashMap<NodeId, SimulationControllerNode>, // Popup attivi
+    pub panel: Panel,
 }
 
 impl DronegowskiSimulationController {
@@ -28,7 +32,11 @@ impl DronegowskiSimulationController {
                sc_client_event_recv: Receiver<ClientEvent>,
                sc_server_event_recv: Receiver<ServerEvent>
     ){
-        let mut native_options = eframe::NativeOptions::default();
+
+        let native_options = eframe::NativeOptions {
+            viewport: egui::ViewportBuilder::default().with_fullscreen(true),
+            ..Default::default()
+        };
 
         eframe::run_native(
             "Simulation Controller",
@@ -55,6 +63,7 @@ impl DronegowskiSimulationController {
             sc_client_event_recv,
             sc_server_event_recv,
             active_popups: HashMap::new(), // Inizializzazione vuota
+            panel: Panel::default(),
         }
     }
 
@@ -62,16 +71,54 @@ impl DronegowskiSimulationController {
         // Aggiungi un popup per il nodo specifico
         self.active_popups.insert(node.node_id, node.clone());
     }
+
+    pub fn add_sender(&mut self, neighbour: NodeId){
+        let mut node = self.panel.central_panel.selected_node.clone().unwrap();
+        node.neighbours.push(neighbour);
+        self.nodi.push(node.clone());
+
+        match node.node_type {
+            SimulationControllerNodeType::DRONE {..} => {
+                if let Some(controller_send) = self.sc_drone_channels.get(&node.node_id){
+                    //controller_send.send(DroneCommand::AddSender())
+
+                }
+            }
+            SimulationControllerNodeType::CLIENT {..} => {
+            }
+            SimulationControllerNodeType::SERVER {..} => {
+            }
+        }
+        self.panel.bottom_panel.active_add_sender = false;
+
+        //controller_send.send(DroneCommand::AddSender(2, neighbor_send)).expect("Error sending the command...");
+    }
 }
 
 impl eframe::App for DronegowskiSimulationController {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        egui::SidePanel::left("side_panel").resizable(false).show(ctx, |ui| {
-            self.left_side_panel(ui);
+
+        egui::TopBottomPanel::bottom("bottom_bar").frame(egui::Frame::none().fill(Color32::from_rgb(94, 199, 113))).resizable(false).exact_height(300.).show(ctx, |ui| {
+            match &self.panel.central_panel.selected_node.clone(){
+                None => { self.bottom_panel(ui); }
+                Some(node) => {
+                    match node.node_type {
+                        SimulationControllerNodeType::DRONE {..} => {
+                            self.bottom_panel_drone(ui, self.panel.central_panel.selected_node.clone().unwrap());
+                        }
+                        SimulationControllerNodeType::CLIENT {..} => {
+                            self.bottom_panel_client(ui, self.panel.central_panel.selected_node.clone().unwrap());
+                        }
+                        SimulationControllerNodeType::SERVER {..} => {
+                            self.bottom_panel_server(ui, self.panel.central_panel.selected_node.clone().unwrap());
+                        }
+                    }
+                }
+            }
         });
 
-        egui::TopBottomPanel::bottom("bottom_bar").resizable(false).min_height(200.0).default_height(200.0).show(ctx, |ui| {
-            self.bottom_panel(ui);
+        egui::SidePanel::left("side_panel").resizable(false).exact_width(300.).show(ctx, |ui| {
+            self.left_side_panel(ui);
         });
 
         egui::CentralPanel::default().frame(egui::Frame::none()).show(ctx, |ui| {
