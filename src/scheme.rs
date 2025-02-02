@@ -5,18 +5,15 @@ use eframe::egui::{Color32, Painter, Pos2, Stroke};
 use wg_2024::network::NodeId;
 use crate::{DronegowskiSimulationController};
 
-impl DronegowskiSimulationController {
+impl DronegowskiSimulationController<'_> {
     pub fn central_panel(&mut self, ui: &mut egui::Ui) {
-        let (response, painter) = ui.allocate_painter(ui.ctx().screen_rect().size(), egui::Sense::click_and_drag());
+        let (response, painter) = ui.allocate_painter(ui.ctx().screen_rect().size(), egui::Sense::click());
         let background_color = Color32::LIGHT_GRAY;
         painter.rect_filled(response.rect, 0.0, background_color);
 
         let panel_offset = response.rect.min;
         let pointer_position = ui.input(|i| i.pointer.interact_pos());
-        let hover_position = ui.input(|i| i.pointer.hover_pos());
 
-
-        let mut hovered_node_id: Option<&SimulationControllerNode> = None;
         let mut clicked_node_id: Option<SimulationControllerNode> = None;
 
         // Disegna le linee
@@ -52,36 +49,28 @@ impl DronegowskiSimulationController {
         for elem in &self.nodi.clone() {
             let position = Pos2::new(elem.xy.0 + panel_offset.x, elem.xy.1 + panel_offset.y);
 
-            if let Some(pointer) = hover_position {
+            if let Some(pointer) = pointer_position {
                 let distance = position.distance(pointer);
 
-                if self.panel.bottom_panel.active_add_sender && distance <= 50.0 {
-                    hovered_node_id = Some(elem);
-                    let start_pos = Pos2::new(&self.panel.central_panel.selected_node.clone().unwrap().xy.0 + panel_offset.x, &self.panel.central_panel.selected_node.clone().unwrap().xy.1 + panel_offset.y);
+                if self.panel.bottom_panel.add_sender {
+                    self.add_sender_graphic(distance, elem, pointer, panel_offset, &painter, ui);
+                }
 
-                    if self.panel.central_panel.selected_node.clone().unwrap().neighbours.contains(&elem.node_id.clone()) {
-                        draw_dashed_line(&painter, start_pos, pointer, Stroke::new(4.0, Color32::RED), 10.0, 5.0);
-                    } else {
-                        draw_dashed_line(&painter, start_pos, pointer, Stroke::new(4.0, Color32::GREEN), 10.0, 5.0);
-                        if ui.input(|i| i.pointer.any_click()) {
-                            self.add_sender(elem.node_id);
-                        }
-                    }
+                else if self.panel.bottom_panel.remove_sender {
+                    self.remove_sender_graphic(distance, elem, ui);
+                }
 
-                } else if distance <= 50.0 && ui.input(|i| i.pointer.any_click()) && !self.panel.bottom_panel.active_add_sender {
+                else if self.panel.bottom_panel.crash{
+                     self.crash_graphic();
+                }
+
+                else if distance <= 50.0 && ui.input(|i| i.pointer.any_click()) {
                     clicked_node_id = Some(elem.clone());
 
                     self.panel.central_panel.selected_node = clicked_node_id.clone();
 
                     if let SimulationControllerNodeType::CLIENT { .. } = elem.node_type {
                         self.open_client_popup(elem);
-                    }
-                } else if distance > 50. && self.panel.bottom_panel.active_add_sender {
-                    if let Some(selected_node) = &self.panel.central_panel.selected_node {
-                        if let Some(pointer) = pointer_position {
-                            let start_pos = Pos2::new(selected_node.xy.0 + panel_offset.x, selected_node.xy.1 + panel_offset.y);
-                            draw_dashed_line(&painter, start_pos, pointer, Stroke::new(4.0, Color32::GRAY), 10.0, 5.0);
-                        }
                     }
                 }
             }
@@ -93,10 +82,9 @@ impl DronegowskiSimulationController {
             if let Some(pointer) = pointer_position {
                 if central_panel_rect.contains(pointer) {
                     self.panel.reset();
-                    if clicked_node_id.is_none(){
+                    if clicked_node_id.is_none() {
                         self.panel.central_panel.selected_node = None;
                     }
-
                 }
             }
         }
@@ -119,7 +107,8 @@ impl DronegowskiSimulationController {
 
             // Verifica se il nodo è selezionato
             let is_selected = if let Some(selected_node) = &self.panel.central_panel.selected_node {
-                selected_node.node_id == elem.node_id} else { false };
+                selected_node.node_id == elem.node_id
+            } else { false };
 
             // Determina spessore e colore del bordo
             let stroke_thickness = if is_selected { 6.0 } else { 4.0 };
@@ -159,6 +148,40 @@ impl DronegowskiSimulationController {
                 elem.xy.0 += drag_delta.x;
                 elem.xy.1 += drag_delta.y;
             }
+        }
+    }
+
+    fn add_sender_graphic(&mut self, distance: f32, elem: &SimulationControllerNode, pointer: Pos2, panel_offset: Pos2, painter: &Painter, ui: &mut egui::Ui) {
+        if distance <= 50.0 {
+            let start_pos = Pos2::new(&self.panel.central_panel.selected_node.clone().unwrap().xy.0 + panel_offset.x, &self.panel.central_panel.selected_node.clone().unwrap().xy.1 + panel_offset.y);
+
+            if self.panel.central_panel.selected_node.clone().unwrap().neighbours.contains(&elem.node_id.clone()) {
+                draw_dashed_line(&painter, start_pos, pointer, Stroke::new(4.0, Color32::RED), 10.0, 5.0);
+            } else {
+                draw_dashed_line(&painter, start_pos, pointer, Stroke::new(4.0, Color32::GREEN), 10.0, 5.0);
+                if ui.input(|i| i.pointer.any_click()) {
+                    self.add_sender(elem.node_id);
+                }
+            }
+        } else if distance > 50. {
+            if let Some(selected_node) = &self.panel.central_panel.selected_node {
+                let start_pos = Pos2::new(selected_node.xy.0 + panel_offset.x, selected_node.xy.1 + panel_offset.y);
+                draw_dashed_line(&painter, start_pos, pointer, Stroke::new(4.0, Color32::GRAY), 10.0, 5.0);
+            }
+        }
+    }
+
+    fn remove_sender_graphic(&mut self, distance: f32, elem: &SimulationControllerNode, ui: &mut egui::Ui) {
+        if distance <= 50. && ui.input(|i| i.pointer.any_click()) {
+            if self.panel.central_panel.selected_node.clone().unwrap().neighbours.contains(&elem.node_id.clone()) {
+                self.remove_sender(elem.node_id);
+            }
+        }
+    }
+
+    fn crash_graphic(&mut self){
+        if let SimulationControllerNodeType::DRONE { .. } = self.panel.central_panel.selected_node.clone().unwrap().node_type {
+            self.crash();
         }
     }
 }

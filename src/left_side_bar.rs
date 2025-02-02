@@ -4,7 +4,7 @@ use egui::{Color32, Ui, Id, Align2};
 use crate::{DronegowskiSimulationController};
 use crate::sc_utils::LeftButton;
 
-impl DronegowskiSimulationController {
+impl DronegowskiSimulationController<'_> {
 
     pub fn left_side_panel(&mut self, ui: &mut Ui) {
         // Definiamo i pulsanti

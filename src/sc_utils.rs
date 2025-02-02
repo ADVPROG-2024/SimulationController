@@ -14,7 +14,11 @@ pub struct CentralPanel {
 }
 
 pub struct BottomPanel {
-    pub active_add_sender: bool,
+    pub add_sender: bool,
+    pub remove_sender: bool,
+    pub crash: bool,
+    pub change_pdr: String,
+    pub spawn_pdr: String,
 }
 
 pub struct LeftPanel {
@@ -45,12 +49,20 @@ impl Panel{
 impl BottomPanel{
     fn new() -> Self{
         Self{
-            active_add_sender: false,
+            add_sender: false,
+            remove_sender: false,
+            crash: false,
+            change_pdr: "".to_string(),
+            spawn_pdr: "".to_string(),
         }
     }
 
     fn reset(&mut self){
-        self.active_add_sender = false;
+        self.add_sender = false;
+        self.remove_sender = false;
+        self.crash = false;
+        self.change_pdr = "".to_string();
+        self.spawn_pdr = "".to_string();
     }
 }
 
