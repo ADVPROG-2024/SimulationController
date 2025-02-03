@@ -1,20 +1,22 @@
 use std::collections::HashMap;
+use std::ops::Deref;
 use std::thread;
 use std::thread::{current, JoinHandle};
 use wg_2024;
-use crossbeam_channel::{unbounded, Receiver, Sender};
+use crossbeam_channel::{select, unbounded, Receiver, Sender};
 use dronegowski::Dronegowski;
 use dronegowski_utils::hosts::{ClientCommand, ClientEvent, ServerCommand, ServerEvent};
 use eframe::egui;
 use wg_2024::controller::{DroneCommand, DroneEvent};
-use wg_2024::network::NodeId;
+use wg_2024::network::{NodeId, SourceRoutingHeader};
 use dronegowski_utils::network::{SimulationControllerNode, SimulationControllerNodeType};
 use eframe::egui::accesskit::Node;
 use eframe::egui::Color32;
 use eframe::egui::UiKind::BottomPanel;
 use wg_2024::drone::Drone;
 use wg_2024::packet::NodeType::Client;
-use wg_2024::packet::Packet;
+use wg_2024::packet::{Fragment, Packet};
+use wg_2024::packet::PacketType::MsgFragment;
 use crate::sc_utils::{Panel};
 
 pub struct DronegowskiSimulationController<'a> {
@@ -93,6 +95,29 @@ impl <'a>DronegowskiSimulationController<'a> {
 
 impl eframe::App for DronegowskiSimulationController<'_> {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+
+        loop {
+            select! {
+                recv(self.sc_drone_event_recv) -> drone_event_res => {
+                    if let Ok(drone_event) = drone_event_res {
+                        self.handle_drone_event(drone_event);
+                    }
+                },
+
+                recv(self.sc_client_event_recv) -> client_event_res => {
+                    if let Ok(client_event) = client_event_res {
+                        self.handle_client_event(client_event);
+                    }
+                },
+
+                recv(self.sc_server_event_recv) -> server_event_res => {
+                    if let Ok(server_event) = server_event_res {
+                        self.handle_server_event(server_event);
+                    }
+                }
+                default => break,
+            }
+        }
 
         egui::TopBottomPanel::bottom("bottom_bar").frame(egui::Frame::none().fill(Color32::from_rgb(94, 199, 113))).resizable(false).exact_height(300.).show(ctx, |ui| {
             match &self.panel.central_panel.selected_node.clone(){
@@ -355,5 +380,53 @@ impl DronegowskiSimulationController<'_>{
 
             drone.run();
         }));
+    }
+}
+
+impl DronegowskiSimulationController<'_>{
+    fn handle_drone_event(&mut self, drone_event: DroneEvent){
+        println!("Qualcosa drone");
+    }
+
+    fn handle_client_event(&mut self, client_event: ClientEvent){
+        println!("Qualcosa client");
+        println!("{:?}", client_event);
+
+    }
+
+    fn handle_server_event(&mut self, server_event: ServerEvent){
+        println!("Qualcosa server");
+
+    }
+
+    pub fn send_packet_test(&mut self){
+        let fragment1 = Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: vec![1, 2, 3] }, session_id: 42, pack_type: MsgFragment(Fragment { fragment_index: 1, total_n_fragments: 2, length: 43, data: [0, 0, 0, 0, 31, 0, 0, 0, 0, 0, 0, 0, 81, 117, 101, 115, 116, 111, 32, 195, 168, 32, 117, 110, 32, 109, 101, 115, 115, 97, 103, 103, 105, 111, 32, 100, 105, 32, 116, 101, 115, 116, 33, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }) };
+
+        let fragment2 = Packet {
+            pack_type: MsgFragment(Fragment {
+                fragment_index: 0,
+                total_n_fragments: 2,
+                length: 12,
+                data: [2, 0, 0, 0, 234, 0, 0, 0, 0, 0, 0, 0, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3],
+            }),
+            routing_header: SourceRoutingHeader {
+                hop_index: 0,
+                hops: vec![1, 2],
+            },
+            session_id: 42,
+        };
+
+        let channel_send1 = self.packet_node_channels.get(&4);
+        let channel_send2 = self.packet_node_channels.get(&5);
+
+        if let Some(send_channel) = channel_send1{
+            send_channel.0.send(fragment1.clone()).unwrap();
+            send_channel.0.send(fragment2.clone()).unwrap();
+        }
+
+        if let Some(send_channel) = channel_send2{
+            send_channel.0.send(fragment1).unwrap();
+            send_channel.0.send(fragment2).unwrap();
+        }
     }
 }

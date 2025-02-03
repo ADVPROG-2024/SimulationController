@@ -15,6 +15,11 @@ impl DronegowskiSimulationController<'_> {
         ui.text_edit_singleline(&mut self.panel.bottom_panel.spawn_pdr);
 
 
+        if ui.button("Send").clicked(){
+            self.send_packet_test();
+        }
+
+
     }
 
     pub fn bottom_panel_drone(&mut self, ui: &mut egui::Ui, node: SimulationControllerNode) {
