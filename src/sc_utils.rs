@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use dronegowski_utils::network::SimulationControllerNode;
 use eframe::epaint::Color32;
 use wg_2024::network::NodeId;
@@ -11,6 +12,7 @@ pub struct Panel{
 
 pub struct CentralPanel {
     pub selected_node: Option<SimulationControllerNode>,
+    pub active_popups: HashMap<NodeId, SimulationControllerNode>,
 }
 
 pub struct BottomPanel {
@@ -79,6 +81,7 @@ impl CentralPanel{
     fn new() -> Self{
         Self{
             selected_node: None,
+            active_popups: HashMap::new(),
         }
     }
 }

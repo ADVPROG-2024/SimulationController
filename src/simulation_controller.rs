@@ -1,7 +1,6 @@
 use std::collections::HashMap;
-use std::ops::Deref;
 use std::thread;
-use std::thread::{current, JoinHandle};
+use std::thread::{JoinHandle};
 use wg_2024;
 use crossbeam_channel::{select, unbounded, Receiver, Sender};
 use dronegowski::Dronegowski;
@@ -10,11 +9,8 @@ use eframe::egui;
 use wg_2024::controller::{DroneCommand, DroneEvent};
 use wg_2024::network::{NodeId, SourceRoutingHeader};
 use dronegowski_utils::network::{SimulationControllerNode, SimulationControllerNodeType};
-use eframe::egui::accesskit::Node;
 use eframe::egui::Color32;
-use eframe::egui::UiKind::BottomPanel;
 use wg_2024::drone::Drone;
-use wg_2024::packet::NodeType::Client;
 use wg_2024::packet::{Fragment, Packet};
 use wg_2024::packet::PacketType::MsgFragment;
 use crate::sc_utils::{Panel};
@@ -30,7 +26,6 @@ pub struct DronegowskiSimulationController<'a> {
     pub sc_server_event_recv: Receiver<ServerEvent>,
     pub packet_node_channels: HashMap<NodeId, (Sender<Packet>, Receiver<Packet>)>,
     pub handles: &'a mut Vec<JoinHandle<()>>,
-    pub active_popups: HashMap<NodeId, SimulationControllerNode>, // Popup attivi
     pub panel: Panel,
 }
 
@@ -82,14 +77,8 @@ impl <'a>DronegowskiSimulationController<'a> {
             sc_server_event_recv,
             packet_node_channels,
             handles,
-            active_popups: HashMap::new(), // Inizializzazione vuota
             panel: Panel::default(),
         }
-    }
-
-    pub fn open_client_popup(&mut self, node: &SimulationControllerNode) {
-        // Aggiungi un popup per il nodo specifico
-        self.active_popups.insert(node.node_id, node.clone());
     }
 }
 
@@ -147,7 +136,7 @@ impl eframe::App for DronegowskiSimulationController<'_> {
         });
 
         let mut popups_to_remove = vec![];
-        for (node_id, node) in &self.active_popups {
+        for (node_id, node) in &self.panel.central_panel.active_popups {
             let mut selected_option = None;
 
             egui::Window::new(format!("Client: {}", node_id))
@@ -197,7 +186,7 @@ impl eframe::App for DronegowskiSimulationController<'_> {
 
         // Rimuovi i popup chiusi
         for node_id in popups_to_remove {
-            self.active_popups.remove(&node_id);
+            self.panel.central_panel.active_popups.remove(&node_id);
         }
     }
 }

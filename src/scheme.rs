@@ -184,6 +184,11 @@ impl DronegowskiSimulationController<'_> {
             self.crash();
         }
     }
+
+    pub fn open_client_popup(&mut self, node: &SimulationControllerNode) {
+        // Aggiungi un popup per il nodo specifico
+        self.panel.central_panel.active_popups.insert(node.node_id, node.clone());
+    }
 }
 
 fn draw_dashed_line(painter: &Painter, start: Pos2, end: Pos2, stroke: Stroke, dash_length: f32, gap_length: f32) {
