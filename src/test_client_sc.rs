@@ -1,3 +1,5 @@
+#![cfg(test)] // This makes the tests only compile when running tests
+
 use crossbeam_channel::{unbounded, Receiver, Sender};
 use dronegowski_utils::hosts::{ClientCommand, ClientEvent, ServerType, ServerMessages, TestMessage, ClientMessages, ClientType};
 use eframe::egui;
