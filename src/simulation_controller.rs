@@ -13,6 +13,7 @@ use eframe::egui::Color32;
 use wg_2024::drone::Drone;
 use wg_2024::packet::{Fragment, Packet};
 use wg_2024::packet::PacketType::MsgFragment;
+use crate::client_gui::client_gui;
 use crate::sc_utils::{Panel};
 
 pub struct DronegowskiSimulationController<'a> {
@@ -95,7 +96,52 @@ impl eframe::App for DronegowskiSimulationController<'_> {
 
                 recv(self.sc_client_event_recv) -> client_event_res => {
                     if let Ok(client_event) = client_event_res {
-                        self.handle_client_event(client_event);
+                        // --- Get the client ID (important for finding the right GUI state) ---
+                        let client_id = match &client_event {
+                            ClientEvent::PacketSent(_) => None, // PacketSent doesn't tell us the *client's* ID.
+                            ClientEvent::ServerTypeReceived(id, _) => Some(id),
+                            ClientEvent::ClientListReceived(id, _) => Some(id),
+                            ClientEvent::FilesListReceived(id, _) => Some(id),
+                            ClientEvent::FileReceived(id, _) => Some(id),
+                            ClientEvent::MediaReceived(id, _) => Some(id),
+                            ClientEvent::MessageFromReceived(id, _, _) => Some(id),
+                            ClientEvent::RegistrationOk(id) => Some(id),
+                            ClientEvent::RegistrationError(id) => Some(id),
+                            ClientEvent::MessageReceived(_) => None,
+                        };
+
+                        // --- Update GUI State ---
+                        if let Some(client_id) = client_id {
+                            let id = egui::Id::new(client_id).with("client_gui_state");
+                            match client_event {
+                                ClientEvent::ServerTypeReceived(server_id, server_type) => {
+                                    ctx.data_mut(|data| data.insert_temp(id.with("server_type"), Some((server_id, server_type))));
+                                }
+                                ClientEvent::ClientListReceived(server_id, clients) => {
+                                    ctx.data_mut(|data| data.insert_temp(id.with("client_list"), Some((server_id, clients))));
+                                }
+                                ClientEvent::FilesListReceived(server_id, files) => {
+                                    ctx.data_mut(|data| data.insert_temp(id.with("files_list"), Some((server_id, files))));
+                                }
+                                ClientEvent::FileReceived(server_id, file_data) => {
+                                    ctx.data_mut(|data| data.insert_temp(id.with("received_file"), Some((server_id, file_data))));
+                                }
+                                ClientEvent::MediaReceived(server_id, media_data) => {
+                                    ctx.data_mut(|data| data.insert_temp(id.with("received_media"), Some((server_id, media_data))));
+                                }
+                                ClientEvent::MessageFromReceived(server_id, from_id, message) => {
+                                    ctx.data_mut(|data| data.insert_temp(id.with("message_from"), Some((server_id, from_id, message))));
+                                }
+                                 ClientEvent::RegistrationOk(server_id) => {
+                                    ctx.data_mut(|data| data.insert_temp(id.with("registration_result"), Some((server_id, true))));
+                                }
+                                ClientEvent::RegistrationError(server_id) => {
+                                    ctx.data_mut(|data| data.insert_temp(id.with("registration_result"), Some((server_id, false))));
+                                }
+                                _ => {} // Don't need to update state for PacketSent in this example.
+                            }
+                            ctx.request_repaint(); // VERY IMPORTANT: Request a repaint
+                        }
                     }
                 },
 
@@ -136,53 +182,21 @@ impl eframe::App for DronegowskiSimulationController<'_> {
         });
 
         let mut popups_to_remove = vec![];
+
+        let available_servers: Vec<NodeId> = self.nodi.iter()
+            .filter_map(|node| {
+                if let SimulationControllerNodeType::SERVER { .. } = node.node_type {
+                    Some(node.node_id)
+                } else {
+                    None
+                }
+            })
+            .collect();
+
         for (node_id, node) in &self.panel.central_panel.active_popups {
-            let mut selected_option = None;
-
-            egui::Window::new(format!("Client: {}", node_id))
-                .collapsible(false)
-                .resizable(true)
-                .frame(egui::Frame::window(&ctx.style()).fill(Color32::WHITE)) // Sfondo bianco
-                .show(ctx, |ui| {
-                    // Bottone per chiudere la finestra (in alto a destra)
-                    ui.horizontal(|ui| {
-                        ui.label(format!("Dettagli del nodo {}", node_id));
-                        ui.with_layout(egui::Layout::right_to_left(egui::Align::TOP), |ui| {
-                            if ui.add(egui::Button::new("X").fill(Color32::RED)).clicked() {
-                                popups_to_remove.push(*node_id);
-                            }
-                        });
-                    });
-
-                    ui.separator();
-
-                    // Menu a tendina
-                    ui.label("Scegli un'azione:");
-                    egui::ComboBox::from_label("Opzioni")
-                        .selected_text(selected_option.unwrap_or("Seleziona un'opzione"))
-                        .show_ui(ui, |ui| {
-                            for option in &[
-                                "ServerType",
-                                "FileList",
-                                "File",
-                                "Media",
-                                "ClientList",
-                                "RegistrationToChat",
-                                "MessageFor",
-                            ] {
-                                if ui.selectable_value(&mut selected_option, Option::from(*option), *option).clicked() {
-                                    selected_option = Some(*option);
-                                }
-                            }
-                        });
-
-                    // Pulsante "Invia"
-                    if ui.add_sized([ui.available_width(), 40.0], egui::Button::new("Invia")).clicked() {
-                        // Logica per il pulsante invia
-                        println!("Opzione selezionata: {:?}", selected_option);
-                    }
-                });
+            client_gui(node_id, &ctx.clone(), &mut popups_to_remove, &available_servers, &self.sc_client_channels); // Pass the vector
         }
+
 
         // Rimuovi i popup chiusi
         for node_id in popups_to_remove {
