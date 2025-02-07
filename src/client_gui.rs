@@ -33,7 +33,7 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
     let mut is_request_pending = ctx.data_mut(|data| data.get_temp_mut_or(id.with("request_pending"), false).clone());
     let mut connected_server: Option<NodeId> = ctx.data_mut(|data| data.get_temp_mut_or(id.with("connected_server"), None).clone()); // Track connected server
 
-    // --- Styling (no changes here) ---
+    // --- Styling ---
     let mut style = (*ctx.style()).clone();
     style.visuals.window_fill = Color32::from_rgb(248, 248, 248);
     style.visuals.window_stroke = egui::Stroke::new(1.0, Color32::from_rgb(200, 200, 200));
@@ -51,7 +51,7 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
         .frame(egui::Frame::window(&ctx.style()))
         .show(ctx, |ui| {
             ui.horizontal(|ui| {
-                ui.label(RichText::new(format!("Node Details: {}", node_id)).size(16.0).color(text_color));
+                ui.label(RichText::new(format!("Node Details: Node ID:{}", node_id)).size(16.0).color(text_color));
                 ui.with_layout(Layout::right_to_left(Align::TOP), |ui| {
                     let close_button = ui.add(
                         egui::Button::new(RichText::new("X").size(14.0).color(Color32::WHITE))
