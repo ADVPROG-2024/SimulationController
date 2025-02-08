@@ -85,74 +85,81 @@ impl <'a>DronegowskiSimulationController<'a> {
 
 impl eframe::App for DronegowskiSimulationController<'_> {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        
+
         loop {
             select! {
                 recv(self.sc_drone_event_recv) -> drone_event_res => {
                     if let Ok(drone_event) = drone_event_res {
                         self.handle_drone_event(drone_event);
+                        // No repaint request here!
                     }
                 },
-
                 recv(self.sc_client_event_recv) -> client_event_res => {
                     if let Ok(client_event) = client_event_res {
-                        // --- Get the client ID (important for finding the right GUI state) ---
                         let client_id = match &client_event {
-                            ClientEvent::PacketSent(_) => None, // PacketSent doesn't tell us the *client's* ID.
-                            ClientEvent::ServerTypeReceived(id, _) => Some(id),
-                            ClientEvent::ClientListReceived(id, _) => Some(id),
-                            ClientEvent::FilesListReceived(id, _) => Some(id),
-                            ClientEvent::FileReceived(id, _) => Some(id),
-                            ClientEvent::MediaReceived(id, _) => Some(id),
-                            ClientEvent::MessageFromReceived(id, _, _) => Some(id),
-                            ClientEvent::RegistrationOk(id) => Some(id),
-                            ClientEvent::RegistrationError(id) => Some(id),
+                            ClientEvent::PacketSent(_) => None,
+                            ClientEvent::ServerTypeReceived(client_id, _, _) => Some(client_id),
+                            ClientEvent::ClientListReceived(client_id, _, _) => Some(client_id),
+                            ClientEvent::FilesListReceived(client_id, _, _) => Some(client_id),
+                            ClientEvent::FileReceived(client_id, _, _) => Some(client_id),
+                            ClientEvent::MediaReceived(client_id, _, _) => Some(client_id),
+                            ClientEvent::MessageFromReceived(client_id, _, _, _) => Some(client_id),
+                            ClientEvent::RegistrationOk(client_id, _) => Some(client_id),
+                            ClientEvent::RegistrationError(client_id, _) => Some(client_id),
                             ClientEvent::MessageReceived(_) => None,
                         };
 
-                        // --- Update GUI State ---
                         if let Some(client_id) = client_id {
                             let id = egui::Id::new(client_id).with("client_gui_state");
+
+                            // Update GUI state based on the received event
                             match client_event {
-                                ClientEvent::ServerTypeReceived(server_id, server_type) => {
+                                ClientEvent::ServerTypeReceived(client_id, server_id, server_type) => {
                                     ctx.data_mut(|data| data.insert_temp(id.with("server_type"), Some((server_id, server_type))));
+                                    log::info!("Simulation Controller: Received ClientEvent::ServerTypeReceived");
                                 }
-                                ClientEvent::ClientListReceived(server_id, clients) => {
+                                ClientEvent::ClientListReceived(client_id, server_id, clients) => {
                                     ctx.data_mut(|data| data.insert_temp(id.with("client_list"), Some((server_id, clients))));
                                 }
-                                ClientEvent::FilesListReceived(server_id, files) => {
+                                ClientEvent::FilesListReceived(client_id, server_id, files) => {
                                     ctx.data_mut(|data| data.insert_temp(id.with("files_list"), Some((server_id, files))));
                                 }
-                                ClientEvent::FileReceived(server_id, file_data) => {
+                                ClientEvent::FileReceived(client_id, server_id, file_data) => {
                                     ctx.data_mut(|data| data.insert_temp(id.with("received_file"), Some((server_id, file_data))));
                                 }
-                                ClientEvent::MediaReceived(server_id, media_data) => {
+                                ClientEvent::MediaReceived(client_id, server_id, media_data) => {
                                     ctx.data_mut(|data| data.insert_temp(id.with("received_media"), Some((server_id, media_data))));
                                 }
-                                ClientEvent::MessageFromReceived(server_id, from_id, message) => {
+                                ClientEvent::MessageFromReceived(client_id, server_id, from_id, message) => {
                                     ctx.data_mut(|data| data.insert_temp(id.with("message_from"), Some((server_id, from_id, message))));
                                 }
-                                 ClientEvent::RegistrationOk(server_id) => {
-                                    ctx.data_mut(|data| data.insert_temp(id.with("registration_result"), Some((server_id, true))));
+                                ClientEvent::RegistrationOk(client_id, server_id) => {
+                                     ctx.data_mut(|data| data.insert_temp(id.with("registration_result"), Some((server_id, true))));
                                 }
-                                ClientEvent::RegistrationError(server_id) => {
-                                    ctx.data_mut(|data| data.insert_temp(id.with("registration_result"), Some((server_id, false))));
+                                ClientEvent::RegistrationError(client_id, server_id) => {
+                                     ctx.data_mut(|data| data.insert_temp(id.with("registration_result"), Some((server_id, false))));
                                 }
-                                _ => {} // Don't need to update state for PacketSent in this example.
+                                _ => {}
                             }
-                            ctx.request_repaint(); // VERY IMPORTANT: Request a repaint
+                            // Reset is_request_pending AFTER handling the event
+                            ctx.data_mut(|data| data.insert_temp(id.with("request_pending"), false));
+                            // No repaint request *inside* the match!
                         }
                     }
                 },
-
                 recv(self.sc_server_event_recv) -> server_event_res => {
                     if let Ok(server_event) = server_event_res {
                         self.handle_server_event(server_event);
+                        // No repaint request here!
                     }
-                }
-                default => break,
+                },
+                default => break, // Exit the loop if no events are ready
             }
-        }
+        } // End of the select! loop
+
+        // 2. Request repaint *after* handling ALL events
+        ctx.request_repaint();
+
 
         egui::SidePanel::left("left_panel").resizable(false).exact_width(300.0).frame(egui::Frame::none()).show(ctx, |ui| {
             // Remove default margins and spacing

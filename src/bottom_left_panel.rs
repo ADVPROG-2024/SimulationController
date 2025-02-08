@@ -24,16 +24,16 @@ impl DronegowskiSimulationController<'_> {
 
         for elem in &self.panel.bottom_left_panel.client_event{
             match elem {
-                ClientEvent::ServerTypeReceived(server_id, server_type) => {
+                ClientEvent::ServerTypeReceived(client_id, server_id, server_type) => {
                     ui.label(format!("Client {} received 'Im {:?}' from Server {:?}", self.panel.central_panel.selected_node.clone().unwrap().node_id, server_type, server_id));
                 }
-                ClientEvent::ClientListReceived(server_id, clients) => {}
-                ClientEvent::FilesListReceived(server_id, files) => {}
-                ClientEvent::FileReceived(server_id, file_data) => {}
-                ClientEvent::MediaReceived(server_id, media_data) => {}
-                ClientEvent::MessageFromReceived(server_id, from_id, message) => {}
-                ClientEvent::RegistrationOk(server_id) => {}
-                ClientEvent::RegistrationError(server_id) => {}
+                ClientEvent::ClientListReceived(client_id, server_id, clients) => {}
+                ClientEvent::FilesListReceived(client_id, server_id, files) => {}
+                ClientEvent::FileReceived(client_id, server_id, file_data) => {}
+                ClientEvent::MediaReceived(client_id, server_id, media_data) => {}
+                ClientEvent::MessageFromReceived(client_id, server_id, from_id, message) => {}
+                ClientEvent::RegistrationOk(client_id, server_id) => {}
+                ClientEvent::RegistrationError(client_id, server_id) => {}
 
                 ClientEvent::PacketSent(_) => {}
                 ClientEvent::MessageReceived(_) => {}

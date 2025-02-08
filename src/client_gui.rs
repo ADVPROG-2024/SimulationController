@@ -1,37 +1,39 @@
 use std::collections::HashMap;
 use crossbeam_channel::Sender;
-use dronegowski_utils::hosts::{ClientCommand, ClientEvent, ServerMessages, ServerType, ClientType};
+use dronegowski_utils::hosts::{ClientCommand, ClientEvent, ServerType, ClientType};
 use eframe::egui;
-use eframe::egui::{Color32, RichText, Layout, Align, WidgetText};
+use eframe::egui::{Color32, RichText, Layout, Align, WidgetText, Sense};
 use wg_2024::network::NodeId;
 
 pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut Vec<NodeId>, available_servers: &Vec<NodeId>, sc_client_channels: &HashMap<NodeId, Sender<ClientCommand>>, client_type: ClientType) {
-    // --- State Management ---
+    // --- State Management (Using persistent storage) ---
     let id = egui::Id::new(node_id).with("client_gui_state");
-    let mut selected_option = ctx.data_mut(|data| {
-        data.get_temp_mut_or(id.with("selected_option"), "Seleziona un'opzione".to_string())
-            .clone()
-    });
-    let mut file_id_str = ctx.data_mut(|data| data.get_temp_mut_or(id.with("file_id"), "".to_string()).clone());
-    let mut media_id_str = ctx.data_mut(|data| data.get_temp_mut_or(id.with("media_id"), "".to_string()).clone());
-    let mut recipient_id_str = ctx.data_mut(|data| data.get_temp_mut_or(id.with("recipient_id"), "".to_string()).clone());
-    let mut message_str = ctx.data_mut(|data| data.get_temp_mut_or(id.with("message"), "".to_string()).clone());
-    let mut selected_server_id = ctx.data_mut(|data| {
-        data.get_temp_mut_or(id.with("selected_server_id"), 0).clone() // Default to 0
-    });
 
-    // --- GUI State for Server Responses (no changes here) ---
-    let mut server_type = ctx.data_mut(|data| data.get_temp_mut_or::<Option<(NodeId, ServerType)>>(id.with("server_type"), None).clone());
-    let mut client_list = ctx.data_mut(|data| data.get_temp_mut_or::<Option<(NodeId, Vec<NodeId>)>>(id.with("client_list"), None).clone());
-    let mut files_list = ctx.data_mut(|data| data.get_temp_mut_or::<Option<(NodeId, Vec<(u64, String)>)>>(id.with("files_list"), None).clone());
-    let mut received_file = ctx.data_mut(|data| data.get_temp_mut_or::<Option<(NodeId, String)>>(id.with("received_file"), None).clone());
-    let mut received_media = ctx.data_mut(|data| data.get_temp_mut_or::<Option<(NodeId, Vec<u8>)>>(id.with("received_media"), None).clone());
-    let mut message_from = ctx.data_mut(|data| data.get_temp_mut_or::<Option<(NodeId, NodeId, String)>>(id.with("message_from"), None).clone());
-    let mut registration_result = ctx.data_mut(|data| data.get_temp_mut_or::<Option<(NodeId, bool)>>(id.with("registration_result"), None).clone()); // true for Ok, false for Error
-    //NEW
-    let mut status_messages = ctx.data_mut(|data| data.get_temp_mut_or::<Vec<String>>(id.with("status_messages"), Vec::new()).clone());
-    let mut is_request_pending = ctx.data_mut(|data| data.get_temp_mut_or(id.with("request_pending"), false).clone());
-    let mut connected_server: Option<NodeId> = ctx.data_mut(|data| data.get_temp_mut_or(id.with("connected_server"), None).clone()); // Track connected server
+    // Use a helper function to simplify state management.  Crucially, use FnMut
+    fn get_set_state<T: Clone + 'static + Send + Sync>(ctx: &egui::Context, id: egui::Id, default: T) -> (T, impl FnMut(T) + use<'_, T>) {
+        let current_value = ctx.data_mut(|data| data.get_temp_mut_or(id, default.clone()).clone());
+        let set_value = move |new_value: T| {
+            ctx.data_mut(|data| data.insert_temp(id, new_value));
+        };
+        (current_value, set_value)
+    }
+
+    let (mut selected_option, mut set_selected_option) = get_set_state(ctx, id.with("selected_option"), "Seleziona un'opzione".to_string());
+    let (mut file_id_str, mut set_file_id_str) = get_set_state(ctx, id.with("file_id"), "".to_string());
+    let (mut media_id_str, mut set_media_id_str) = get_set_state(ctx, id.with("media_id"), "".to_string());
+    let (mut recipient_id_str, mut set_recipient_id_str) = get_set_state(ctx, id.with("recipient_id"), "".to_string());
+    let (mut message_str, mut set_message_str) = get_set_state(ctx, id.with("message"), "".to_string());
+    let (mut selected_server_id, mut set_selected_server_id) = get_set_state(ctx, id.with("selected_server_id"), 0);
+    let (mut server_type, mut set_server_type) = get_set_state(ctx, id.with("server_type"), None::<(NodeId, ServerType)>);
+    let (mut client_list, mut set_client_list) = get_set_state(ctx, id.with("client_list"), None::<(NodeId, Vec<NodeId>)>);
+    let (mut files_list, mut set_files_list) = get_set_state(ctx, id.with("files_list"), None::<(NodeId, Vec<(u64, String)>)>);
+    let (mut received_file, mut set_received_file) = get_set_state(ctx, id.with("received_file"), None::<(NodeId, String)>);
+    let (mut received_media, mut set_received_media) = get_set_state(ctx, id.with("received_media"), None::<(NodeId, Vec<u8>)>);
+    let (mut message_from, mut set_message_from) = get_set_state(ctx, id.with("message_from"), None::<(NodeId, NodeId, String)>);
+    let (mut registration_result, mut set_registration_result) = get_set_state(ctx, id.with("registration_result"), None::<(NodeId, bool)>);
+    let (mut status_messages, mut set_status_messages) = get_set_state(ctx, id.with("status_messages"), Vec::<String>::new());
+    let (mut is_request_pending, mut set_is_request_pending) = get_set_state(ctx, id.with("request_pending"), false);
+    let (mut connected_server, mut set_connected_server) = get_set_state(ctx, id.with("connected_server"), None::<NodeId>);
 
     // --- Styling ---
     let mut style = (*ctx.style()).clone();
@@ -45,7 +47,7 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
     ctx.set_style(style);
     let text_color = ctx.style().visuals.text_color();
 
-    egui::Window::new(format!("Client ({:?}): {}", client_type, node_id)) // Display client type
+    egui::Window::new(format!("Client ({:?}): {}", client_type, node_id))
         .collapsible(false)
         .resizable(true)
         .frame(egui::Frame::window(&ctx.style()))
@@ -66,48 +68,78 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
 
             ui.separator();
             ui.add_space(5.0);
-            //Refresh button
-            if ui.button("Refresh Topology").clicked() {
-                if let Some(client_sender) = sc_client_channels.get(node_id) {
-                    // Use a special command to trigger discovery directly.  Cleaner than calling directly.
-                    if let Err(e) = client_sender.send(ClientCommand::RequestNetworkDiscovery) {
-                        log::error!("Failed to send discovery request: {:?}", e); // Log the error
-                        status_messages.push(format!("Error requesting discovery: {:?}", e));
-                    } else {
-                        status_messages.push("Sent network discovery request.".to_string());
-                        is_request_pending = true;
-                    }
-                }
-            }
+
+            // Refresh button (with loading indicator)
+            // ui.horizontal(|ui| {
+            //     let refresh_button = ui.add_enabled(
+            //         !is_request_pending,
+            //         egui::Button::new(
+            //             if is_request_pending {
+            //                 RichText::new("Refreshing...").size(14.0)
+            //             } else {
+            //                 RichText::new("Refresh Topology").size(14.0)
+            //             }
+            //         )
+            //     );
+            //
+            //     if refresh_button.clicked() {
+            //         if let Some(client_sender) = sc_client_channels.get(node_id) {
+            //             if let Err(e) = client_sender.send(ClientCommand::RequestNetworkDiscovery) {
+            //                 log::error!("Failed to send discovery request: {:?}", e);
+            //                 let mut current_messages = status_messages.clone();
+            //                 current_messages.push(format!("Error requesting discovery: {:?}", e));
+            //                 set_status_messages(current_messages);
+            //                 // Critically, reset is_request_pending on error
+            //                 set_is_request_pending(false);
+            //
+            //             } else {
+            //                 let mut current_messages = status_messages.clone();
+            //                 current_messages.push("Sent network discovery request.".to_string());
+            //                 set_status_messages(current_messages);
+            //                 set_is_request_pending(true);
+            //             }
+            //         }
+            //     }
+            //     if is_request_pending {
+            //         ui.spinner(); // Show a spinner while refreshing
+            //     }
+            // });
+
+
             ui.label(RichText::new("Choose an action:").color(text_color));
 
             // --- Conditional Options based on ClientType ---
-            egui::ComboBox::from_label("Options")
-                .selected_text(RichText::new(selected_option.clone()).color(text_color))
-                .show_ui(ui, |ui| {
-                    let options = match client_type.clone() {
-                        ClientType::WebBrowsers => vec![
-                            "ServerType",
-                            "FileList",
-                            "File",
-                            "Media",
-                        ],
-                        ClientType::ChatClients => vec![
-                            "ServerType",
-                            "ClientList",
-                            "RegistrationToChat",
-                            "MessageFor",
-                        ],
-                    };
+            ui.horizontal(|ui| {
+                ui.set_width(ui.available_width() * 0.6);
+                egui::ComboBox::from_label("Options")
+                    .selected_text(RichText::new(selected_option.clone()).color(text_color))
+                    .show_ui(ui, |ui| {
+                        let options = match client_type.clone() {
+                            ClientType::WebBrowsers => vec![
+                                "ServerType",
+                                "FileList",
+                                "File",
+                                "Media",
+                            ],
+                            ClientType::ChatClients => vec![
+                                "ServerType",
+                                "ClientList",
+                                "RegistrationToChat",
+                                "MessageFor",
+                            ],
+                        };
 
-                    for option in options {
-                        let selectable_label = ui.selectable_value(&mut selected_option, option.to_string(), option);
-                        if selectable_label.clicked() {
-                            ctx.data_mut(|data| data.insert_temp(id.with("selected_option"), selected_option.clone()));
+                        for option in options {
+                            let selectable_label = ui.selectable_value(&mut selected_option, option.to_string(), option);
+                            if selectable_label.clicked() {
+                                set_selected_option(selected_option.clone());
+                            }
+                            selectable_label.on_hover_text(RichText::new(format!("Select Option {}", option)).color(Color32::BLACK));
                         }
-                        selectable_label.on_hover_text(RichText::new(format!("Select Option {}", option)).color(Color32::BLACK));
-                    }
-                });
+                    });
+
+            });
+
 
             ui.add_space(10.0);
             // --- Server Selection and Connection Status ---
@@ -120,18 +152,19 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
                         for server_id in available_servers {
                             let selectable_label = ui.selectable_value(&mut selected_server_id, *server_id, format!("Server {}", server_id));
                             if selectable_label.clicked() {
-                                ctx.data_mut(|data| data.insert_temp(id.with("selected_server_id"), selected_server_id.clone()));
+                                set_selected_server_id(*server_id);
                             }
+                            selectable_label.on_hover_text(RichText::new(format!("Select server {}", server_id)).color(Color32::BLACK));
                         }
                     });
                 // Connection Status Indicator (using color)
                 let connection_status_color = match connected_server {
-                    Some(server_id) if server_id == selected_server_id => Color32::GREEN, // Connected to selected server
-                    Some(_) => Color32::YELLOW, // Connected to a different server
-                    None => Color32::RED,     // Not connected
+                    Some(server_id) if server_id == selected_server_id => Color32::GREEN,
+                    Some(_) => Color32::YELLOW,
+                    None => Color32::RED,
                 };
 
-                ui.label(RichText::new("●").color(connection_status_color).size(20.0)); // Visual indicator
+                ui.label(RichText::new("●").color(connection_status_color).size(20.0));
             });
 
             ui.label(RichText::new(format!("Selected Option: {}", selected_option)).color(text_color));
@@ -144,8 +177,8 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
                         if selected_option == "File" {
                             ui.horizontal(|ui| {
                                 ui.label(RichText::new("File ID:").color(text_color));
-                                let file_id_edit = ui.add(egui::TextEdit::singleline(&mut file_id_str));
-                                ctx.data_mut(|data| data.insert_temp(id.with("file_id"), file_id_str.clone()));
+                                let file_id_edit = ui.add(egui::TextEdit::singleline(&mut file_id_str).desired_width(100.0));
+                                set_file_id_str(file_id_str.clone());
                                 if !file_id_str.is_empty() && file_id_str.parse::<u64>().is_err() {
                                     ui.label(RichText::new("Invalid number!").color(Color32::RED));
                                     file_id_edit.on_hover_text(RichText::new("Invalid Input").color(Color32::RED));
@@ -154,8 +187,8 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
                         } else if selected_option == "Media" {
                             ui.horizontal(|ui| {
                                 ui.label(RichText::new("Media ID:").color(text_color));
-                                let media_id_edit = ui.add(egui::TextEdit::singleline(&mut media_id_str));
-                                ctx.data_mut(|data| data.insert_temp(id.with("media_id"), media_id_str.clone()));
+                                let media_id_edit = ui.add(egui::TextEdit::singleline(&mut media_id_str).desired_width(100.0));
+                                set_media_id_str(media_id_str.clone());
                                 if !media_id_str.is_empty() && media_id_str.parse::<u64>().is_err() {
                                     ui.label(RichText::new("Invalid number!").color(Color32::RED));
                                     media_id_edit.on_hover_text(RichText::new("Invalid Input").color(Color32::RED));
@@ -167,8 +200,8 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
                         if selected_option == "MessageFor" {
                             ui.horizontal(|ui| {
                                 ui.label(RichText::new("Recipient ID:").color(text_color));
-                                let recipient_id_edit = ui.add(egui::TextEdit::singleline(&mut recipient_id_str));
-                                ctx.data_mut(|data| data.insert_temp(id.with("recipient_id"), recipient_id_str.clone()));
+                                let recipient_id_edit = ui.add(egui::TextEdit::singleline(&mut recipient_id_str).desired_width(100.0));
+                                set_recipient_id_str(recipient_id_str.clone());
                                 if !recipient_id_str.is_empty() && recipient_id_str.parse::<u64>().is_err()
                                 {
                                     ui.label(RichText::new("Invalid number!").color(Color32::RED));
@@ -177,8 +210,8 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
                             });
                             ui.horizontal(|ui| {
                                 ui.label(RichText::new("Message:").color(text_color));
-                                ui.add(egui::TextEdit::multiline(&mut message_str));
-                                ctx.data_mut(|data| data.insert_temp(id.with("message"), message_str.clone()));
+                                ui.add(egui::TextEdit::multiline(&mut message_str).desired_rows(3));
+                                set_message_str(message_str.clone());
                             });
                         }
                     }
@@ -201,10 +234,11 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
                 }
                 _ => false,
             };
+
             let send_button = ui.add_enabled(
-                can_send && !is_request_pending, // Disable if a request is pending
+                can_send && !is_request_pending,
                 egui::Button::new(
-                    if is_request_pending {  // Change button text based on is_request_pending
+                    if is_request_pending {
                         RichText::new("Sending...").size(14.0).color(Color32::WHITE)
                     } else {
                         RichText::new("Send").size(14.0).color(if can_send{Color32::WHITE} else {Color32::GRAY})
@@ -212,6 +246,7 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
                 )
                     .fill(if can_send && !is_request_pending{ ctx.style().visuals.widgets.active.bg_fill} else {Color32::from_rgb(200, 200, 200)}),
             );
+
 
             if send_button.clicked() {
                 // --- Conditional Command Creation (adjusted for ClientType) ---
@@ -238,23 +273,31 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
                 };
 
                 if let Some(client_sender) = sc_client_channels.get(node_id) {
-                    // Set is_request_pending to true when sending a command
-                    is_request_pending = true;
-                    ctx.data_mut(|data| data.insert_temp(id.with("request_pending"), true));
+                    set_is_request_pending(true);
 
-                    //Push message on status message
-                    status_messages.push(format!("Sending command: {:?}", command));
+                    let mut current_messages_send = status_messages.clone();
+                    current_messages_send.push(format!("Sending command: {:?}", command));
+                    set_status_messages(current_messages_send);
 
                     if let Err(e) = client_sender.send(command){
                         log::error!("Failed to send command to client");
-                        status_messages.push(format!("Error sending command: {}", e)); // Add error to status
+                        let mut current_messages_error = status_messages.clone();
+                        current_messages_error.push(format!("Error sending command: {}", e));
+                        set_status_messages(current_messages_error);
+                        // Critically, reset is_request_pending on error
+                        set_is_request_pending(false);
                     }
                 } else {
                     log::error!("No communication channel found for client {}", node_id);
-                    status_messages.push(format!("No communication channel for client {}", node_id)); // Add error to status
+                    let mut current_messages_no_channel = status_messages.clone();
+                    current_messages_no_channel.push(format!("No communication channel for client {}", node_id));
+                    set_status_messages(current_messages_no_channel);
+                    // Also reset here, since we couldn't even send
+                    set_is_request_pending(false);
                 }
             }
             send_button.on_hover_text(RichText::new("Send request to node").color(Color32::BLACK));
+
 
             // --- Server Response Display Area ---
             ui.add_space(20.0);
@@ -268,29 +311,45 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
                 if let Some((server_id, cl)) = &client_list {
                     ui.label(RichText::new(format!("Client List (from {}): {:?}", server_id, cl)).color(text_color));
                 }
-                if let Some((server_id, fl)) = &files_list{
-                    ui.label(RichText::new(format!("Files List (from {}): {:?}", server_id, fl)).color(text_color));
+                if let Some((server_id, fl)) = &files_list {
+                    ui.label(RichText::new(format!("Files List (from {}):", server_id)).color(text_color));
+                    egui::ScrollArea::vertical().show(ui, |ui| {
+                        for (file_id, file_name) in fl {
+                            ui.label(RichText::new(format!("ID: {}, Name: {}", file_id, file_name)).color(text_color));
+                        }
+                    });
                 }
-                if let Some((server_id, file)) = &received_file{
-                    ui.label(RichText::new(format!("Received file (from {}): {:?}", server_id, file)).color(text_color));
+
+                if let Some((server_id, file)) = &received_file {
+                    ui.label(RichText::new(format!("Received file (from {}):", server_id)).color(text_color));
+                    let file_label = ui.add(egui::Label::new(RichText::new(file).color(text_color)).sense(Sense::click()));
+                    if file_label.clicked() {
+                        ui.output_mut(|o| o.copied_text = file.clone());
+                    }
                 }
-                if let Some((server_id, media)) = &received_media{
+
+                if let Some((server_id, media)) = &received_media {
                     ui.label(RichText::new(format!("Received media (from {}): dim {}", server_id, media.len())).color(text_color));
                 }
-                if let Some((server_id, from_id, message)) = &message_from{
-                    ui.label(RichText::new(format!("Received message (from {}): {:?} -> {}", server_id, from_id, message)).color(text_color));
+
+                if let Some((server_id, from_id, message)) = &message_from {
+                    ui.label(RichText::new(format!("Received message (from {}):", server_id)).color(text_color));
+                    ui.label(RichText::new(format!("{:?} -> {}", from_id, message)).color(text_color));
                 }
+
                 if let Some((server_id, result)) = registration_result {
                     let text = if result { "Registration OK" } else { "Registration Error" };
-                    ui.label(RichText::new(format!("Registration Result (from {}): {}", server_id, text)).color(text_color));
+                    let color = if result { Color32::GREEN } else { Color32::RED };
+                    ui.label(RichText::new(format!("Registration Result (from {}): {}", server_id, text)).color(color));
                 }
             });
+
             // Status Messages Display
             ui.add_space(10.0);
             ui.separator();
             ui.label(RichText::new("Status Messages:").size(14.0).color(text_color));
             egui::ScrollArea::vertical()
-                .max_height(100.0)  // Limit the height of the scroll area
+                .max_height(100.0)
                 .show(ui, |ui| {
                     for msg in &status_messages {
                         ui.label(RichText::new(msg).color(text_color));
