@@ -5,7 +5,7 @@ use crossbeam_channel::{unbounded, Receiver, Sender};
 use wg_2024::config::Config;
 use wg_2024::drone::Drone;
 use dronegowski::Dronegowski;
-use dronegowski_utils::hosts::{ClientCommand, ClientEvent, ClientType, ServerCommand, ServerEvent};
+use dronegowski_utils::hosts::{ClientCommand, ClientEvent, ClientType, ServerCommand, ServerEvent, ServerType};
 use SimulationController::DronegowskiSimulationController;
 use wg_2024::controller::{DroneCommand, DroneEvent};
 use wg_2024::network::NodeId;
@@ -14,6 +14,7 @@ use client::DronegowskiClient;
 use dronegowski_utils::functions::simple_log;
 use dronegowski_utils::network::{SimulationControllerNode, SimulationControllerNodeType};
 use rand::Rng;
+use servers::{CommunicationServer, DronegowskiServer};
 
 fn main(){
     simple_log();
@@ -113,7 +114,7 @@ fn parse_node(config: Config) {
     }
 
     // Creazione dei server
-    for server in &config.server {
+    for server in config.server.clone().into_iter()  {
         let packet_recv = channels[&server.id].1.clone(); // Packet Receiver Server (canale su cui riceve i pacchetti il server)
         let server_event_send = sc_server_event_send.clone(); // Controller Send Server (canale del SC su cui può inviare gli eventi il server)
         let mut neighbours:HashMap<NodeId, Sender<Packet>> = HashMap::new(); // Packet Send Server (canali dei nodi vicini a cui può inviare i pacchetti il server)
@@ -130,11 +131,10 @@ fn parse_node(config: Config) {
 
         SimulationControllerNode::new(SimulationControllerNodeType::SERVER{ server_channel: command_send}, server.id, neighbours_id, & mut nodi);
 
-        // handles.push(thread::spawn(move || {
-        //      let mut server = Server::new(...);
-        //
-        //      server.run();
-        // }));
+        handles.push(thread::spawn(move || {
+            let mut server = CommunicationServer::new(server.id, server_event_send, command_recv, packet_recv, neighbours, ServerType::Communication);
+            server.run();
+        }));
     }
 
     // Passa la lista di nodi al SimulationController
