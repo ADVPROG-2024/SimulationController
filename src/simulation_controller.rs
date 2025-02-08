@@ -85,7 +85,7 @@ impl <'a>DronegowskiSimulationController<'a> {
 
 impl eframe::App for DronegowskiSimulationController<'_> {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-
+        
         loop {
             select! {
                 recv(self.sc_drone_event_recv) -> drone_event_res => {
@@ -154,7 +154,54 @@ impl eframe::App for DronegowskiSimulationController<'_> {
             }
         }
 
-        egui::TopBottomPanel::bottom("bottom_bar").frame(egui::Frame::none().fill(Color32::from_rgb(94, 199, 113))).resizable(false).exact_height(300.).show(ctx, |ui| {
+        egui::SidePanel::left("left_panel")
+            .resizable(false)
+            .exact_width(300.0).frame(egui::Frame::none())
+            .show(ctx, |ui| {
+                // Remove default margins and spacing
+                ui.spacing_mut().item_spacing = egui::Vec2::ZERO;
+
+                // Upper left part
+                ui.vertical(|ui| {
+                    ui.set_height(ui.available_height() / 2.0 - 100.); // Half height
+                    ui.painter().rect_filled(
+                        ui.available_rect_before_wrap(),
+                        0.0,
+                        Color32::from_rgb(94, 199, 113)
+                    );
+
+                    match &self.panel.central_panel.selected_node.clone(){
+                        None => { self.upper_left_panel_default(ui); }
+                        Some(node) => {
+                            match node.node_type {
+                                SimulationControllerNodeType::DRONE {..} => {
+                                    self.upper_left_panel_drone(ui, self.panel.central_panel.selected_node.clone().unwrap());
+                                }
+                                SimulationControllerNodeType::CLIENT {..} => {
+                                    self.upper_left_panel_client(ui, self.panel.central_panel.selected_node.clone().unwrap());
+                                }
+                                SimulationControllerNodeType::SERVER {..} => {
+                                    self.upper_left_panel_server(ui, self.panel.central_panel.selected_node.clone().unwrap());
+                                }
+                            }
+                        }
+                    }
+                    // Add your elements for the upper left part here
+                });
+
+                // Bottom left part
+                ui.vertical(|ui| {
+                    ui.painter().rect_filled(
+                        ui.available_rect_before_wrap(),
+                        0.0,
+                        egui::Color32::LIGHT_GREEN,
+                    );
+                    ui.label("Bottom Left Part");
+                    // Add your elements for the bottom left part here
+                });
+            });
+        
+        /*egui::TopBottomPanel::bottom("bottom_bar").frame(egui::Frame::none().fill(Color32::from_rgb(94, 199, 113))).resizable(false).exact_height(300.).show(ctx, |ui| {
             match &self.panel.central_panel.selected_node.clone(){
                 None => { self.bottom_panel(ui); }
                 Some(node) => {
@@ -171,11 +218,9 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                     }
                 }
             }
-        });
+        });*/
 
-        egui::SidePanel::left("side_panel").resizable(false).exact_width(300.).show(ctx, |ui| {
-            self.left_side_panel(ui);
-        });
+
 
         egui::CentralPanel::default().frame(egui::Frame::none()).show(ctx, |ui| {
             self.central_panel(ui);
