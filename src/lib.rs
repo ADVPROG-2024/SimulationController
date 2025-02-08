@@ -1,9 +1,9 @@
 mod simulation_controller;
-mod left_side_bar;
 mod scheme;
 mod upper_left_panel;
 mod sc_utils;
 
 mod client_gui;
+mod bottom_left_panel;
 
 pub use simulation_controller::*;

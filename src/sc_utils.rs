@@ -1,21 +1,22 @@
 use std::collections::HashMap;
+use dronegowski_utils::hosts::{ClientEvent, ServerEvent};
 use dronegowski_utils::network::SimulationControllerNode;
 use eframe::epaint::Color32;
+use wg_2024::controller::DroneEvent;
 use wg_2024::network::NodeId;
 
 pub struct Panel{
     pub central_panel: CentralPanel,
-    pub bottom_panel: BottomPanel,
-    pub left_panel: LeftPanel
+    pub upper_left_panel: UpperLeftPanel,
+    pub bottom_left_panel: BottomLeftPanel,
 }
-
 
 pub struct CentralPanel {
     pub selected_node: Option<SimulationControllerNode>,
     pub active_popups: HashMap<NodeId, SimulationControllerNode>,
 }
 
-pub struct BottomPanel {
+pub struct UpperLeftPanel {
     pub add_sender: bool,
     pub remove_sender: bool,
     pub crash: bool,
@@ -23,32 +24,27 @@ pub struct BottomPanel {
     pub spawn_pdr: String,
 }
 
-pub struct LeftPanel {
-    pub active_left_button: LeftButton,
-    pub left_button: String
+pub struct BottomLeftPanel {
+    pub drone_event: Vec<DroneEvent>,
+    pub client_event: Vec<ClientEvent>,
+    pub server_event: Vec<ServerEvent>
 }
 
-#[derive(PartialEq)]
-pub enum LeftButton{
-    Network,
-    Notifiche,
-    Lista
-}
 impl Panel{
     pub fn default() -> Self {
         Self{
             central_panel: CentralPanel::new(),
-            bottom_panel: BottomPanel::new(),
-            left_panel: LeftPanel::new()
+            upper_left_panel: UpperLeftPanel::new(),
+            bottom_left_panel: BottomLeftPanel::new(),
         }
     }
 
     pub fn reset(&mut self){
-        self.bottom_panel.reset();
+        self.upper_left_panel.reset();
     }
 }
 
-impl BottomPanel{
+impl UpperLeftPanel{
     fn new() -> Self{
         Self{
             add_sender: false,
@@ -68,11 +64,12 @@ impl BottomPanel{
     }
 }
 
-impl LeftPanel{
+impl BottomLeftPanel{
     fn new() -> Self{
         Self{
-            active_left_button: LeftButton::Network,
-            left_button: "Visualizzazione network".to_string()
+            drone_event: Vec::new(),
+            client_event: Vec::new(),
+            server_event: Vec::new(),
         }
     }
 }

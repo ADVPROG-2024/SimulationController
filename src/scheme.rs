@@ -52,15 +52,15 @@ impl DronegowskiSimulationController<'_> {
             if let Some(pointer) = pointer_position {
                 let distance = position.distance(pointer);
 
-                if self.panel.bottom_panel.add_sender {
+                if self.panel.upper_left_panel.add_sender {
                     self.add_sender_graphic(distance, elem, pointer, panel_offset, &painter, ui);
                 }
 
-                else if self.panel.bottom_panel.remove_sender {
+                else if self.panel.upper_left_panel.remove_sender {
                     self.remove_sender_graphic(distance, elem, ui);
                 }
 
-                else if self.panel.bottom_panel.crash{
+                else if self.panel.upper_left_panel.crash{
                      self.crash_graphic();
                 }
 
