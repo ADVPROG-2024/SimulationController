@@ -193,8 +193,11 @@ impl eframe::App for DronegowskiSimulationController<'_> {
             })
             .collect();
 
+        // Interfaccia del client
         for (node_id, node) in &self.panel.central_panel.active_popups {
-            client_gui(node_id, &ctx.clone(), &mut popups_to_remove, &available_servers, &self.sc_client_channels); // Pass the vector
+            if let SimulationControllerNodeType::CLIENT { client_type, .. } = node.node_type.clone() { // Corrected line
+                client_gui(node_id, &ctx.clone(), &mut popups_to_remove, &available_servers, &self.sc_client_channels, client_type); // Pass client_type
+            }
         }
 
 
@@ -394,7 +397,6 @@ impl DronegowskiSimulationController<'_>{
     fn handle_client_event(&mut self, client_event: ClientEvent){
         println!("Qualcosa client");
         println!("{:?}", client_event);
-
     }
 
     fn handle_server_event(&mut self, server_event: ServerEvent){
