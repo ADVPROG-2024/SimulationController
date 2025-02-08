@@ -292,7 +292,7 @@ impl DronegowskiSimulationController<'_>{
                 SimulationControllerNodeType::SERVER {..} => {
                     if let Some(controller_send_current) = self.sc_server_channels.get(&current_node.node_id){
                         if let Some(neighbour_send) = self.packet_node_channels.get(&neighbour.node_id){
-                            //controller_send_current.send(ServerCommand::AddSender(neighbour.node_id, neighbour_send.clone().0)).expect("Error sending the command...");
+                            controller_send_current.send(ServerCommand::AddSender(neighbour.node_id, neighbour_send.clone().0)).expect("Error sending the command...");
                         }
                     }
                 }
@@ -316,7 +316,7 @@ impl DronegowskiSimulationController<'_>{
                 SimulationControllerNodeType::SERVER {..} => {
                     if let Some(controller_send_neighbour) = self.sc_server_channels.get(&neighbour.node_id){
                         if let Some(current_send) = self.packet_node_channels.get(&neighbour.node_id){
-                            //controller_send_neighbour.send(ServerCommand::AddSender(current_node.node_id, current_send.clone().0)).expect("Error sending the command...");
+                            controller_send_neighbour.send(ServerCommand::AddSender(current_node.node_id, current_send.clone().0)).expect("Error sending the command...");
                         }
                     }
                 }
@@ -360,7 +360,7 @@ impl DronegowskiSimulationController<'_>{
                 }
                 SimulationControllerNodeType::SERVER {..} => {
                     if let Some(controller_send_current) = self.sc_server_channels.get(&current_node.node_id){
-                        //controller_send_current.send(ServerCommand::RemoveSender(neighbour.node_id)).expect("Error sending the command...");
+                        controller_send_current.send(ServerCommand::RemoveSender(neighbour.node_id)).expect("Error sending the command...");
                     }
                 }
             }
@@ -378,7 +378,7 @@ impl DronegowskiSimulationController<'_>{
                 }
                 SimulationControllerNodeType::SERVER { .. } => {
                     if let Some(controller_send_neighbour) = self.sc_server_channels.get(&neighbour.node_id) {
-                        //controller_send_neighbour.send(ServerCommand::RemoveSender(current_node.node_id)).expect("Error sending the command...");
+                        controller_send_neighbour.send(ServerCommand::RemoveSender(current_node.node_id)).expect("Error sending the command...");
                     }
                 }
             }
