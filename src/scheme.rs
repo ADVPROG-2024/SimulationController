@@ -64,7 +64,7 @@ impl DronegowskiSimulationController<'_> {
                      self.crash_graphic();
                 }
 
-                else if distance <= 50.0 && ui.input(|i| i.pointer.any_click()) {
+                else if distance <= 30.0 && ui.input(|i| i.pointer.any_click()) {
                     clicked_node_id = Some(elem.clone());
 
                     self.panel.central_panel.selected_node = clicked_node_id.clone();
@@ -93,7 +93,7 @@ impl DronegowskiSimulationController<'_> {
         for elem in &mut self.nodi {
             let rect = egui::Rect::from_center_size(
                 Pos2::new(elem.xy.0 + panel_offset.x, elem.xy.1 + panel_offset.y),
-                egui::vec2(100., 100.),
+                egui::vec2(60., 60.),
             );
             let response = ui.allocate_rect(rect, egui::Sense::drag());
 
@@ -117,13 +117,13 @@ impl DronegowskiSimulationController<'_> {
             // Disegna il cerchio
             painter.circle(
                 position,
-                50.0,
+                30.0,
                 fill_color,
                 Stroke::new(stroke_thickness, stroke_color),
             );
 
             // Dimensione, stile e colore della label
-            let font_size = if is_selected { 45.0 } else { 35.0 };
+            let font_size = if is_selected { 40.0 } else { 30.0 };
             let font_weight = if is_selected { egui::FontId::monospace(font_size) } else { egui::FontId::proportional(font_size) };
             let label_color = Color32::BLACK;
 
@@ -152,7 +152,7 @@ impl DronegowskiSimulationController<'_> {
     }
 
     fn add_sender_graphic(&mut self, distance: f32, elem: &SimulationControllerNode, pointer: Pos2, panel_offset: Pos2, painter: &Painter, ui: &mut egui::Ui) {
-        if distance <= 50.0 {
+        if distance <= 30.0 {
             let start_pos = Pos2::new(&self.panel.central_panel.selected_node.clone().unwrap().xy.0 + panel_offset.x, &self.panel.central_panel.selected_node.clone().unwrap().xy.1 + panel_offset.y);
 
             if self.panel.central_panel.selected_node.clone().unwrap().neighbours.contains(&elem.node_id.clone()) {
@@ -163,7 +163,7 @@ impl DronegowskiSimulationController<'_> {
                     self.add_sender(elem.node_id);
                 }
             }
-        } else if distance > 50. {
+        } else if distance > 30. {
             if let Some(selected_node) = &self.panel.central_panel.selected_node {
                 let start_pos = Pos2::new(selected_node.xy.0 + panel_offset.x, selected_node.xy.1 + panel_offset.y);
                 draw_dashed_line(&painter, start_pos, pointer, Stroke::new(4.0, Color32::GRAY), 10.0, 5.0);
@@ -172,7 +172,7 @@ impl DronegowskiSimulationController<'_> {
     }
 
     fn remove_sender_graphic(&mut self, distance: f32, elem: &SimulationControllerNode, ui: &mut egui::Ui) {
-        if distance <= 50. && ui.input(|i| i.pointer.any_click()) {
+        if distance <= 30. && ui.input(|i| i.pointer.any_click()) {
             if self.panel.central_panel.selected_node.clone().unwrap().neighbours.contains(&elem.node_id.clone()) {
                 self.remove_sender(elem.node_id);
             }
