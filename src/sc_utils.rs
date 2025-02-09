@@ -25,11 +25,15 @@ pub struct UpperLeftPanel {
 }
 
 pub struct BottomLeftPanel {
-    pub drone_event: Vec<DroneEvent>,
-    pub client_event: Vec<ClientEvent>,
-    pub server_event: Vec<ServerEvent>
+    pub event: Vec<Event>,
+
 }
 
+pub enum Event {
+    DroneEvent {drone_event: DroneEvent},
+    ClientEvent {client_event: ClientEvent},
+    ServerEvent {server_event: ServerEvent},
+}
 impl Panel{
     pub fn default() -> Self {
         Self{
@@ -67,9 +71,7 @@ impl UpperLeftPanel{
 impl BottomLeftPanel{
     fn new() -> Self{
         Self{
-            drone_event: Vec::new(),
-            client_event: Vec::new(),
-            server_event: Vec::new(),
+            event: Vec::new(),
         }
     }
 }

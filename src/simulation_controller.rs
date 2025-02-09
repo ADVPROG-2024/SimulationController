@@ -14,7 +14,7 @@ use wg_2024::drone::Drone;
 use wg_2024::packet::{Fragment, Packet};
 use wg_2024::packet::PacketType::MsgFragment;
 use crate::client_gui::client_gui;
-use crate::sc_utils::{Panel};
+use crate::sc_utils::{Event, Panel};
 
 pub struct DronegowskiSimulationController<'a> {
     pub nodi: Vec<SimulationControllerNode>,
@@ -96,6 +96,7 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                 },
                 recv(self.sc_client_event_recv) -> client_event_res => {
                     if let Ok(client_event) = client_event_res {
+                        self.handle_client_event(client_event.clone());
                         let client_id = match &client_event {
                             ClientEvent::PacketSent(_) => None,
                             ClientEvent::ServerTypeReceived(client_id, _, _) => Some(client_id),
@@ -422,17 +423,17 @@ impl DronegowskiSimulationController<'_>{
 
 impl DronegowskiSimulationController<'_>{
     fn handle_drone_event(&mut self, drone_event: DroneEvent){
-        self.panel.bottom_left_panel.drone_event.push(drone_event);
+        self.panel.bottom_left_panel.event.push(Event::DroneEvent {drone_event});
     }
 
     fn handle_client_event(&mut self, client_event: ClientEvent){
-        self.panel.bottom_left_panel.client_event.push(client_event.clone());
+        self.panel.bottom_left_panel.event.push(Event::ClientEvent {client_event});
         println!("Qualcosa client");
-        println!("{:?}", client_event);
+        //println!("{:?}", client_event);
     }
 
     fn handle_server_event(&mut self, server_event: ServerEvent){
-        self.panel.bottom_left_panel.server_event.push(server_event);
+        self.panel.bottom_left_panel.event.push(Event::ServerEvent {server_event});
         println!("Qualcosa server");
 
     }
