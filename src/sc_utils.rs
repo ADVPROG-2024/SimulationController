@@ -26,7 +26,7 @@ pub struct UpperLeftPanel {
 
 pub struct BottomLeftPanel {
     pub event: Vec<Event>,
-
+    pub index: usize,
 }
 
 pub enum Event {
@@ -72,6 +72,7 @@ impl BottomLeftPanel{
     fn new() -> Self{
         Self{
             event: Vec::new(),
+            index: 0,
         }
     }
 }
