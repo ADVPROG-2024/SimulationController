@@ -30,9 +30,9 @@ pub struct BottomLeftPanel {
 }
 
 pub enum Event {
-    DroneEvent {drone_event: DroneEvent},
-    ClientEvent {client_event: ClientEvent},
-    ServerEvent {server_event: ServerEvent},
+    DroneEvent(DroneEvent),
+    ClientEvent(ClientEvent),
+    ServerEvent(ServerEvent),
 }
 impl Panel{
     pub fn default() -> Self {

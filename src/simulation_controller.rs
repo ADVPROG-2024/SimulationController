@@ -90,6 +90,14 @@ impl eframe::App for DronegowskiSimulationController<'_> {
             select! {
                 recv(self.sc_drone_event_recv) -> drone_event_res => {
                     if let Ok(drone_event) = drone_event_res {
+                        let mut node_id;
+                        match drone_event {
+                            DroneEvent::PacketSent(info) => {
+                                node_id = info.routing_header.hops[info.routing_header.hops]
+                            }
+                            DroneEvent::PacketDropped(_) => {}
+                            DroneEvent::ControllerShortcut(_) => {}
+                        }
                         self.handle_drone_event(drone_event);
                         // No repaint request here!
                     }
@@ -423,7 +431,7 @@ impl DronegowskiSimulationController<'_>{
 
 impl DronegowskiSimulationController<'_>{
     fn handle_drone_event(&mut self, drone_event: DroneEvent){
-        self.panel.bottom_left_panel.event.push(Event::DroneEvent {drone_event});
+        self.panel.bottom_left_panel.event.push(Event::DroneEvent(drone_event));
     }
 
     fn handle_client_event(&mut self, client_event: ClientEvent){
