@@ -16,36 +16,29 @@ impl DronegowskiSimulationController<'_> {
                 Event::DroneEvent(drone_event) => {
                     match drone_event {
                         DroneEvent::PacketSent (packet) => {
-                            let node_id_receiver = packet.routing_header.hops[packet.routing_header.hop_index];
-                            let node_id_sender = packet.routing_header.hops[0];
-
                             match packet.clone().pack_type {
                                 PacketType::MsgFragment(fragment) => {
-                                    // log::warn!("[DEBUG] packet.routing_header.hop_index: {}",  packet.routing_header.hop_index);
-                                    // log::warn!("[DEBUG] packet.routing_header.hops[0]: {}", packet.routing_header.hops[0]);
-                                    // log::warn!("[DEBUG] node_id_receiver: {}",  packet.routing_header.hops[packet.routing_header.hop_index]);
-                                    // log::warn!("[DEBUG] packet.routing_header.hops: {:?}", packet.routing_header.hops);
-                                    ui.label(format!("Drone {} sent fragment to Node {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
+                                    ui.label(format!("Drone {} sent a fragment to Node {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
                                 }
-                                // PacketType::Ack(_) => {
-                                //     ui.label(format!("Drone {} received an ACK from Node {}", node_id_receiver, node_id_sender));
-                                // }
-                                // PacketType::Nack(nack) => {
-                                //     match nack.nack_type {
-                                //         NackType::ErrorInRouting(_) => {
-                                //             ui.label(format!("Drone {} received an ErrorInRouting NACK from Node {}", node_id_receiver, node_id_sender));
-                                //         }
-                                //         NackType::DestinationIsDrone => {
-                                //             ui.label(format!("Drone {} received a DestinationIsDrone NACK from Node {}", node_id_receiver, node_id_sender));
-                                //         }
-                                //         NackType::Dropped => {
-                                //             ui.label(format!("Drone {} received a Dropped NACK from Node {}", node_id_receiver, node_id_sender));
-                                //         }
-                                //         NackType::UnexpectedRecipient(_) => {
-                                //             ui.label(format!("Drone {} received an UnexpectedRecipient NACK from Node {}", node_id_receiver, node_id_sender));
-                                //         }
-                                //     }
-                                // }
+                                PacketType::Ack(_) => {
+                                    ui.label(format!("Drone {} sent an ACK to Node {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
+                                }
+                                PacketType::Nack(nack) => {
+                                    match nack.nack_type {
+                                        NackType::ErrorInRouting(_) => {
+                                            ui.label(format!("Drone {} sent an ErrorInRouting NACK to Node {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
+                                        }
+                                        NackType::DestinationIsDrone => {
+                                            ui.label(format!("Drone {} sent a DestinationIsDrone NACK to Node {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
+                                        }
+                                        NackType::Dropped => {
+                                            ui.label(format!("Drone {} sent a Dropped NACK to Node {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
+                                        }
+                                        NackType::UnexpectedRecipient(_) => {
+                                            ui.label(format!("Drone {} sent an UnexpectedRecipient NACK to Node {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
+                                        }
+                                    }
+                                }
                                 // PacketType::FloodRequest(_) => {
                                 //     ui.label(format!("Drone {} sent a FloodRequest", node_id_receiver));
                                 // }
@@ -63,13 +56,13 @@ impl DronegowskiSimulationController<'_> {
                             let node_id_receiver = packet.routing_header.hops[packet.routing_header.hop_index];
                             match packet.pack_type {
                                 PacketType::Ack(_) => {
-                                    ui.label(format!("Drone {} directed send to Simulation Controller an ACK", node_id_receiver));
+                                    ui.label(format!("Drone {} sent directly to Simulation Controller an ACK", node_id_receiver));
                                 }
                                 PacketType::Nack(_) => {
-                                    ui.label(format!("Drone {} directed send to Simulation Controller a NACK", node_id_receiver));
+                                    ui.label(format!("Drone {} sent directly to Simulation Controller a NACK", node_id_receiver));
                                 }
                                 PacketType::FloodResponse(_) => {
-                                    ui.label(format!("Drone {} directed send to Simulation Controller a FloodResponse", node_id_receiver));
+                                    ui.label(format!("Drone {} sent directly to Simulation Controller a FloodResponse", node_id_receiver));
                                 }
                                 _ => {}
                             }
@@ -82,24 +75,24 @@ impl DronegowskiSimulationController<'_> {
                         ClientEvent::PacketSent (packet) => {
                             match packet.clone().pack_type {
                                 PacketType::MsgFragment(fragment) => {
-                                    ui.label(format!("Client {} sent to Drone {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
+                                    ui.label(format!("Client {} sent a fragment to Drone {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
                                 }
                                 PacketType::Ack(_) => {
-                                    ui.label(format!("Client {} received an ACK from Node {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
+                                    ui.label(format!("Client {} sent an ACK to Drone {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
                                 }
                                 PacketType::Nack(nack) => {
                                     match nack.nack_type {
                                         NackType::ErrorInRouting(_) => {
-                                            ui.label(format!("Client {} received an ErrorInRouting NACK from Node {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
+                                            ui.label(format!("Client {} sent an ErrorInRouting NACK to Drone {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
                                         }
                                         NackType::DestinationIsDrone => {
-                                            ui.label(format!("Client {} received a DestinationIsDrone NACK from Node {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
+                                            ui.label(format!("Client {} sent a DestinationIsDrone NACK to Node {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
                                         }
                                         NackType::Dropped => {
-                                            ui.label(format!("Client {} received a Dropped NACK from Node {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
+                                            ui.label(format!("Client {} sent a Dropped NACK to Node {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
                                         }
                                         NackType::UnexpectedRecipient(_) => {
-                                            ui.label(format!("Client {} received an UnexpectedRecipient NACK from Node {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
+                                            ui.label(format!("Client {} sent an UnexpectedRecipient NACK to Node {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
                                         }
                                     }
                                 }
@@ -121,32 +114,32 @@ impl DronegowskiSimulationController<'_> {
                         ServerEvent::PacketSent (packet) => {
                             match packet.clone().pack_type {
                                 PacketType::MsgFragment(fragment) => {
-                                    ui.label(format!("Server {} sent to Drone {}",  packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
+                                    ui.label(format!("Server {} sent a fragment to Drone {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
                                 }
                                 PacketType::Ack(_) => {
-                                    ui.label(format!("Server {} received an ACK from Node {}",  packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
+                                    ui.label(format!("Server {} sent an ACK to Drone {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
                                 }
                                 PacketType::Nack(nack) => {
                                     match nack.nack_type {
                                         NackType::ErrorInRouting(_) => {
-                                            ui.label(format!("Server {} received an ErrorInRouting NACK from Node {}",  packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
+                                            ui.label(format!("Server {} sent an ErrorInRouting NACK to Drone {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
                                         }
                                         NackType::DestinationIsDrone => {
-                                            ui.label(format!("Server {} received a DestinationIsDrone NACK from Node {}",  packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
+                                            ui.label(format!("Server {} sent a DestinationIsDrone NACK to Node {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
                                         }
                                         NackType::Dropped => {
-                                            ui.label(format!("Server {} received a Dropped NACK from Node {}",  packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
+                                            ui.label(format!("Server {} sent a Dropped NACK to Node {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
                                         }
                                         NackType::UnexpectedRecipient(_) => {
-                                            ui.label(format!("Server {} received an UnexpectedRecipient NACK from Node {}",  packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
+                                            ui.label(format!("Server {} sent an UnexpectedRecipient NACK to Node {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]));
                                         }
                                     }
                                 }
                                 // PacketType::FloodRequest(_) => {
-                                //     ui.label(format!("Server {} received a FloodRequest from Node {}", node_id_receiver, node_id_sender));
+                                //     ui.label(format!("Client {} received a FloodRequest from Node {}", node_id_receiver, node_id_sender));
                                 // }
                                 // PacketType::FloodResponse(_) => {
-                                //     ui.label(format!("Server {} received a FloodResponse from Node {}", node_id_receiver, node_id_sender));
+                                //     ui.label(format!("Client {} received a FloodResponse from Node {}", node_id_receiver, node_id_sender));
                                 // }
                                 _ => {}
                             }
@@ -154,11 +147,7 @@ impl DronegowskiSimulationController<'_> {
                         _ => {}
                     }
                 }
-                _ => {}
             }
-
         }
-
-        // self.panel.bottom_left_panel.event.clear();
     }
 }

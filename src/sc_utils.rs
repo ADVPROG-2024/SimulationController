@@ -4,11 +4,13 @@ use dronegowski_utils::network::SimulationControllerNode;
 use eframe::epaint::Color32;
 use wg_2024::controller::DroneEvent;
 use wg_2024::network::NodeId;
+use crate::DronegowskiSimulationController;
 
 pub struct Panel{
     pub central_panel: CentralPanel,
     pub upper_left_panel: UpperLeftPanel,
     pub bottom_left_panel: BottomLeftPanel,
+    pub right_panel: RightPanel,
 }
 
 pub struct CentralPanel {
@@ -29,6 +31,10 @@ pub struct BottomLeftPanel {
     pub index: usize,
 }
 
+pub struct RightPanel {
+    pub active_nodes: Vec<(SimulationControllerNode, bool)>,
+}
+
 pub enum Event {
     DroneEvent(DroneEvent),
     ClientEvent(ClientEvent),
@@ -40,6 +46,7 @@ impl Panel{
             central_panel: CentralPanel::new(),
             upper_left_panel: UpperLeftPanel::new(),
             bottom_left_panel: BottomLeftPanel::new(),
+            right_panel: RightPanel::new(),
         }
     }
 
@@ -82,6 +89,14 @@ impl CentralPanel{
         Self{
             selected_node: None,
             active_popups: HashMap::new(),
+        }
+    }
+}
+
+impl RightPanel{
+    fn new() -> Self{
+        Self{
+            active_nodes: Vec::new(),
         }
     }
 }

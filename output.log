@@ -1,217 +1,260 @@
-16:27:23 [INFO] (2) Drone 1 entering the run loop in state Active
-16:27:23 [INFO] (3) Drone 2 entering the run loop in state Active
-16:27:23 [INFO] (4) Drone 3 entering the run loop in state Active
-16:27:23 [INFO] (5) Client 4: Inizio della scoperta dei server
-16:27:23 [INFO] (6) Client 5: Inizio della scoperta dei server
-16:27:23 [INFO] (6) Client 5: Invio di FloodRequest al nodo 1
-16:27:23 [INFO] (5) Client 4: Invio di FloodRequest al nodo 2
-16:27:23 [INFO] (7) Communication server 6 initialized
-16:27:23 [INFO] (7) CommunicationServer 6: starting Network discovery
-16:27:23 [INFO] (5) Client 4: Pacchetto inviato a 2: deve arrivare a 2
-16:27:23 [INFO] (2) Drone 1 correctly sent the Flood Request to neighbor with 2 id
-16:27:23 [INFO] (2) Drone 1 correctly sent the Flood Request to neighbor with 3 id
-16:27:23 [INFO] (2) Drone 1 correctly sent the Flood Request to neighbor with 3 id
-16:27:23 [INFO] (2) Drone 1 correctly sent the Flood Request to neighbor with 5 id
-16:27:23 [INFO] (5) Client 4: Invio di FloodRequest al nodo 3
-16:27:23 [INFO] (6) Client 5: Pacchetto inviato a 1: deve arrivare a 1
-16:27:23 [INFO] (4) Drone 3 correctly sent the Flood Request to neighbor with 6 id
-16:27:23 [INFO] (3) Drone 2 correctly sent the Flood Request to neighbor with 1 id
-16:27:23 [INFO] (3) Drone 2 correctly sent the Flood Request to neighbor with 6 id
-16:27:23 [INFO] (5) Client 4: Pacchetto inviato a 3: deve arrivare a 3
-16:27:23 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [5, 1] }, session_id: 1739118443966, pack_type: FloodRequest(FloodRequest { flood_id: 1739118443966, initiator_id: 5, path_trace: [(5, Client), (1, Drone), (3, Drone)] }) }
-16:27:23 [INFO] (5) Client 4: Ricevuto FloodRequest: FloodRequest { flood_id: 1739118443966, initiator_id: 5, path_trace: [(5, Client), (1, Drone), (3, Drone)] }
-16:27:23 [INFO] (5) Client 4: Aggiornamento del grafo con: [(5, Client), (1, Drone), (3, Drone)]
-16:27:23 [INFO] (3) Drone 2 correctly sent the Flood Request to neighbor with 3 id
-16:27:23 [INFO] (6) Client 5: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [4, 2] }, session_id: 1739118443965, pack_type: FloodRequest(FloodRequest { flood_id: 1739118443965, initiator_id: 4, path_trace: [(4, Client), (2, Drone), (1, Drone)] }) }
-16:27:23 [INFO] (6) Client 5: Ricevuto FloodRequest: FloodRequest { flood_id: 1739118443965, initiator_id: 4, path_trace: [(4, Client), (2, Drone), (1, Drone)] }
-16:27:23 [INFO] (6) Client 5: Aggiornamento del grafo con: [(4, Client), (2, Drone), (1, Drone)]
-16:27:23 [INFO] (5) Client 4: Invio di FloodResponse a 5, response packet: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [3, 1, 5] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (3, Drone), (4, Client)] }) }
-16:27:23 [INFO] (5) Client 4: Invio di FloodResponse tramite 3
-16:27:23 [INFO] (4) Drone 3 correctly sent the Flood Request to neighbor with 4 id
-16:27:23 [INFO] (7) CommunicationServer 6: sending flood request to 2
-16:27:23 [INFO] (6) Client 5: Invio di FloodResponse a 4, response packet: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [1, 2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (1, Drone), (5, Client)] }) }
-16:27:23 [INFO] (6) Client 5: Invio di FloodResponse tramite 1
-16:27:23 [INFO] (5) Client 4: Pacchetto inviato a 3: deve arrivare a 5
-16:27:23 [INFO] (4) Drone 3 correctly sent the Flood Request to neighbor with 2 id
-16:27:23 [INFO] (7) CommunicationServer 6: sending flood request to 3
-16:27:23 [INFO] (3) Drone 2 correctly sent the Flood Request to neighbor with 4 id
-16:27:23 [INFO] (6) Client 5: Pacchetto inviato a 1: deve arrivare a 4
-16:27:23 [INFO] (2) Drone 1: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [1, 2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (1, Drone), (5, Client)] }) }
-16:27:23 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [5, 1] }, session_id: 1739118443966, pack_type: FloodRequest(FloodRequest { flood_id: 1739118443966, initiator_id: 5, path_trace: [(5, Client), (1, Drone), (2, Drone)] }) }
-16:27:23 [INFO] (5) Client 4: Ricevuto FloodRequest: FloodRequest { flood_id: 1739118443966, initiator_id: 5, path_trace: [(5, Client), (1, Drone), (2, Drone)] }
-16:27:23 [INFO] (5) Client 4: Aggiornamento del grafo con: [(5, Client), (1, Drone), (2, Drone)]
-16:27:23 [INFO] (3) Drone 2 correctly sent the Flood Request to neighbor with 6 id
-16:27:23 [INFO] (2) Drone 1: packet forwarded to next hop 2
-16:27:23 [INFO] (4) Drone 3 correctly sent the Flood Request to neighbor with 6 id
-16:27:23 [INFO] (7) CommuncationServer 6: Received packet Ok(Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [5, 1] }, session_id: 1739118443966, pack_type: FloodRequest(FloodRequest { flood_id: 1739118443966, initiator_id: 5, path_trace: [(5, Client), (1, Drone), (3, Drone)] }) })
-16:27:23 [INFO] (7) Server 6: Received packet: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [5, 1] }, session_id: 1739118443966, pack_type: FloodRequest(FloodRequest { flood_id: 1739118443966, initiator_id: 5, path_trace: [(5, Client), (1, Drone), (3, Drone)] }) }
-16:27:23 [INFO] (7) CommunicationServer 6: Received FloodRequest FloodRequest { flood_id: 1739118443966, initiator_id: 5, path_trace: [(5, Client), (1, Drone), (3, Drone)] }
-16:27:23 [INFO] (7) CommunicationServer 6 : updating graph knowledge using path trace [(5, Client), (1, Drone), (3, Drone)]
-16:27:23 [INFO] (5) Client 4: Invio di FloodResponse a 5, response packet: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [2, 1, 5] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (2, Drone), (4, Client)] }) }
-16:27:23 [INFO] (5) Client 4: Invio di FloodResponse tramite 2
-16:27:23 [INFO] (4) Drone 3 correctly sent the Flood Request to neighbor with 4 id
-16:27:23 [INFO] (7) CommuncationServer 6: Sending FloodResponse: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [3, 1, 5] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (3, Drone), (6, Server)] }) }
-16:27:23 [INFO] (3) Drone 2 correctly sent the Flood Request to neighbor with 3 id
-16:27:23 [INFO] (5) Client 4: Pacchetto inviato a 2: deve arrivare a 5
-16:27:23 [INFO] (4) Drone 3 correctly sent the Flood Request to neighbor with 2 id
-16:27:23 [INFO] (7) CommunicationServer 6: Sent FloodResponse back to 3
-16:27:23 [INFO] (3) Drone 2: packet forwarded to next hop 3
-16:27:23 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [4, 2] }, session_id: 1739118443965, pack_type: FloodRequest(FloodRequest { flood_id: 1739118443965, initiator_id: 4, path_trace: [(4, Client), (2, Drone), (1, Drone), (3, Drone)] }) }
-16:27:23 [INFO] (5) Client 4: Ricevuto FloodRequest: FloodRequest { flood_id: 1739118443965, initiator_id: 4, path_trace: [(4, Client), (2, Drone), (1, Drone), (3, Drone)] }
-16:27:23 [INFO] (5) Client 4: Aggiornamento del grafo con: [(4, Client), (2, Drone), (1, Drone), (3, Drone)]
-16:27:23 [INFO] (3) Drone 2 correctly sent back a Flood Response because has already received this flood request
-16:27:23 [INFO] (4) Drone 3: packet forwarded to next hop 4
-16:27:23 [INFO] (7) CommuncationServer 6: Received packet Ok(Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [4, 2] }, session_id: 1739118443965, pack_type: FloodRequest(FloodRequest { flood_id: 1739118443965, initiator_id: 4, path_trace: [(4, Client), (2, Drone)] }) })
-16:27:23 [INFO] (7) Server 6: Received packet: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [4, 2] }, session_id: 1739118443965, pack_type: FloodRequest(FloodRequest { flood_id: 1739118443965, initiator_id: 4, path_trace: [(4, Client), (2, Drone)] }) }
-16:27:23 [INFO] (7) CommunicationServer 6: Received FloodRequest FloodRequest { flood_id: 1739118443965, initiator_id: 4, path_trace: [(4, Client), (2, Drone)] }
-16:27:23 [INFO] (7) CommunicationServer 6 : updating graph knowledge using path trace [(4, Client), (2, Drone)]
-16:27:23 [INFO] (5) Client 4: Invio di FloodResponse a 4, response packet: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [3, 1, 2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (1, Drone), (3, Drone), (4, Client)] }) }
-16:27:23 [INFO] (5) Client 4: Invio di FloodResponse tramite 3
-16:27:23 [INFO] (4) Drone 3 correctly sent back a Flood Response because has already received this flood request
-16:27:23 [INFO] (7) CommuncationServer 6: Sending FloodResponse: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (6, Server)] }) }
-16:27:23 [INFO] (3) Drone 2: packet forwarded to next hop 6
-16:27:23 [INFO] (3) Drone 2 correctly sent back a Flood Response because has already received this flood request
-16:27:23 [INFO] (4) Drone 3: packet forwarded to next hop 2
-16:27:23 [INFO] (7) CommunicationServer 6: Sent FloodResponse back to 2
-16:27:23 [INFO] (5) Client 4: Pacchetto inviato a 3: deve arrivare a 4
-16:27:23 [INFO] (3) Drone 2: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [1, 2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (1, Drone), (5, Client)] }) }
-16:27:23 [INFO] (4) Drone 3 correctly sent back a Flood Response because has already received this flood request
-16:27:23 [INFO] (4) Drone 3: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [3, 1, 5] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (3, Drone), (4, Client)] }) }
-16:27:23 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [3, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (3, Drone)] }) }
-16:27:23 [INFO] (5) Client 4: Ricevuto FloodResponse: FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (3, Drone)] }
-16:27:23 [INFO] (5) Client 4: Aggiornamento del grafo con: [(4, Client), (3, Drone)]
-16:27:23 [INFO] (4) Drone 3: packet forwarded to next hop 1
-16:27:23 [INFO] (2) Drone 1: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [3, 1, 5] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (3, Drone), (4, Client)] }) }
-16:27:23 [INFO] (3) Drone 2: packet forwarded to next hop 4
-16:27:23 [INFO] (7) CommuncationServer 6: Received packet Ok(Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [4, 2] }, session_id: 1739118443965, pack_type: FloodRequest(FloodRequest { flood_id: 1739118443965, initiator_id: 4, path_trace: [(4, Client), (2, Drone), (1, Drone), (3, Drone)] }) })
-16:27:23 [INFO] (7) Server 6: Received packet: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [4, 2] }, session_id: 1739118443965, pack_type: FloodRequest(FloodRequest { flood_id: 1739118443965, initiator_id: 4, path_trace: [(4, Client), (2, Drone), (1, Drone), (3, Drone)] }) }
-16:27:23 [INFO] (7) CommunicationServer 6: Received FloodRequest FloodRequest { flood_id: 1739118443965, initiator_id: 4, path_trace: [(4, Client), (2, Drone), (1, Drone), (3, Drone)] }
-16:27:23 [INFO] (7) CommunicationServer 6 : updating graph knowledge using path trace [(4, Client), (2, Drone), (1, Drone), (3, Drone)]
-16:27:23 [INFO] (6) Client 5: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [3, 1, 5] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (3, Drone), (4, Client)] }) }
-16:27:23 [INFO] (6) Client 5: Ricevuto FloodResponse: FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (3, Drone), (4, Client)] }
-16:27:23 [INFO] (6) Client 5: Aggiornamento del grafo con: [(5, Client), (1, Drone), (3, Drone), (4, Client)]
-16:27:23 [INFO] (4) Drone 3: packet forwarded to next hop 6
-16:27:23 [INFO] (2) Drone 1: packet forwarded to next hop 5
-16:27:23 [INFO] (7) CommuncationServer 6: Sending FloodResponse: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [3, 1, 2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (1, Drone), (3, Drone), (6, Server)] }) }
-16:27:23 [INFO] (7) CommunicationServer 6: Sent FloodResponse back to 3
-16:27:23 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [1, 2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (1, Drone), (5, Client)] }) }
-16:27:23 [INFO] (5) Client 4: Ricevuto FloodResponse: FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (1, Drone), (5, Client)] }
-16:27:23 [INFO] (5) Client 4: Aggiornamento del grafo con: [(4, Client), (2, Drone), (1, Drone), (5, Client)]
-16:27:23 [INFO] (7) CommuncationServer 6: Received packet Ok(Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [5, 1] }, session_id: 1739118443966, pack_type: FloodRequest(FloodRequest { flood_id: 1739118443966, initiator_id: 5, path_trace: [(5, Client), (1, Drone), (2, Drone)] }) })
-16:27:23 [INFO] (4) Drone 3 correctly sent back a Flood Response because has already received this flood request
-16:27:23 [INFO] (3) Drone 2: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [2, 1, 5] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (2, Drone), (4, Client)] }) }
-16:27:23 [INFO] (7) Server 6: Received packet: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [5, 1] }, session_id: 1739118443966, pack_type: FloodRequest(FloodRequest { flood_id: 1739118443966, initiator_id: 5, path_trace: [(5, Client), (1, Drone), (2, Drone)] }) }
-16:27:23 [INFO] (7) CommunicationServer 6: Received FloodRequest FloodRequest { flood_id: 1739118443966, initiator_id: 5, path_trace: [(5, Client), (1, Drone), (2, Drone)] }
-16:27:23 [INFO] (3) Drone 2: packet forwarded to next hop 1
-16:27:23 [INFO] (2) Drone 1: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [2, 1, 5] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (2, Drone), (4, Client)] }) }
-16:27:23 [INFO] (4) Drone 3: packet forwarded to next hop 2
-16:27:23 [INFO] (7) CommunicationServer 6 : updating graph knowledge using path trace [(5, Client), (1, Drone), (2, Drone)]
-16:27:23 [INFO] (3) Drone 2: packet forwarded to next hop 3
-16:27:23 [INFO] (3) Drone 2 correctly sent back a Flood Response because has already received this flood request
-16:27:23 [INFO] (6) Client 5: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [2, 1, 5] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (2, Drone), (4, Client)] }) }
-16:27:23 [INFO] (6) Client 5: Ricevuto FloodResponse: FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (2, Drone), (4, Client)] }
-16:27:23 [INFO] (6) Client 5: Aggiornamento del grafo con: [(5, Client), (1, Drone), (2, Drone), (4, Client)]
-16:27:23 [INFO] (2) Drone 1: packet forwarded to next hop 5
-16:27:23 [INFO] (3) Drone 2: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [3, 2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (3, Drone)] }) }
-16:27:23 [INFO] (4) Drone 3 correctly sent back a Flood Response because has already received this flood request
-16:27:23 [INFO] (7) CommuncationServer 6: Sending FloodResponse: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [2, 1, 5] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (2, Drone), (6, Server)] }) }
-16:27:23 [INFO] (3) Drone 2: packet forwarded to next hop 4
-16:27:23 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [3, 2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (3, Drone)] }) }
-16:27:23 [INFO] (5) Client 4: Ricevuto FloodResponse: FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (3, Drone)] }
-16:27:23 [INFO] (5) Client 4: Aggiornamento del grafo con: [(4, Client), (2, Drone), (3, Drone)]
-16:27:23 [INFO] (3) Drone 2: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (6, Server)] }) }
-16:27:23 [INFO] (4) Drone 3: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [3, 1, 5] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (3, Drone), (6, Server)] }) }
-16:27:23 [INFO] (7) CommunicationServer 6: Sent FloodResponse back to 2
-16:27:23 [INFO] (3) Drone 2: packet forwarded to next hop 4
-16:27:23 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (6, Server)] }) }
-16:27:23 [INFO] (5) Client 4: Ricevuto FloodResponse: FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (6, Server)] }
-16:27:23 [INFO] (5) Client 4: Aggiornamento del grafo con: [(4, Client), (2, Drone), (6, Server)]
-16:27:23 [INFO] (7) CommuncationServer 6: Received packet Ok(Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [2, 6] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(6, Server), (2, Drone)] }) })
-16:27:23 [INFO] (7) Server 6: Received packet: Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [2, 6] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(6, Server), (2, Drone)] }) }
-16:27:23 [INFO] (7) CommuncationServer 6: Received FloodResponse: FloodResponse { flood_id: 1739118443966, path_trace: [(6, Server), (2, Drone)] }
-16:27:23 [INFO] (7) CommunicationServer 6 : updating graph knowledge using path trace [(6, Server), (2, Drone)]
-16:27:23 [INFO] (3) Drone 2: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [3, 2, 1, 5] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone)] }) }
-16:27:23 [INFO] (4) Drone 3: packet forwarded to next hop 1
-16:27:23 [INFO] (2) Drone 1: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [3, 1, 5] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (3, Drone), (6, Server)] }) }
-16:27:23 [INFO] (7) CommuncationServer 6: Received packet Ok(Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [3, 6] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(6, Server), (3, Drone)] }) })
-16:27:23 [INFO] (7) Server 6: Received packet: Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [3, 6] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(6, Server), (3, Drone)] }) }
-16:27:23 [INFO] (7) CommuncationServer 6: Received FloodResponse: FloodResponse { flood_id: 1739118443966, path_trace: [(6, Server), (3, Drone)] }
-16:27:23 [INFO] (7) CommunicationServer 6 : updating graph knowledge using path trace [(6, Server), (3, Drone)]
-16:27:23 [INFO] (6) Client 5: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [3, 1, 5] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (3, Drone), (6, Server)] }) }
-16:27:23 [INFO] (6) Client 5: Ricevuto FloodResponse: FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (3, Drone), (6, Server)] }
-16:27:23 [INFO] (6) Client 5: Aggiornamento del grafo con: [(5, Client), (1, Drone), (3, Drone), (6, Server)]
-16:27:23 [INFO] (2) Drone 1: packet forwarded to next hop 5
-16:27:23 [INFO] (3) Drone 2: packet forwarded to next hop 1
-16:27:23 [INFO] (4) Drone 3: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [2, 3, 1, 5] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (3, Drone), (2, Drone)] }) }
-16:27:23 [INFO] (2) Drone 1: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [3, 2, 1, 5] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone)] }) }
-16:27:23 [INFO] (3) Drone 2: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [2, 1, 5] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (2, Drone), (6, Server)] }) }
-16:27:23 [INFO] (4) Drone 3: packet forwarded to next hop 1
-16:27:23 [INFO] (2) Drone 1: packet forwarded to next hop 5
-16:27:23 [INFO] (6) Client 5: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 3, hops: [3, 2, 1, 5] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone)] }) }
-16:27:23 [INFO] (6) Client 5: Ricevuto FloodResponse: FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone)] }
-16:27:23 [INFO] (6) Client 5: Aggiornamento del grafo con: [(5, Client), (1, Drone), (2, Drone), (3, Drone)]
-16:27:23 [INFO] (2) Drone 1: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [2, 3, 1, 5] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (3, Drone), (2, Drone)] }) }
-16:27:23 [INFO] (3) Drone 2: packet forwarded to next hop 1
-16:27:23 [INFO] (4) Drone 3: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [3, 1, 2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (1, Drone), (3, Drone), (4, Client)] }) }
-16:27:23 [INFO] (2) Drone 1: packet forwarded to next hop 5
-16:27:23 [INFO] (6) Client 5: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 3, hops: [2, 3, 1, 5] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (3, Drone), (2, Drone)] }) }
-16:27:23 [INFO] (6) Client 5: Ricevuto FloodResponse: FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (3, Drone), (2, Drone)] }
-16:27:23 [INFO] (6) Client 5: Aggiornamento del grafo con: [(5, Client), (1, Drone), (3, Drone), (2, Drone)]
-16:27:23 [INFO] (4) Drone 3: packet forwarded to next hop 1
-16:27:23 [INFO] (2) Drone 1: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [2, 1, 5] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (2, Drone), (6, Server)] }) }
-16:27:23 [INFO] (4) Drone 3: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [3, 1, 2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (1, Drone), (3, Drone), (6, Server)] }) }
-16:27:23 [INFO] (2) Drone 1: packet forwarded to next hop 5
-16:27:23 [INFO] (6) Client 5: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [2, 1, 5] }, session_id: 1739118443966, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (2, Drone), (6, Server)] }) }
-16:27:23 [INFO] (6) Client 5: Ricevuto FloodResponse: FloodResponse { flood_id: 1739118443966, path_trace: [(5, Client), (1, Drone), (2, Drone), (6, Server)] }
-16:27:23 [INFO] (6) Client 5: Aggiornamento del grafo con: [(5, Client), (1, Drone), (2, Drone), (6, Server)]
-16:27:23 [INFO] (4) Drone 3: packet forwarded to next hop 1
-16:27:23 [INFO] (2) Drone 1: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [3, 1, 2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (1, Drone), (3, Drone), (4, Client)] }) }
-16:27:23 [INFO] (4) Drone 3: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [2, 3, 1, 2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (1, Drone), (3, Drone), (2, Drone)] }) }
-16:27:23 [INFO] (2) Drone 1: packet forwarded to next hop 2
-16:27:23 [INFO] (3) Drone 2: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [3, 1, 2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (1, Drone), (3, Drone), (4, Client)] }) }
-16:27:23 [INFO] (4) Drone 3: packet forwarded to next hop 1
-16:27:23 [INFO] (2) Drone 1: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [3, 1, 2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (1, Drone), (3, Drone), (6, Server)] }) }
-16:27:23 [INFO] (3) Drone 2: packet forwarded to next hop 4
-16:27:23 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 3, hops: [3, 1, 2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (1, Drone), (3, Drone), (4, Client)] }) }
-16:27:23 [INFO] (5) Client 4: Ricevuto FloodResponse: FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (1, Drone), (3, Drone), (4, Client)] }
-16:27:23 [INFO] (5) Client 4: Aggiornamento del grafo con: [(4, Client), (2, Drone), (1, Drone), (3, Drone), (4, Client)]
-16:27:23 [INFO] (2) Drone 1: packet forwarded to next hop 2
-16:27:23 [INFO] (3) Drone 2: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [3, 1, 2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (1, Drone), (3, Drone), (6, Server)] }) }
-16:27:23 [INFO] (2) Drone 1: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [2, 3, 1, 2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (1, Drone), (3, Drone), (2, Drone)] }) }
-16:27:23 [INFO] (3) Drone 2: packet forwarded to next hop 4
-16:27:23 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 3, hops: [3, 1, 2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (1, Drone), (3, Drone), (6, Server)] }) }
-16:27:23 [INFO] (5) Client 4: Ricevuto FloodResponse: FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (1, Drone), (3, Drone), (6, Server)] }
-16:27:23 [INFO] (5) Client 4: Aggiornamento del grafo con: [(4, Client), (2, Drone), (1, Drone), (3, Drone), (6, Server)]
-16:27:23 [INFO] (2) Drone 1: packet forwarded to next hop 2
-16:27:23 [INFO] (3) Drone 2: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 3, hops: [2, 3, 1, 2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (1, Drone), (3, Drone), (2, Drone)] }) }
-16:27:23 [INFO] (3) Drone 2: packet forwarded to next hop 4
-16:27:23 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 4, hops: [2, 3, 1, 2, 4] }, session_id: 1739118443965, pack_type: FloodResponse(FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (1, Drone), (3, Drone), (2, Drone)] }) }
-16:27:23 [INFO] (5) Client 4: Ricevuto FloodResponse: FloodResponse { flood_id: 1739118443965, path_trace: [(4, Client), (2, Drone), (1, Drone), (3, Drone), (2, Drone)] }
-16:27:23 [INFO] (5) Client 4: Aggiornamento del grafo con: [(4, Client), (2, Drone), (1, Drone), (3, Drone), (2, Drone)]
-16:27:29 [INFO] (5) Client 4: Ricevuto comando dal simulatore: ServerType(6)
-16:27:29 [INFO] (5) Client 4: Richiesta del tipo di server al server 6
-16:27:29 [INFO] (5) Client 4: Calcolo del percorso verso 6
-16:27:29 [INFO] (5) Client 4: Topologia corrente: {(3, 6), (5, 1), (1, 5), (1, 2), (3, 2), (4, 3), (1, 3), (4, 2), (6, 3), (2, 4), (2, 6), (2, 3), (6, 2), (2, 1), (3, 1), (3, 4)}
-16:27:29 [INFO] (5) Client 4: Percorso trovato: [4, 3, 6]
-16:27:29 [INFO] (5) Client 4: Percorso trovato correttamente
-16:27:29 [INFO] (5) Client 4: Invio del pacchetto al next hop 3
-16:27:29 [INFO] (5) Client 4: Pacchetto inviato a 3: deve arrivare a 6
-16:27:29 [INFO] (4) Drone 3: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [4, 3, 6] }, session_id: 1739118449266, pack_type: MsgFragment(Fragment { fragment_index: 0, total_n_fragments: 1, length: 8, data: [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }) }
-16:27:29 [INFO] (4) Drone 3: Received fragment Fragment { fragment_index: 0, total_n_fragments: 1, length: 8, data: [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }
-16:27:29 [INFO] (4) Drone 3: packet forwarded to next hop 6
-16:27:29 [INFO] (7) CommuncationServer 6: Received packet Ok(Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [4, 3, 6] }, session_id: 1739118449266, pack_type: MsgFragment(Fragment { fragment_index: 0, total_n_fragments: 1, length: 8, data: [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }) })
-16:27:29 [INFO] (7) Server 6: Received packet: Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [4, 3, 6] }, session_id: 1739118449266, pack_type: MsgFragment(Fragment { fragment_index: 0, total_n_fragments: 1, length: 8, data: [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }) }
-16:27:29 [INFO] (7) Server 6: Message reassembled successfully.
-16:27:29 [INFO] (7) Communication server 6: Received server type request from 4
-16:27:29 [INFO] (7) Communication server 6: sending server type to 4
-16:27:29 [INFO] (7) Communication server 6: sending packet to 2
-16:27:29 [INFO] (3) Drone 2: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [6, 2, 4] }, session_id: 1, pack_type: MsgFragment(Fragment { fragment_index: 0, total_n_fragments: 1, length: 12, data: [4, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }) }
-16:27:29 [INFO] (3) Drone 2: Received fragment Fragment { fragment_index: 0, total_n_fragments: 1, length: 12, data: [4, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }
-16:27:29 [INFO] (3) Drone 2: packet forwarded to next hop 4
-16:27:29 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [6, 2, 4] }, session_id: 1, pack_type: MsgFragment(Fragment { fragment_index: 0, total_n_fragments: 1, length: 12, data: [4, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }) }
-16:27:29 [INFO] (5) Client 4: Ricevuto MsgFragment da: 6, Sessione: 1, Indice: 0, Totale: 1
-16:27:29 [INFO] (5) Client 4: Inizializzazione dello storage per la sessione 1 da 6
-16:27:29 [INFO] (5) Client 4: Frammento 1/1 per la sessione 1 da 6. 100% completo.
-16:27:29 [INFO] (5) Client 4: Ricevuto ServerType: Communication
-16:27:29 [INFO] (5) Client 4: Messaggio dalla sessione 1 da 6 rimosso dallo storage
-16:27:29 [INFO] (1) Simulation Controller: Received ClientEvent::ServerTypeReceived
+17:34:29 [INFO] (3) Drone 2 entering the run loop in state Active
+17:34:29 [INFO] (5) Client 4: Inizio della scoperta dei server
+17:34:29 [INFO] (5) Client 4: Invio di FloodRequest al nodo 3
+17:34:29 [INFO] (6) Client 5: Inizio della scoperta dei server
+17:34:29 [INFO] (6) Client 5: Invio di FloodRequest al nodo 1
+17:34:29 [INFO] (6) Client 5: Pacchetto inviato a 1: deve arrivare a 1
+17:34:29 [INFO] (4) Drone 3 entering the run loop in state Active
+17:34:29 [INFO] (5) Client 4: Pacchetto inviato a 3: deve arrivare a 3
+17:34:29 [INFO] (5) Client 4: Invio di FloodRequest al nodo 2
+17:34:29 [INFO] (5) Client 4: Pacchetto inviato a 2: deve arrivare a 2
+17:34:29 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [4, 3] }, session_id: 1739122469163, pack_type: FloodRequest(FloodRequest { flood_id: 1739122469163, initiator_id: 4, path_trace: [(4, Client), (3, Drone), (2, Drone)] }) }
+17:34:29 [INFO] (5) Client 4: Ricevuto FloodRequest: FloodRequest { flood_id: 1739122469163, initiator_id: 4, path_trace: [(4, Client), (3, Drone), (2, Drone)] }
+17:34:29 [INFO] (5) Client 4: Aggiornamento del grafo con: [(4, Client), (3, Drone), (2, Drone)]
+17:34:29 [INFO] (7) Communication server 6 initialized
+17:34:29 [INFO] (7) CommunicationServer 6: starting Network discovery
+17:34:29 [INFO] (7) CommunicationServer 6: sending flood request to 2
+17:34:29 [INFO] (7) CommunicationServer 6: sending flood request to 3
+17:34:29 [INFO] (5) Client 4: Invio di FloodResponse a 4, response packet: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [2, 3, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (2, Drone), (4, Client)] }) }
+17:34:29 [INFO] (5) Client 4: Invio di FloodResponse tramite 2
+17:34:29 [INFO] (5) Client 4: Pacchetto inviato a 2: deve arrivare a 4
+17:34:29 [INFO] (2) Drone 1 entering the run loop in state Active
+17:34:29 [INFO] (4) Drone 3 correctly sent the Flood Request to neighbor with 2 id
+17:34:29 [INFO] (3) Drone 2 correctly sent the Flood Request to neighbor with 4 id
+17:34:29 [INFO] (3) Drone 2 correctly sent the Flood Request to neighbor with 1 id
+17:34:29 [INFO] (3) Drone 2 correctly sent the Flood Request to neighbor with 6 id
+17:34:29 [INFO] (3) Drone 2: packet forwarded to next hop 4
+17:34:29 [INFO] (3) Drone 2 correctly sent back a Flood Response because has already received this flood request
+17:34:29 [INFO] (4) Drone 3 correctly sent the Flood Request to neighbor with 6 id
+17:34:29 [INFO] (4) Drone 3 correctly sent the Flood Request to neighbor with 1 id
+17:34:29 [INFO] (4) Drone 3 correctly sent the Flood Request to neighbor with 2 id
+17:34:29 [INFO] (4) Drone 3 correctly sent the Flood Request to neighbor with 4 id
+17:34:29 [INFO] (4) Drone 3 correctly sent the Flood Request to neighbor with 1 id
+17:34:29 [INFO] (7) CommuncationServer 6: Received packet Ok(Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [4, 3] }, session_id: 1739122469163, pack_type: FloodRequest(FloodRequest { flood_id: 1739122469163, initiator_id: 4, path_trace: [(4, Client), (3, Drone)] }) })
+17:34:29 [INFO] (7) Server 6: Received packet: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [4, 3] }, session_id: 1739122469163, pack_type: FloodRequest(FloodRequest { flood_id: 1739122469163, initiator_id: 4, path_trace: [(4, Client), (3, Drone)] }) }
+17:34:29 [INFO] (7) CommunicationServer 6: Received FloodRequest FloodRequest { flood_id: 1739122469163, initiator_id: 4, path_trace: [(4, Client), (3, Drone)] }
+17:34:29 [INFO] (7) CommunicationServer 6 : updating graph knowledge using path trace [(4, Client), (3, Drone)]
+17:34:29 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [2, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (2, Drone)] }) }
+17:34:29 [INFO] (5) Client 4: Ricevuto FloodResponse: FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (2, Drone)] }
+17:34:29 [INFO] (5) Client 4: Aggiornamento del grafo con: [(4, Client), (2, Drone)]
+17:34:29 [INFO] (7) CommuncationServer 6: Sending FloodResponse: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [3, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (6, Server)] }) }
+17:34:29 [INFO] (7) CommunicationServer 6: Sent FloodResponse back to 3
+17:34:29 [INFO] (7) CommuncationServer 6: Received packet Ok(Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [4, 3] }, session_id: 1739122469163, pack_type: FloodRequest(FloodRequest { flood_id: 1739122469163, initiator_id: 4, path_trace: [(4, Client), (3, Drone), (2, Drone)] }) })
+17:34:29 [INFO] (7) Server 6: Received packet: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [4, 3] }, session_id: 1739122469163, pack_type: FloodRequest(FloodRequest { flood_id: 1739122469163, initiator_id: 4, path_trace: [(4, Client), (3, Drone), (2, Drone)] }) }
+17:34:29 [INFO] (7) CommunicationServer 6: Received FloodRequest FloodRequest { flood_id: 1739122469163, initiator_id: 4, path_trace: [(4, Client), (3, Drone), (2, Drone)] }
+17:34:29 [INFO] (7) CommunicationServer 6 : updating graph knowledge using path trace [(4, Client), (3, Drone), (2, Drone)]
+17:34:29 [INFO] (3) Drone 2 correctly sent the Flood Request to neighbor with 4 id
+17:34:29 [INFO] (3) Drone 2 correctly sent the Flood Request to neighbor with 1 id
+17:34:29 [INFO] (3) Drone 2 correctly sent the Flood Request to neighbor with 3 id
+17:34:29 [INFO] (3) Drone 2: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [2, 3, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (2, Drone), (4, Client)] }) }
+17:34:29 [INFO] (3) Drone 2: packet forwarded to next hop 3
+17:34:29 [INFO] (3) Drone 2 correctly sent the Flood Request to neighbor with 4 id
+17:34:29 [INFO] (3) Drone 2 correctly sent the Flood Request to neighbor with 3 id
+17:34:29 [INFO] (3) Drone 2 correctly sent the Flood Request to neighbor with 6 id
+17:34:29 [INFO] (7) CommuncationServer 6: Sending FloodResponse: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [2, 3, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (2, Drone), (6, Server)] }) }
+17:34:29 [INFO] (7) CommunicationServer 6: Sent FloodResponse back to 2
+17:34:29 [INFO] (7) CommuncationServer 6: Received packet Ok(Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [5, 1] }, session_id: 1739122469164, pack_type: FloodRequest(FloodRequest { flood_id: 1739122469164, initiator_id: 5, path_trace: [(5, Client), (1, Drone), (2, Drone)] }) })
+17:34:29 [INFO] (7) Server 6: Received packet: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [5, 1] }, session_id: 1739122469164, pack_type: FloodRequest(FloodRequest { flood_id: 1739122469164, initiator_id: 5, path_trace: [(5, Client), (1, Drone), (2, Drone)] }) }
+17:34:29 [INFO] (7) CommunicationServer 6: Received FloodRequest FloodRequest { flood_id: 1739122469164, initiator_id: 5, path_trace: [(5, Client), (1, Drone), (2, Drone)] }
+17:34:29 [INFO] (7) CommunicationServer 6 : updating graph knowledge using path trace [(5, Client), (1, Drone), (2, Drone)]
+17:34:29 [INFO] (7) CommuncationServer 6: Sending FloodResponse: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [2, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (6, Server)] }) }
+17:34:29 [INFO] (7) CommunicationServer 6: Sent FloodResponse back to 2
+17:34:29 [INFO] (3) Drone 2: packet forwarded to next hop 3
+17:34:29 [INFO] (3) Drone 2 correctly sent back a Flood Response because has already received this flood request
+17:34:29 [INFO] (3) Drone 2: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [2, 3, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (2, Drone), (6, Server)] }) }
+17:34:29 [INFO] (3) Drone 2: packet forwarded to next hop 3
+17:34:29 [INFO] (3) Drone 2: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [2, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (6, Server)] }) }
+17:34:29 [INFO] (3) Drone 2: packet forwarded to next hop 1
+17:34:29 [INFO] (4) Drone 3: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [3, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (6, Server)] }) }
+17:34:29 [INFO] (4) Drone 3: packet forwarded to next hop 4
+17:34:29 [INFO] (4) Drone 3: packet forwarded to next hop 2
+17:34:29 [INFO] (4) Drone 3 correctly sent back a Flood Response because has already received this flood request
+17:34:29 [INFO] (4) Drone 3: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [2, 3, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (2, Drone), (4, Client)] }) }
+17:34:29 [INFO] (4) Drone 3: packet forwarded to next hop 4
+17:34:29 [INFO] (4) Drone 3 correctly sent the Flood Request to neighbor with 4 id
+17:34:29 [INFO] (4) Drone 3 correctly sent the Flood Request to neighbor with 6 id
+17:34:29 [INFO] (4) Drone 3 correctly sent the Flood Request to neighbor with 1 id
+17:34:29 [INFO] (4) Drone 3: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [2, 3, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (3, Drone), (2, Drone)] }) }
+17:34:29 [INFO] (4) Drone 3: packet forwarded to next hop 6
+17:34:29 [INFO] (4) Drone 3: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [2, 3, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (2, Drone), (6, Server)] }) }
+17:34:29 [INFO] (4) Drone 3: packet forwarded to next hop 4
+17:34:29 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [6, 2] }, session_id: 1739122469166, pack_type: FloodRequest(FloodRequest { flood_id: 1739122469166, initiator_id: 6, path_trace: [(6, Server), (2, Drone)] }) }
+17:34:29 [INFO] (5) Client 4: Ricevuto FloodRequest: FloodRequest { flood_id: 1739122469166, initiator_id: 6, path_trace: [(6, Server), (2, Drone)] }
+17:34:29 [INFO] (5) Client 4: Aggiornamento del grafo con: [(6, Server), (2, Drone)]
+17:34:29 [INFO] (2) Drone 1 correctly sent the Flood Request to neighbor with 2 id
+17:34:29 [INFO] (3) Drone 2: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [3, 2, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (2, Drone), (3, Drone)] }) }
+17:34:29 [INFO] (7) CommuncationServer 6: Received packet Ok(Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [5, 1] }, session_id: 1739122469164, pack_type: FloodRequest(FloodRequest { flood_id: 1739122469164, initiator_id: 5, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone)] }) })
+17:34:29 [INFO] (7) Server 6: Received packet: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [5, 1] }, session_id: 1739122469164, pack_type: FloodRequest(FloodRequest { flood_id: 1739122469164, initiator_id: 5, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone)] }) }
+17:34:29 [INFO] (7) CommunicationServer 6: Received FloodRequest FloodRequest { flood_id: 1739122469164, initiator_id: 5, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone)] }
+17:34:29 [INFO] (7) CommunicationServer 6 : updating graph knowledge using path trace [(5, Client), (1, Drone), (2, Drone), (3, Drone)]
+17:34:29 [INFO] (7) CommuncationServer 6: Sending FloodResponse: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [3, 2, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone), (6, Server)] }) }
+17:34:29 [INFO] (7) CommunicationServer 6: Sent FloodResponse back to 3
+17:34:29 [INFO] (7) CommuncationServer 6: Received packet Ok(Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [2, 3, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (3, Drone), (2, Drone)] }) })
+17:34:29 [INFO] (7) Server 6: Received packet: Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [2, 3, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (3, Drone), (2, Drone)] }) }
+17:34:29 [INFO] (7) CommuncationServer 6: Received FloodResponse: FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (3, Drone), (2, Drone)] }
+17:34:29 [INFO] (7) CommunicationServer 6 : updating graph knowledge using path trace [(6, Server), (3, Drone), (2, Drone)]
+17:34:29 [INFO] (7) CommuncationServer 6: Received packet Ok(Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [3, 2, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (2, Drone), (3, Drone)] }) })
+17:34:29 [INFO] (7) Server 6: Received packet: Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [3, 2, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (2, Drone), (3, Drone)] }) }
+17:34:29 [INFO] (7) CommuncationServer 6: Received FloodResponse: FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (2, Drone), (3, Drone)] }
+17:34:29 [INFO] (7) CommunicationServer 6 : updating graph knowledge using path trace [(6, Server), (2, Drone), (3, Drone)]
+17:34:29 [INFO] (2) Drone 1 correctly sent the Flood Request to neighbor with 3 id
+17:34:29 [INFO] (4) Drone 3: packet forwarded to next hop 1
+17:34:29 [INFO] (4) Drone 3 correctly sent back a Flood Response because has already received this flood request
+17:34:29 [INFO] (4) Drone 3: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [3, 2, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone), (6, Server)] }) }
+17:34:29 [INFO] (4) Drone 3: packet forwarded to next hop 2
+17:34:29 [INFO] (3) Drone 2: packet forwarded to next hop 6
+17:34:29 [INFO] (5) Client 4: Invio di FloodResponse a 6, response packet: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [2, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (2, Drone), (4, Client)] }) }
+17:34:29 [INFO] (5) Client 4: Invio di FloodResponse tramite 2
+17:34:29 [INFO] (5) Client 4: Pacchetto inviato a 2: deve arrivare a 6
+17:34:29 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [6, 3] }, session_id: 1739122469166, pack_type: FloodRequest(FloodRequest { flood_id: 1739122469166, initiator_id: 6, path_trace: [(6, Server), (3, Drone)] }) }
+17:34:29 [INFO] (5) Client 4: Ricevuto FloodRequest: FloodRequest { flood_id: 1739122469166, initiator_id: 6, path_trace: [(6, Server), (3, Drone)] }
+17:34:29 [INFO] (5) Client 4: Aggiornamento del grafo con: [(6, Server), (3, Drone)]
+17:34:29 [INFO] (5) Client 4: Invio di FloodResponse a 6, response packet: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [3, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (3, Drone), (4, Client)] }) }
+17:34:29 [INFO] (5) Client 4: Invio di FloodResponse tramite 3
+17:34:29 [INFO] (5) Client 4: Pacchetto inviato a 3: deve arrivare a 6
+17:34:29 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [5, 1] }, session_id: 1739122469164, pack_type: FloodRequest(FloodRequest { flood_id: 1739122469164, initiator_id: 5, path_trace: [(5, Client), (1, Drone), (2, Drone)] }) }
+17:34:29 [INFO] (5) Client 4: Ricevuto FloodRequest: FloodRequest { flood_id: 1739122469164, initiator_id: 5, path_trace: [(5, Client), (1, Drone), (2, Drone)] }
+17:34:29 [INFO] (5) Client 4: Aggiornamento del grafo con: [(5, Client), (1, Drone), (2, Drone)]
+17:34:29 [INFO] (5) Client 4: Invio di FloodResponse a 5, response packet: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [2, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (4, Client)] }) }
+17:34:29 [INFO] (5) Client 4: Invio di FloodResponse tramite 2
+17:34:29 [INFO] (5) Client 4: Pacchetto inviato a 2: deve arrivare a 5
+17:34:29 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [3, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (6, Server)] }) }
+17:34:29 [INFO] (5) Client 4: Ricevuto FloodResponse: FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (6, Server)] }
+17:34:29 [INFO] (5) Client 4: Aggiornamento del grafo con: [(4, Client), (3, Drone), (6, Server)]
+17:34:29 [INFO] (3) Drone 2: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [3, 2, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone), (6, Server)] }) }
+17:34:29 [INFO] (2) Drone 1 correctly sent the Flood Request to neighbor with 3 id
+17:34:29 [INFO] (4) Drone 3: packet forwarded to next hop 1
+17:34:29 [INFO] (6) Client 5: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [4, 3] }, session_id: 1739122469163, pack_type: FloodRequest(FloodRequest { flood_id: 1739122469163, initiator_id: 4, path_trace: [(4, Client), (3, Drone), (2, Drone), (1, Drone)] }) }
+17:34:29 [INFO] (6) Client 5: Ricevuto FloodRequest: FloodRequest { flood_id: 1739122469163, initiator_id: 4, path_trace: [(4, Client), (3, Drone), (2, Drone), (1, Drone)] }
+17:34:29 [INFO] (6) Client 5: Aggiornamento del grafo con: [(4, Client), (3, Drone), (2, Drone), (1, Drone)]
+17:34:29 [INFO] (4) Drone 3 correctly sent back a Flood Response because has already received this flood request
+17:34:29 [INFO] (4) Drone 3: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [3, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (3, Drone), (4, Client)] }) }
+17:34:29 [INFO] (4) Drone 3: packet forwarded to next hop 6
+17:34:29 [INFO] (2) Drone 1 correctly sent the Flood Request to neighbor with 5 id
+17:34:29 [INFO] (2) Drone 1: packet forwarded to next hop 3
+17:34:29 [INFO] (2) Drone 1 correctly sent back a Flood Response because has already received this flood request
+17:34:29 [INFO] (2) Drone 1 correctly sent the Flood Request to neighbor with 2 id
+17:34:29 [INFO] (2) Drone 1 correctly sent the Flood Request to neighbor with 5 id
+17:34:29 [INFO] (2) Drone 1: packet forwarded to next hop 2
+17:34:29 [INFO] (2) Drone 1 correctly sent back a Flood Response because has already received this flood request
+17:34:29 [INFO] (2) Drone 1: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [2, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (6, Server)] }) }
+17:34:29 [INFO] (2) Drone 1: packet forwarded to next hop 5
+17:34:29 [INFO] (2) Drone 1: packet forwarded to next hop 3
+17:34:29 [INFO] (2) Drone 1 correctly sent back a Flood Response because has already received this flood request
+17:34:29 [INFO] (2) Drone 1: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [3, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (3, Drone)] }) }
+17:34:29 [INFO] (2) Drone 1: packet forwarded to next hop 5
+17:34:29 [INFO] (2) Drone 1: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [3, 1, 2, 3, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (2, Drone), (1, Drone), (3, Drone)] }) }
+17:34:29 [INFO] (2) Drone 1: packet forwarded to next hop 2
+17:34:29 [INFO] (2) Drone 1: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [3, 2, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone), (6, Server)] }) }
+17:34:29 [INFO] (2) Drone 1: packet forwarded to next hop 5
+17:34:29 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [2, 3, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (2, Drone), (4, Client)] }) }
+17:34:29 [INFO] (5) Client 4: Ricevuto FloodResponse: FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (2, Drone), (4, Client)] }
+17:34:29 [INFO] (5) Client 4: Aggiornamento del grafo con: [(4, Client), (3, Drone), (2, Drone), (4, Client)]
+17:34:29 [INFO] (6) Client 5: Invio di FloodResponse a 4, response packet: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [1, 2, 3, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (2, Drone), (1, Drone), (5, Client)] }) }
+17:34:29 [INFO] (6) Client 5: Invio di FloodResponse tramite 1
+17:34:29 [INFO] (6) Client 5: Pacchetto inviato a 1: deve arrivare a 4
+17:34:29 [INFO] (6) Client 5: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [6, 3] }, session_id: 1739122469166, pack_type: FloodRequest(FloodRequest { flood_id: 1739122469166, initiator_id: 6, path_trace: [(6, Server), (3, Drone), (1, Drone)] }) }
+17:34:29 [INFO] (6) Client 5: Ricevuto FloodRequest: FloodRequest { flood_id: 1739122469166, initiator_id: 6, path_trace: [(6, Server), (3, Drone), (1, Drone)] }
+17:34:29 [INFO] (6) Client 5: Aggiornamento del grafo con: [(6, Server), (3, Drone), (1, Drone)]
+17:34:29 [INFO] (3) Drone 2: packet forwarded to next hop 1
+17:34:29 [INFO] (3) Drone 2: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [2, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (2, Drone), (4, Client)] }) }
+17:34:29 [INFO] (3) Drone 2: packet forwarded to next hop 6
+17:34:29 [INFO] (3) Drone 2: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [2, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (4, Client)] }) }
+17:34:29 [INFO] (3) Drone 2: packet forwarded to next hop 1
+17:34:29 [INFO] (6) Client 5: Invio di FloodResponse a 6, response packet: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [1, 3, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (3, Drone), (1, Drone), (5, Client)] }) }
+17:34:29 [INFO] (6) Client 5: Invio di FloodResponse tramite 1
+17:34:29 [INFO] (6) Client 5: Pacchetto inviato a 1: deve arrivare a 6
+17:34:29 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [5, 1] }, session_id: 1739122469164, pack_type: FloodRequest(FloodRequest { flood_id: 1739122469164, initiator_id: 5, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone)] }) }
+17:34:29 [INFO] (5) Client 4: Ricevuto FloodRequest: FloodRequest { flood_id: 1739122469164, initiator_id: 5, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone)] }
+17:34:29 [INFO] (5) Client 4: Aggiornamento del grafo con: [(5, Client), (1, Drone), (2, Drone), (3, Drone)]
+17:34:29 [INFO] (2) Drone 1: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [1, 2, 3, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (2, Drone), (1, Drone), (5, Client)] }) }
+17:34:29 [INFO] (2) Drone 1: packet forwarded to next hop 2
+17:34:29 [INFO] (2) Drone 1: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [2, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (4, Client)] }) }
+17:34:29 [INFO] (2) Drone 1: packet forwarded to next hop 5
+17:34:29 [INFO] (2) Drone 1: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [2, 1, 3, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (3, Drone), (1, Drone), (2, Drone)] }) }
+17:34:29 [INFO] (2) Drone 1: packet forwarded to next hop 3
+17:34:29 [INFO] (2) Drone 1: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [1, 3, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (3, Drone), (1, Drone), (5, Client)] }) }
+17:34:29 [INFO] (2) Drone 1: packet forwarded to next hop 3
+17:34:29 [INFO] (4) Drone 3: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [1, 3, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (1, Drone)] }) }
+17:34:29 [INFO] (4) Drone 3: packet forwarded to next hop 4
+17:34:29 [INFO] (4) Drone 3: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [1, 3, 2, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone), (1, Drone)] }) }
+17:34:29 [INFO] (4) Drone 3: packet forwarded to next hop 2
+17:34:29 [INFO] (4) Drone 3: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [2, 1, 3, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (3, Drone), (1, Drone), (2, Drone)] }) }
+17:34:29 [INFO] (4) Drone 3: packet forwarded to next hop 6
+17:34:29 [INFO] (4) Drone 3: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [1, 3, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (3, Drone), (1, Drone), (5, Client)] }) }
+17:34:29 [INFO] (4) Drone 3: packet forwarded to next hop 6
+17:34:29 [INFO] (6) Client 5: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [2, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (6, Server)] }) }
+17:34:29 [INFO] (6) Client 5: Ricevuto FloodResponse: FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (6, Server)] }
+17:34:29 [INFO] (6) Client 5: Aggiornamento del grafo con: [(5, Client), (1, Drone), (2, Drone), (6, Server)]
+17:34:29 [INFO] (6) Client 5: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [3, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (3, Drone)] }) }
+17:34:29 [INFO] (6) Client 5: Ricevuto FloodResponse: FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (3, Drone)] }
+17:34:29 [INFO] (6) Client 5: Aggiornamento del grafo con: [(5, Client), (1, Drone), (3, Drone)]
+17:34:29 [INFO] (6) Client 5: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 3, hops: [3, 2, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone), (6, Server)] }) }
+17:34:29 [INFO] (6) Client 5: Ricevuto FloodResponse: FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone), (6, Server)] }
+17:34:29 [INFO] (6) Client 5: Aggiornamento del grafo con: [(5, Client), (1, Drone), (2, Drone), (3, Drone), (6, Server)]
+17:34:29 [INFO] (6) Client 5: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [2, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (4, Client)] }) }
+17:34:29 [INFO] (6) Client 5: Ricevuto FloodResponse: FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (4, Client)] }
+17:34:29 [INFO] (6) Client 5: Aggiornamento del grafo con: [(5, Client), (1, Drone), (2, Drone), (4, Client)]
+17:34:29 [INFO] (7) CommuncationServer 6: Received packet Ok(Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [3, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (3, Drone), (4, Client)] }) })
+17:34:29 [INFO] (7) Server 6: Received packet: Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [3, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (3, Drone), (4, Client)] }) }
+17:34:29 [INFO] (7) CommuncationServer 6: Received FloodResponse: FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (3, Drone), (4, Client)] }
+17:34:29 [INFO] (7) CommunicationServer 6 : updating graph knowledge using path trace [(6, Server), (3, Drone), (4, Client)]
+17:34:29 [INFO] (5) Client 4: Invio di FloodResponse a 5, response packet: Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [3, 2, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone), (4, Client)] }) }
+17:34:29 [INFO] (5) Client 4: Invio di FloodResponse tramite 3
+17:34:29 [INFO] (7) CommuncationServer 6: Received packet Ok(Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [2, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (2, Drone), (4, Client)] }) })
+17:34:29 [INFO] (7) Server 6: Received packet: Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [2, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (2, Drone), (4, Client)] }) }
+17:34:29 [INFO] (7) CommuncationServer 6: Received FloodResponse: FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (2, Drone), (4, Client)] }
+17:34:29 [INFO] (7) CommunicationServer 6 : updating graph knowledge using path trace [(6, Server), (2, Drone), (4, Client)]
+17:34:29 [INFO] (7) CommuncationServer 6: Received packet Ok(Packet { routing_header: SourceRoutingHeader { hop_index: 3, hops: [2, 1, 3, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (3, Drone), (1, Drone), (2, Drone)] }) })
+17:34:29 [INFO] (7) Server 6: Received packet: Packet { routing_header: SourceRoutingHeader { hop_index: 3, hops: [2, 1, 3, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (3, Drone), (1, Drone), (2, Drone)] }) }
+17:34:29 [INFO] (7) CommuncationServer 6: Received FloodResponse: FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (3, Drone), (1, Drone), (2, Drone)] }
+17:34:29 [INFO] (7) CommunicationServer 6 : updating graph knowledge using path trace [(6, Server), (3, Drone), (1, Drone), (2, Drone)]
+17:34:29 [INFO] (5) Client 4: Pacchetto inviato a 3: deve arrivare a 5
+17:34:29 [INFO] (4) Drone 3: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: [3, 2, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone), (4, Client)] }) }
+17:34:29 [INFO] (4) Drone 3: packet forwarded to next hop 2
+17:34:29 [INFO] (7) CommuncationServer 6: Received packet Ok(Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [1, 3, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (3, Drone), (1, Drone), (5, Client)] }) })
+17:34:29 [INFO] (7) Server 6: Received packet: Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [1, 3, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (3, Drone), (1, Drone), (5, Client)] }) }
+17:34:29 [INFO] (7) CommuncationServer 6: Received FloodResponse: FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (3, Drone), (1, Drone), (5, Client)] }
+17:34:29 [INFO] (7) CommunicationServer 6 : updating graph knowledge using path trace [(6, Server), (3, Drone), (1, Drone), (5, Client)]
+17:34:29 [INFO] (3) Drone 2: packet forwarded to next hop 1
+17:34:29 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [2, 3, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (2, Drone), (6, Server)] }) }
+17:34:29 [INFO] (5) Client 4: Ricevuto FloodResponse: FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (2, Drone), (6, Server)] }
+17:34:29 [INFO] (5) Client 4: Aggiornamento del grafo con: [(4, Client), (3, Drone), (2, Drone), (6, Server)]
+17:34:29 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [1, 3, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (1, Drone)] }) }
+17:34:29 [INFO] (5) Client 4: Ricevuto FloodResponse: FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (1, Drone)] }
+17:34:29 [INFO] (5) Client 4: Aggiornamento del grafo con: [(4, Client), (3, Drone), (1, Drone)]
+17:34:29 [INFO] (3) Drone 2 correctly sent back a Flood Response because has already received this flood request
+17:34:29 [INFO] (3) Drone 2: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [1, 2, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (2, Drone), (1, Drone)] }) }
+17:34:29 [INFO] (3) Drone 2: packet forwarded to next hop 6
+17:34:29 [INFO] (3) Drone 2: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [3, 1, 2, 3, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (2, Drone), (1, Drone), (3, Drone)] }) }
+17:34:29 [INFO] (7) CommuncationServer 6: Received packet Ok(Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [1, 2, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (2, Drone), (1, Drone)] }) })
+17:34:29 [INFO] (7) Server 6: Received packet: Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [1, 2, 6] }, session_id: 1739122469166, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (2, Drone), (1, Drone)] }) }
+17:34:29 [INFO] (7) CommuncationServer 6: Received FloodResponse: FloodResponse { flood_id: 1739122469166, path_trace: [(6, Server), (2, Drone), (1, Drone)] }
+17:34:29 [INFO] (7) CommunicationServer 6 : updating graph knowledge using path trace [(6, Server), (2, Drone), (1, Drone)]
+17:34:29 [INFO] (4) Drone 3: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 3, hops: [3, 1, 2, 3, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (2, Drone), (1, Drone), (3, Drone)] }) }
+17:34:29 [INFO] (3) Drone 2: packet forwarded to next hop 3
+17:34:29 [INFO] (4) Drone 3: packet forwarded to next hop 4
+17:34:29 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 4, hops: [3, 1, 2, 3, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (2, Drone), (1, Drone), (3, Drone)] }) }
+17:34:29 [INFO] (5) Client 4: Ricevuto FloodResponse: FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (2, Drone), (1, Drone), (3, Drone)] }
+17:34:29 [INFO] (5) Client 4: Aggiornamento del grafo con: [(4, Client), (3, Drone), (2, Drone), (1, Drone), (3, Drone)]
+17:34:29 [INFO] (3) Drone 2: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [1, 2, 3, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (2, Drone), (1, Drone), (5, Client)] }) }
+17:34:29 [INFO] (3) Drone 2: packet forwarded to next hop 3
+17:34:29 [INFO] (3) Drone 2: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [1, 3, 2, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone), (1, Drone)] }) }
+17:34:29 [INFO] (3) Drone 2: packet forwarded to next hop 1
+17:34:29 [INFO] (3) Drone 2: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 1, hops: [3, 2, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone), (4, Client)] }) }
+17:34:29 [INFO] (3) Drone 2: packet forwarded to next hop 1
+17:34:29 [INFO] (4) Drone 3: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [1, 2, 3, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (2, Drone), (1, Drone), (5, Client)] }) }
+17:34:29 [INFO] (4) Drone 3: packet forwarded to next hop 4
+17:34:29 [INFO] (2) Drone 1: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 3, hops: [1, 3, 2, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone), (1, Drone)] }) }
+17:34:29 [INFO] (2) Drone 1: packet forwarded to next hop 5
+17:34:29 [INFO] (2) Drone 1: Received packet Packet { routing_header: SourceRoutingHeader { hop_index: 2, hops: [3, 2, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone), (4, Client)] }) }
+17:34:29 [INFO] (2) Drone 1: packet forwarded to next hop 5
+17:34:29 [INFO] (5) Client 4: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 3, hops: [1, 2, 3, 4] }, session_id: 1739122469163, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (2, Drone), (1, Drone), (5, Client)] }) }
+17:34:29 [INFO] (5) Client 4: Ricevuto FloodResponse: FloodResponse { flood_id: 1739122469163, path_trace: [(4, Client), (3, Drone), (2, Drone), (1, Drone), (5, Client)] }
+17:34:29 [INFO] (5) Client 4: Aggiornamento del grafo con: [(4, Client), (3, Drone), (2, Drone), (1, Drone), (5, Client)]
+17:34:29 [INFO] (6) Client 5: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 4, hops: [1, 3, 2, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone), (1, Drone)] }) }
+17:34:29 [INFO] (6) Client 5: Ricevuto FloodResponse: FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone), (1, Drone)] }
+17:34:29 [INFO] (6) Client 5: Aggiornamento del grafo con: [(5, Client), (1, Drone), (2, Drone), (3, Drone), (1, Drone)]
+17:34:29 [INFO] (6) Client 5: Ricevuto pacchetto: Packet { routing_header: SourceRoutingHeader { hop_index: 3, hops: [3, 2, 1, 5] }, session_id: 1739122469164, pack_type: FloodResponse(FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone), (4, Client)] }) }
+17:34:29 [INFO] (6) Client 5: Ricevuto FloodResponse: FloodResponse { flood_id: 1739122469164, path_trace: [(5, Client), (1, Drone), (2, Drone), (3, Drone), (4, Client)] }
+17:34:29 [INFO] (6) Client 5: Aggiornamento del grafo con: [(5, Client), (1, Drone), (2, Drone), (3, Drone), (4, Client)]

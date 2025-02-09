@@ -208,7 +208,7 @@ impl eframe::App for DronegowskiSimulationController<'_> {
 
 
         egui::SidePanel::right("right_panel").resizable(false).exact_width(300.0).frame(egui::Frame::none().fill(Color32::WHITE)).show(ctx, |ui| {
-
+            self.right_panel(ui);
 
         });
         egui::CentralPanel::default().frame(egui::Frame::none()).show(ctx, |ui| {
