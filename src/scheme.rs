@@ -8,7 +8,7 @@ use crate::{DronegowskiSimulationController};
 impl DronegowskiSimulationController<'_> {
     pub fn central_panel(&mut self, ui: &mut egui::Ui) {
         let (response, painter) = ui.allocate_painter(ui.ctx().screen_rect().size(), egui::Sense::click());
-        let background_color = Color32::LIGHT_GRAY;
+        let background_color = Color32::GRAY;
         painter.rect_filled(response.rect, 0.0, background_color);
 
         let panel_offset = response.rect.min;
@@ -28,7 +28,7 @@ impl DronegowskiSimulationController<'_> {
 
                     // Linee collegate al nodo selezionato diventano grigie
                     let line_color = if is_connected_to_clicked {
-                        Color32::GRAY
+                        Color32::DARK_GRAY
                     } else {
                         Color32::BLACK
                     };
@@ -166,7 +166,7 @@ impl DronegowskiSimulationController<'_> {
         } else if distance > 30. {
             if let Some(selected_node) = &self.panel.central_panel.selected_node {
                 let start_pos = Pos2::new(selected_node.xy.0 + panel_offset.x, selected_node.xy.1 + panel_offset.y);
-                draw_dashed_line(&painter, start_pos, pointer, Stroke::new(4.0, Color32::GRAY), 10.0, 5.0);
+                draw_dashed_line(&painter, start_pos, pointer, Stroke::new(4.0, Color32::DARK_GRAY), 10.0, 5.0);
             }
         }
     }

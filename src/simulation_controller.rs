@@ -199,16 +199,18 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                 ui.painter().rect_filled(
                     ui.available_rect_before_wrap(),
                     0.0,
-                    Color32::DARK_GRAY,
+                    Color32::WHITE,
                 );
-                ui.label("Bottom Left Part");
-
                 self.bottom_left_panel(ui);
                 // Add your elements for the bottom left part here
             });
         });
 
 
+        egui::SidePanel::right("right_panel").resizable(false).exact_width(300.0).frame(egui::Frame::none().fill(Color32::WHITE)).show(ctx, |ui| {
+
+
+        });
         egui::CentralPanel::default().frame(egui::Frame::none()).show(ctx, |ui| {
             self.central_panel(ui);
         });
