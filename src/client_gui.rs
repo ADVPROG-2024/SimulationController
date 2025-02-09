@@ -10,7 +10,7 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
     let id = egui::Id::new(node_id).with("client_gui_state");
 
     // Use a helper function to simplify state management.  Crucially, use FnMut
-    fn get_set_state<T: Clone + 'static + Send + Sync>(ctx: &egui::Context, id: egui::Id, default: T) -> (T, impl FnMut(T) + use<'_, T>) {
+    fn get_set_state<T: Clone + 'static + Send + Sync>(ctx: &egui::Context, id: egui::Id, default: T, ) -> (T, impl FnMut(T) + '_) {
         let current_value = ctx.data_mut(|data| data.get_temp_mut_or(id, default.clone()).clone());
         let set_value = move |new_value: T| {
             ctx.data_mut(|data| data.insert_temp(id, new_value));
