@@ -108,6 +108,8 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                             ClientEvent::RegistrationOk(client_id, _) => Some(client_id),
                             ClientEvent::RegistrationError(client_id, _) => Some(client_id),
                             ClientEvent::MessageReceived(_) => None,
+                            ClientEvent::Error(client_id, _) => Some(client_id),
+                            _ => {None}
                         };
 
                         if let Some(client_id) = client_id {
@@ -115,6 +117,15 @@ impl eframe::App for DronegowskiSimulationController<'_> {
 
                             // Update GUI state based on the received event
                             match client_event {
+                                // SimulationController::handle_client_event
+                                ClientEvent::Error(client_id, msg) => {
+                                    let id = egui::Id::new(client_id).with("client_gui_state");
+                                    ctx.data_mut(|data| {
+                                        let mut errors = data.get_temp::<Vec<String>>(id.with("error_messages")).unwrap_or_default();
+                                        errors.push(msg.clone());
+                                        data.insert_temp(id.with("error_messages"), errors);
+                                    });
+                                }
                                 ClientEvent::ServerTypeReceived(client_id, server_id, server_type) => {
                                     ctx.data_mut(|data| data.insert_temp(id.with("server_type"), Some((server_id, server_type))));
                                     log::info!("Simulation Controller: Received ClientEvent::ServerTypeReceived");
