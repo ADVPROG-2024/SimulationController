@@ -4,6 +4,8 @@ use dronegowski_utils::hosts::{ClientCommand, ClientEvent, ServerType, ClientTyp
 use eframe::egui;
 use eframe::egui::{Color32, RichText, Layout, Align, WidgetText, Sense};
 use wg_2024::network::NodeId;
+use image::{ImageFormat, load_from_memory};
+use egui::{ColorImage, TextureHandle};
 
 pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut Vec<NodeId>, available_servers: &Vec<NodeId>, sc_client_channels: &HashMap<NodeId, Sender<ClientCommand>>, client_type: ClientType) {
     // --- State Management (Using persistent storage) ---
@@ -35,6 +37,8 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
     let (mut status_messages, mut set_status_messages) = get_set_state(ctx, id.with("status_messages"), Vec::<String>::new());
     let (mut is_request_pending, mut set_is_request_pending) = get_set_state(ctx, id.with("request_pending"), false);
     let (mut connected_server, mut set_connected_server) = get_set_state(ctx, id.with("connected_server"), None::<NodeId>);
+    let (mut received_texture, mut set_received_texture) = get_set_state(ctx, id.with("received_texture"), None::<TextureHandle>);
+
 
     // --- Styling ---
     let mut style = (*ctx.style()).clone();
@@ -69,43 +73,6 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
 
             ui.separator();
             ui.add_space(5.0);
-
-            // Refresh button (with loading indicator)
-            // ui.horizontal(|ui| {
-            //     let refresh_button = ui.add_enabled(
-            //         !is_request_pending,
-            //         egui::Button::new(
-            //             if is_request_pending {
-            //                 RichText::new("Refreshing...").size(14.0)
-            //             } else {
-            //                 RichText::new("Refresh Topology").size(14.0)
-            //             }
-            //         )
-            //     );
-            //
-            //     if refresh_button.clicked() {
-            //         if let Some(client_sender) = sc_client_channels.get(node_id) {
-            //             if let Err(e) = client_sender.send(ClientCommand::RequestNetworkDiscovery) {
-            //                 log::error!("Failed to send discovery request: {:?}", e);
-            //                 let mut current_messages = status_messages.clone();
-            //                 current_messages.push(format!("Error requesting discovery: {:?}", e));
-            //                 set_status_messages(current_messages);
-            //                 // Critically, reset is_request_pending on error
-            //                 set_is_request_pending(false);
-            //
-            //             } else {
-            //                 let mut current_messages = status_messages.clone();
-            //                 current_messages.push("Sent network discovery request.".to_string());
-            //                 set_status_messages(current_messages);
-            //                 set_is_request_pending(true);
-            //             }
-            //         }
-            //     }
-            //     if is_request_pending {
-            //         ui.spinner(); // Show a spinner while refreshing
-            //     }
-            // });
-
 
             ui.label(RichText::new("Choose an action:").color(text_color));
 
@@ -327,7 +294,34 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
 
                 if let Some((server_id, media)) = &received_media {
                     ui.label(RichText::new(format!("Received media (from {}): dim {}", server_id, media.len())).color(text_color));
+
+                    match load_from_memory(media.as_slice()) {
+                        Ok(image) => {
+                            let size = [image.width() as usize, image.height() as usize];
+                            let image_buffer = image.to_rgba8();
+                            let pixels = image_buffer.as_flat_samples();
+                            let color_image = ColorImage::from_rgba_unmultiplied(
+                                size,
+                                pixels.as_slice(),
+                            );
+
+                            let texture = ctx.load_texture(
+                                "received-image",
+                                color_image,
+                                Default::default()
+                            );
+                            set_received_texture(Some(texture));
+                        }
+                        Err(e) => {
+                            ui.label(RichText::new(format!("Failed to decode image: {}", e)).color(Color32::RED));
+                        }
+                    }
                 }
+
+                if let Some(texture_handle) = &received_texture {
+                    ui.image(texture_handle);
+                }
+
 
                 if let Some((server_id, from_id, message)) = &message_from {
                     ui.label(RichText::new(format!("Received message (from {}):", server_id)).color(text_color));
