@@ -1,5 +1,6 @@
 use std::fmt::Debug;
-use dronegowski_utils::hosts::{ClientEvent, ServerEvent};
+use dronegowski_utils::hosts::{ClientCommand, ClientEvent, ServerCommand, ServerEvent};
+use dronegowski_utils::network::SimulationControllerNodeType;
 use eframe::egui;
 use wg_2024::controller::DroneEvent;
 use wg_2024::packet::{NackType, PacketType};
@@ -65,6 +66,25 @@ impl DronegowskiSimulationController<'_> {
                                     ui.label(format!("Drone {} sent directly to Simulation Controller a FloodResponse", node_id_receiver));
                                 }
                                 _ => {}
+                            }
+                            let node_id = packet.routing_header.hops[packet.routing_header.hops.len()];
+                            let node_index = self.nodi.iter().position(|node| node.node_id == node_id);
+                            if let Some(node_idx) = node_index{
+                                let node = self.nodi[node_idx].clone();
+                                match node.node_type{
+                                    SimulationControllerNodeType::SERVER { .. } => {
+                                        if let Some(channel) = self.sc_server_channels.get(&node.node_id){
+                                            channel.send(ServerCommand::ControllerShortcut(packet.clone())).expect("Impossible send ControllerShortcut to Client");
+
+                                        }
+                                    }
+                                    SimulationControllerNodeType::CLIENT { .. } => {
+                                        if let Some(channel) = self.sc_client_channels.get(&node.node_id) {
+                                            channel.send(ClientCommand::ControllerShortcut(packet.clone())).expect("Impossible send ControllerShortcut to Client");
+                                        }
+                                    }
+                                    _ =>{}
+                                }
                             }
                         }
                     }
