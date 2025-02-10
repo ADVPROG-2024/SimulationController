@@ -1,6 +1,8 @@
 use std::fmt::Debug;
-use dronegowski_utils::hosts::{ClientEvent, ServerEvent};
+use dronegowski_utils::hosts::{ClientCommand, ClientEvent, ServerCommand, ServerEvent};
+use dronegowski_utils::network::SimulationControllerNodeType;
 use eframe::egui;
+use eframe::egui::{Color32, Direction, Layout, RichText};
 use wg_2024::controller::DroneEvent;
 use wg_2024::packet::{NackType, PacketType};
 use crate::DronegowskiSimulationController;
@@ -8,7 +10,13 @@ use crate::sc_utils::Event;
 
 impl DronegowskiSimulationController<'_> {
     pub fn bottom_left_panel(&mut self, ui: &mut egui::Ui){
-        ui.heading("NOTIFICHE".to_string());
+        ui.add_space(20.);
+        ui.horizontal(|ui|{
+            ui.with_layout(Layout::centered_and_justified(Direction::LeftToRight), |ui| {
+                ui.heading(RichText::new("EVENTS").size(25.0).color(Color32::BLACK));
+            });
+        });
+        ui.add_space(20.);
 
         for elem in &self.panel.bottom_left_panel.event{
 
@@ -65,6 +73,24 @@ impl DronegowskiSimulationController<'_> {
                                     ui.label(format!("Drone {} sent directly to Simulation Controller a FloodResponse", node_id_receiver));
                                 }
                                 _ => {}
+                            }
+                            let node_id = packet.routing_header.hops[packet.routing_header.hops.len()];
+                            let node_index = self.nodi.iter().position(|node| node.node_id == node_id);
+                            if let Some(node_idx) = node_index{
+                                let node = self.nodi[node_idx].clone();
+                                match node.node_type{
+                                    SimulationControllerNodeType::SERVER { .. } => {
+                                        if let Some(channel) = self.sc_server_channels.get(&node.node_id){
+                                            channel.send(ServerCommand::ControllerShortcut(packet.clone())).expect("Impossible send ControllerShortcut to Client");
+                                        }
+                                    }
+                                    SimulationControllerNodeType::CLIENT { .. } => {
+                                        if let Some(channel) = self.sc_client_channels.get(&node.node_id) {
+                                            channel.send(ClientCommand::ControllerShortcut(packet.clone())).expect("Impossible send ControllerShortcut to Client");
+                                        }
+                                    }
+                                    _ =>{}
+                                }
                             }
                         }
                     }

@@ -1,10 +1,16 @@
 use dronegowski_utils::network::{SimulationControllerNode};
 use eframe::egui;
+use eframe::egui::{Color32, Direction, Layout, RichText};
 use crate::{DronegowskiSimulationController};
 
 impl DronegowskiSimulationController<'_> {
     pub fn upper_left_panel_default(&mut self, ui: &mut egui::Ui) {
-        ui.heading("SIMULATION CONTROLLER".to_string());
+        ui.add_space(20.);
+        ui.horizontal(|ui|{
+            ui.with_layout(Layout::centered_and_justified(Direction::LeftToRight), |ui| {
+                ui.heading(RichText::new("SIMULATION COMMANDS").size(25.0).color(Color32::BLACK));
+            });
+        });
         ui.add_space(20.);
 
         if ui.button("Spawn").clicked() && self.panel.upper_left_panel.spawn_pdr != "" {
@@ -20,12 +26,15 @@ impl DronegowskiSimulationController<'_> {
         if ui.button("Send").clicked(){
             self.send_packet_test();
         }
-
-
     }
 
     pub fn upper_left_panel_drone(&mut self, ui: &mut egui::Ui, node: SimulationControllerNode) {
-        ui.heading("Drone ".to_owned() + &*node.node_id.to_string());
+        ui.add_space(20.);
+        ui.horizontal(|ui|{
+            ui.with_layout(Layout::centered_and_justified(Direction::LeftToRight), |ui| {
+                ui.heading(RichText::new(format!("DRONE {} COMMANDS", node.node_id)).size(25.0).color(Color32::BLACK));
+            });
+        });
         ui.add_space(20.);
 
         ui.vertical(|ui| {
@@ -57,7 +66,12 @@ impl DronegowskiSimulationController<'_> {
     }
 
     pub fn upper_left_panel_client(&mut self, ui: &mut egui::Ui, node: SimulationControllerNode) {
-        ui.heading("Client ".to_owned() + &*node.node_id.to_string());
+        ui.add_space(20.);
+        ui.horizontal(|ui|{
+            ui.with_layout(Layout::centered_and_justified(Direction::LeftToRight), |ui| {
+                ui.heading(RichText::new(format!("CLIENT {} COMMANDS", node.node_id)).size(25.0).color(Color32::BLACK));
+            });
+        });
         ui.add_space(20.);
 
         if ui.button("Add Sender").clicked(){
@@ -71,8 +85,14 @@ impl DronegowskiSimulationController<'_> {
     }
 
     pub fn upper_left_panel_server(&mut self, ui: &mut egui::Ui, node: SimulationControllerNode) {
-        ui.heading("Server ".to_owned() + &*node.node_id.to_string());
         ui.add_space(20.);
+        ui.horizontal(|ui|{
+            ui.with_layout(Layout::centered_and_justified(Direction::LeftToRight), |ui| {
+                ui.heading(RichText::new(format!("SERVER {} COMMANDS", node.node_id)).size(25.0).color(Color32::BLACK));
+            });
+        });
+        ui.add_space(20.);
+
         if ui.button("Add Sender").clicked(){
             self.panel.upper_left_panel.add_sender = true;
         }
