@@ -11,6 +11,7 @@ use eframe::egui;
 use wg_2024::controller::{DroneCommand, DroneEvent};
 use wg_2024::network::{NodeId, SourceRoutingHeader};
 use dronegowski_utils::network::{SimulationControllerNode, SimulationControllerNodeType};
+use eframe::egui::accesskit::Node;
 use eframe::egui::Color32;
 use wg_2024::drone::Drone;
 use wg_2024::packet::{Fragment, Packet};
@@ -203,7 +204,9 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                     0.0,
                     Color32::DARK_GRAY,
                 );
-                self.bottom_left_panel(ui);
+                egui::ScrollArea::vertical().show(ui, |ui| {
+                    self.bottom_left_panel(ui);
+                });
                 // Add your elements for the bottom left part here
             });
         });
@@ -320,8 +323,6 @@ impl DronegowskiSimulationController<'_>{
             else{
                 self.panel.central_panel.active_error = result;
                 self.panel.central_panel.popup_timer = Some(Instant::now());
-
-                //println!("{:?}", result);
             }
             self.panel.reset();
         }
@@ -405,6 +406,7 @@ impl DronegowskiSimulationController<'_>{
             node_verification.retain(|node| node.node_id != current_node.node_id);
             let result = validate_network(&node_verification);
             if result.is_ok() {
+                self.remove_sender_crashing(current_node.clone());
                 self.nodi.retain(|node| node.node_id != current_node.node_id);
                 if let Some(controller_send) = self.sc_drone_channels.get(&current_node.node_id) {
                     controller_send.send(DroneCommand::Crash).expect("Error sending the command...");
@@ -455,6 +457,34 @@ impl DronegowskiSimulationController<'_>{
 
             drone.run();
         }));
+    }
+
+    fn remove_sender_crashing(&mut self, node: SimulationControllerNode){
+        for elem in node.neighbours{
+            if let Some(node_index) = self.nodi.iter().position(|node| node.node_id == elem) {
+                let mut neighbour = self.nodi[node_index].clone();
+                neighbour.neighbours.retain(|node_id| node_id.clone() != node.node_id);
+                self.nodi[node_index] = neighbour.clone();
+                match neighbour.node_type{
+                    SimulationControllerNodeType::SERVER { .. } => {
+                        if let Some(channel) = self.sc_server_channels.get(&elem){
+                            channel.send(ServerCommand::RemoveSender(node.node_id)).expect("Error sending the command");
+                        }
+                    }
+                    SimulationControllerNodeType::CLIENT { .. } => {
+                        if let Some(channel) = self.sc_client_channels.get(&elem){
+                            channel.send(ClientCommand::RemoveSender(node.node_id)).expect("Error sending the command");
+                        }
+                    }
+
+                    SimulationControllerNodeType::DRONE { .. } => {
+                        if let Some(channel) = self.sc_drone_channels.get(&elem){
+                            channel.send(DroneCommand::RemoveSender(node.node_id)).expect("Error sending the command");
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
