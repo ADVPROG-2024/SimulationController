@@ -64,13 +64,13 @@ impl DronegowskiSimulationController<'_> {
                             let node_id_receiver = packet.routing_header.hops[packet.routing_header.hop_index];
                             match packet.pack_type {
                                 PacketType::Ack(_) => {
-                                    self.print_drone_notify(format!("Drone {} sent directly to Simulation Controller an ACK", node_id_receiver), ui);
+                                    self.print_drone_notify(format!("Drone {} sent directly to SC an ACK", node_id_receiver), ui);
                                 }
                                 PacketType::Nack(_) => {
-                                    self.print_drone_notify(format!("Drone {} sent directly to Simulation Controller a NACK", node_id_receiver), ui);
+                                    self.print_drone_notify(format!("Drone {} sent directly to SC a NACK", node_id_receiver), ui);
                                 }
                                 PacketType::FloodResponse(_) => {
-                                    self.print_drone_notify(format!("Drone {} sent directly to Simulation Controller a FloodResponse", node_id_receiver), ui);
+                                    self.print_drone_notify(format!("Drone {} sent directly to SC a FloodResponse", node_id_receiver), ui);
                                 }
                                 _ => {}
                             }
@@ -180,7 +180,7 @@ impl DronegowskiSimulationController<'_> {
     fn print_drone_notify(&self, text: String, ui: &mut egui::Ui) {
         ui.horizontal(|ui| {
             ui.add_space(8.);
-            ui.label(RichText::new(text).size(10.0).color(Color32::LIGHT_BLUE));
+            ui.label(RichText::new(text).size(15.0).color(Color32::LIGHT_BLUE));
         });
 
         ui.add_space(8.);
@@ -189,7 +189,7 @@ impl DronegowskiSimulationController<'_> {
     fn print_client_notify(&self, text: String, ui: &mut egui::Ui) {
         ui.horizontal(|ui|{
             ui.add_space(8.);
-            ui.label(RichText::new(text).size(10.0).color(Color32::LIGHT_GREEN));
+            ui.label(RichText::new(text).size(15.0).color(Color32::LIGHT_GREEN));
         });
 
         ui.add_space(8.);
@@ -199,7 +199,7 @@ impl DronegowskiSimulationController<'_> {
     fn print_server_notify(&self, text: String, ui: &mut egui::Ui) {
         ui.horizontal(|ui| {
             ui.add_space(8.);
-            ui.label(RichText::new(text).size(10.0).color(Color32::LIGHT_RED));
+            ui.label(RichText::new(text).size(15.0).color(Color32::LIGHT_RED));
         });
 
         ui.add_space(8.);
