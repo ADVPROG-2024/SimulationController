@@ -236,7 +236,6 @@ impl eframe::App for DronegowskiSimulationController<'_> {
             }
         }
 
-
         // Rimuovi i popup chiusi
         for node_id in popups_to_remove {
             self.panel.central_panel.active_popups.remove(&node_id);
