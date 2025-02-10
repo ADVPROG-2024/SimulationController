@@ -106,9 +106,8 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                             ClientEvent::MediaReceived(client_id, _, _) => Some(client_id),
                             ClientEvent::MessageFromReceived(client_id, _, _, _) => Some(client_id),
                             ClientEvent::RegistrationOk(client_id, _) => Some(client_id),
-                            ClientEvent::RegistrationError(client_id, _) => Some(client_id),
-                            ClientEvent::MessageReceived(_) => None,
                             ClientEvent::Error(client_id, _) => Some(client_id),
+                            ClientEvent::MessageReceived(_) => None,
                             _ => {None}
                         };
 
@@ -118,14 +117,6 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                             // Update GUI state based on the received event
                             match client_event {
                                 // SimulationController::handle_client_event
-                                ClientEvent::Error(client_id, msg) => {
-                                    let id = egui::Id::new(client_id).with("client_gui_state");
-                                    ctx.data_mut(|data| {
-                                        let mut errors = data.get_temp::<Vec<String>>(id.with("error_messages")).unwrap_or_default();
-                                        errors.push(msg.clone());
-                                        data.insert_temp(id.with("error_messages"), errors);
-                                    });
-                                }
                                 ClientEvent::ServerTypeReceived(client_id, server_id, server_type) => {
                                     ctx.data_mut(|data| data.insert_temp(id.with("server_type"), Some((server_id, server_type))));
                                     log::info!("Simulation Controller: Received ClientEvent::ServerTypeReceived");
@@ -148,8 +139,8 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                                 ClientEvent::RegistrationOk(client_id, server_id) => {
                                      ctx.data_mut(|data| data.insert_temp(id.with("registration_result"), Some((server_id, true))));
                                 }
-                                ClientEvent::RegistrationError(client_id, server_id) => {
-                                     ctx.data_mut(|data| data.insert_temp(id.with("registration_result"), Some((server_id, false))));
+                                ClientEvent::Error(client_id, message) => {
+                                     ctx.data_mut(|data| data.insert_temp(id.with("error"), Some((client_id, message))));
                                 }
                                 _ => {}
                             }
