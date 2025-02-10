@@ -174,7 +174,7 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                 ui.painter().rect_filled(
                     ui.available_rect_before_wrap(),
                     0.0,
-                    Color32::DARK_GRAY
+                    Color32::LIGHT_GRAY
                 );
 
                 match &self.panel.central_panel.selected_node.clone(){
@@ -201,7 +201,7 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                 ui.painter().rect_filled(
                     ui.available_rect_before_wrap(),
                     0.0,
-                    Color32::WHITE,
+                    Color32::DARK_GRAY,
                 );
                 self.bottom_left_panel(ui);
                 // Add your elements for the bottom left part here

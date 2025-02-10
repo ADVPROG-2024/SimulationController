@@ -13,7 +13,7 @@ impl DronegowskiSimulationController<'_> {
         ui.add_space(20.);
         ui.horizontal(|ui|{
             ui.with_layout(Layout::centered_and_justified(Direction::LeftToRight), |ui| {
-                ui.heading(RichText::new("EVENTS").size(25.0).color(Color32::BLACK));
+                ui.heading(RichText::new("EVENTS").size(25.0).color(Color32::WHITE));
             });
         });
         ui.add_space(20.);

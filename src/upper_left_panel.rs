@@ -38,7 +38,7 @@ impl DronegowskiSimulationController<'_> {
 
         ui.add_space(10.);
         ui.horizontal(|ui|{
-            ui.add_space(220.);
+            ui.add_space(232.);
             if ui.add(egui::Button::new(
 
                 RichText::new("Spawn").color(Color32::WHITE)
@@ -90,7 +90,7 @@ impl DronegowskiSimulationController<'_> {
 
         ui.add_space(10.);
         ui.horizontal(|ui|{
-            ui.add_space(220.);
+            ui.add_space(232.);
             if ui.add(egui::Button::new(
 
                 RichText::new("Change").color(Color32::WHITE)
@@ -128,10 +128,16 @@ impl DronegowskiSimulationController<'_> {
             }
             ui.add_space(10.);
         });
-        ui.add_space(20.);
-        if ui.button("Crash").clicked() {
-            self.panel.upper_left_panel.crash = true;
-        }
+        ui.add_space(30.);
+        ui.horizontal(|ui|{
+            ui.add_space(100.);
+            if ui.add(egui::Button::new(
+                RichText::new("Crash") // Add an emoji or icon
+                    .color(Color32::WHITE)
+                    .size(16.0)).fill(Color32::DARK_RED).min_size(egui::Vec2::new(90.0, 45.0))).clicked(){
+                self.panel.upper_left_panel.crash = true;
+            }
+        });
     }
 
     pub fn upper_left_panel_client(&mut self, ui: &mut egui::Ui, node: SimulationControllerNode) {
@@ -141,16 +147,26 @@ impl DronegowskiSimulationController<'_> {
                 ui.heading(RichText::new(format!("CLIENT {} COMMANDS", node.node_id)).size(25.0).color(Color32::BLACK));
             });
         });
-        ui.add_space(20.);
+        ui.add_space(50.);
 
-        if ui.button("Add Sender").clicked(){
-            self.panel.upper_left_panel.add_sender = true;
-        }
-        ui.add_space(10.);
+        ui.horizontal(|ui|{
+            ui.add_space(20.);
+            if ui.add(egui::Button::new(
+                RichText::new("Add Sender") // Add an emoji or icon
+                    .color(Color32::WHITE)
+                    .size(16.0)).fill(Color32::GREEN).min_size(egui::Vec2::new(110.0, 50.0))).clicked(){
+                self.panel.upper_left_panel.add_sender = true;
+            }
+            ui.add_space(20.);
 
-        if ui.button("Remove Sender").clicked(){
-            self.panel.upper_left_panel.remove_sender = true;
-        }
+            if ui.add(egui::Button::new(
+                RichText::new("Remove Sender") // Add an emoji or icon
+                    .color(Color32::WHITE)
+                    .size(16.0)).fill(Color32::RED).min_size(egui::Vec2::new(110.0, 50.0))).clicked(){
+                self.panel.upper_left_panel.remove_sender = true;
+            }
+            ui.add_space(10.);
+        });
     }
 
     pub fn upper_left_panel_server(&mut self, ui: &mut egui::Ui, node: SimulationControllerNode) {
@@ -160,16 +176,27 @@ impl DronegowskiSimulationController<'_> {
                 ui.heading(RichText::new(format!("SERVER {} COMMANDS", node.node_id)).size(25.0).color(Color32::BLACK));
             });
         });
-        ui.add_space(20.);
+        ui.add_space(50.);
 
-        if ui.button("Add Sender").clicked(){
-            self.panel.upper_left_panel.add_sender = true;
-        }
-        ui.add_space(10.);
+        ui.horizontal(|ui|{
+            ui.add_space(20.);
+            if ui.add(egui::Button::new(
+                RichText::new("Add Sender") // Add an emoji or icon
+                    .color(Color32::WHITE)
+                    .size(16.0)).fill(Color32::GREEN).min_size(egui::Vec2::new(110.0, 50.0))).clicked(){
+                self.panel.upper_left_panel.add_sender = true;
+            }
 
-        if ui.button("Remove Sender").clicked(){
-            self.panel.upper_left_panel.remove_sender = true;
-        }
+            ui.add_space(20.);
+
+            if ui.add(egui::Button::new(
+                RichText::new("Remove Sender") // Add an emoji or icon
+                    .color(Color32::WHITE)
+                    .size(16.0)).fill(Color32::RED).min_size(egui::Vec2::new(110.0, 50.0))).clicked(){
+                self.panel.upper_left_panel.remove_sender = true;
+            }
+            ui.add_space(10.);
+        });
     }
 }
 
