@@ -3,10 +3,8 @@ use std::time::Instant;
 use dronegowski_utils::functions::ValidationError;
 use dronegowski_utils::hosts::{ClientEvent, ServerEvent};
 use dronegowski_utils::network::SimulationControllerNode;
-use eframe::epaint::Color32;
 use wg_2024::controller::DroneEvent;
 use wg_2024::network::NodeId;
-use crate::DronegowskiSimulationController;
 
 pub struct Panel{
     pub central_panel: CentralPanel,
@@ -35,9 +33,9 @@ pub struct BottomLeftPanel {
     pub index: usize,
 }
 pub enum Event {
-    DroneEvent(DroneEvent),
     ClientEvent(ClientEvent),
     ServerEvent(ServerEvent),
+    DroneEvent(DroneEvent),
 }
 
 impl Panel{

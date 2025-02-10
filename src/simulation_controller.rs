@@ -236,7 +236,6 @@ impl eframe::App for DronegowskiSimulationController<'_> {
             }
         }
 
-
         // Rimuovi i popup chiusi
         for node_id in popups_to_remove {
             self.panel.central_panel.active_popups.remove(&node_id);
@@ -438,16 +437,16 @@ impl DronegowskiSimulationController<'_>{
         self.panel.reset();
     }
 
-    pub fn spawn(&mut self, pdr: f32){
+    pub fn spawn(&mut self, pdr: f32) {
         let (packet_send, packet_recv) = unbounded();
         let (command_send, command_recv) = unbounded::<DroneCommand>();
         let (event_send, event_recv) = unbounded::<DroneEvent>();
 
-        let mut max_id= self.nodi.iter().map(|n| n.node_id).max().expect("Vettore di nodi vuoto");
+        let mut max_id = self.nodi.iter().map(|n| n.node_id).max().expect("Vettore di nodi vuoto");
         max_id = max_id + 1;
 
         self.sc_drone_channels.insert(max_id, command_send.clone());
-        self.packet_node_channels.insert(max_id,(packet_send, packet_recv.clone()));
+        self.packet_node_channels.insert(max_id, (packet_send, packet_recv.clone()));
 
         SimulationControllerNode::new(SimulationControllerNodeType::DRONE { drone_channel: command_send, pdr }, max_id, vec![], &mut self.nodi);
         self.handles.push(thread::spawn(move || {

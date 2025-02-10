@@ -89,11 +89,12 @@ impl DronegowskiSimulationController<'_> {
                         });
                     }
                 }
-                SimulationControllerNodeType::SERVER { .. } => {
+                SimulationControllerNodeType::SERVER { server_type, .. } => {
                     if elem.details {
                         ui.horizontal(|ui| {
                             ui.add_space(20.);
                             ui.vertical(|ui|{
+                                ui.label(RichText::new(format!("Server Type: {:?}", server_type)).size(15.));
                                 ui.label(RichText::new(format!("Neighbours: {:?}", elem.neighbours)).size(15.));
                             });
                         });
