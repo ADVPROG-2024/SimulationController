@@ -57,20 +57,18 @@ impl DronegowskiSimulationController<'_> {
                             }
                         }
                         DroneEvent::PacketDropped(packet) => {
-                            let node_id_receiver = packet.routing_header.hops[packet.routing_header.hop_index];
-                            self.print_drone_notify(format!("Drone {} dropped a Packet: {:?}", node_id_receiver, packet.clone().pack_type),ui);
+                            self.print_drone_notify(format!("Drone {} dropped a fragment", packet.routing_header.hops[packet.routing_header.hop_index]),ui);
                         }
                         DroneEvent::ControllerShortcut(packet) => {
-                            let node_id_receiver = packet.routing_header.hops[packet.routing_header.hop_index];
                             match packet.pack_type {
                                 PacketType::Ack(_) => {
-                                    self.print_drone_notify(format!("Drone {} sent directly to SC an ACK", node_id_receiver), ui);
+                                    self.print_drone_notify(format!("Drone {} sent directly to SC an ACK", packet.routing_header.hops[packet.routing_header.hop_index]), ui);
                                 }
                                 PacketType::Nack(_) => {
-                                    self.print_drone_notify(format!("Drone {} sent directly to SC a NACK", node_id_receiver), ui);
+                                    self.print_drone_notify(format!("Drone {} sent directly to SC a NACK", packet.routing_header.hops[packet.routing_header.hop_index]), ui);
                                 }
                                 PacketType::FloodResponse(_) => {
-                                    self.print_drone_notify(format!("Drone {} sent directly to SC a FloodResponse", node_id_receiver), ui);
+                                    self.print_drone_notify(format!("Drone {} sent directly to SC a FloodResponse", packet.routing_header.hops[packet.routing_header.hop_index]), ui);
                                 }
                                 _ => {}
                             }
