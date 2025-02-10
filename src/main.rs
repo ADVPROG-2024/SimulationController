@@ -129,7 +129,7 @@ fn parse_node(config: Config) {
         let (command_send, command_recv) = unbounded::<ServerCommand>();
         sc_server_channels.insert(server.id, command_send.clone());
 
-        SimulationControllerNode::new(SimulationControllerNodeType::SERVER{ server_channel: command_send}, server.id, neighbours_id, & mut nodi);
+        SimulationControllerNode::new(SimulationControllerNodeType::SERVER{ server_channel: command_send, server_type: ServerType::Content }, server.id, neighbours_id, & mut nodi);
 
         handles.push(thread::spawn(move || {
             let mut server = CommunicationServer::new(server.id, server_event_send, command_recv, packet_recv, neighbours, ServerType::Communication);
