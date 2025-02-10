@@ -174,7 +174,7 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                 ui.painter().rect_filled(
                     ui.available_rect_before_wrap(),
                     0.0,
-                    Color32::from_rgb(94, 199, 113)
+                    Color32::DARK_GRAY
                 );
 
                 match &self.panel.central_panel.selected_node.clone(){
