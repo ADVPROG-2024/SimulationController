@@ -1,4 +1,6 @@
 use std::collections::HashMap;
+use std::time::Instant;
+use dronegowski_utils::functions::ValidationError;
 use dronegowski_utils::hosts::{ClientEvent, ServerEvent};
 use dronegowski_utils::network::SimulationControllerNode;
 use eframe::epaint::Color32;
@@ -10,12 +12,14 @@ pub struct Panel{
     pub central_panel: CentralPanel,
     pub upper_left_panel: UpperLeftPanel,
     pub bottom_left_panel: BottomLeftPanel,
-    pub right_panel: RightPanel,
 }
 
 pub struct CentralPanel {
     pub selected_node: Option<SimulationControllerNode>,
     pub active_popups: HashMap<NodeId, SimulationControllerNode>,
+    pub active_error: Result<(), ValidationError>,
+    pub popup_timer: Option<Instant>,
+
 }
 
 pub struct UpperLeftPanel {
@@ -30,23 +34,18 @@ pub struct BottomLeftPanel {
     pub event: Vec<Event>,
     pub index: usize,
 }
-
-pub struct RightPanel {
-    pub active_nodes: Vec<(SimulationControllerNode, bool)>,
-}
-
 pub enum Event {
     DroneEvent(DroneEvent),
     ClientEvent(ClientEvent),
     ServerEvent(ServerEvent),
 }
+
 impl Panel{
     pub fn default() -> Self {
         Self{
             central_panel: CentralPanel::new(),
             upper_left_panel: UpperLeftPanel::new(),
             bottom_left_panel: BottomLeftPanel::new(),
-            right_panel: RightPanel::new(),
         }
     }
 
@@ -89,14 +88,9 @@ impl CentralPanel{
         Self{
             selected_node: None,
             active_popups: HashMap::new(),
-        }
-    }
-}
+            active_error: Ok(()),
+            popup_timer: None,
 
-impl RightPanel{
-    fn new() -> Self{
-        Self{
-            active_nodes: Vec::new(),
         }
     }
 }

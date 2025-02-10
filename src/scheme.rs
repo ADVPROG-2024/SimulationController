@@ -1,12 +1,11 @@
-use std::ops::Deref;
+use std::time::{Duration, Instant};
 use dronegowski_utils::network::{SimulationControllerNode, SimulationControllerNodeType};
 use eframe::egui;
 use eframe::egui::{Color32, Painter, Pos2, Stroke};
-use wg_2024::network::NodeId;
 use crate::{DronegowskiSimulationController};
 
 impl DronegowskiSimulationController<'_> {
-    pub fn central_panel(&mut self, ui: &mut egui::Ui) {
+    pub fn central_panel(&mut self, ui: &mut egui::Ui, ctx: &egui::Context) {
         let (response, painter) = ui.allocate_painter(ui.ctx().screen_rect().size(), egui::Sense::click());
         let background_color = Color32::GRAY;
         painter.rect_filled(response.rect, 0.0, background_color);
@@ -149,6 +148,35 @@ impl DronegowskiSimulationController<'_> {
                 elem.xy.1 += drag_delta.y;
             }
         }
+        if self.panel.central_panel.active_error.is_err(){
+            let popup_duration = Duration::from_secs(3); // Popup will disappear after 3 seconds
+
+            if let Some(timer) = self.panel.central_panel.popup_timer{
+                if timer.elapsed() >= popup_duration {
+                    self.panel.central_panel.active_error = Ok(());
+                    self.panel.central_panel.popup_timer = None;
+                }
+            }
+
+            // Draw the popup
+            egui::Window::new("Error")
+                .anchor(egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)
+                .resizable(false)
+                .collapsible(false)
+                .title_bar(false)
+                .frame(egui::Frame::popup(&ctx.style()).fill(Color32::RED)) // Use a popup frame style
+                .show(ctx, |ui| {
+                    ui.set_max_width(200.0); // Set a max width for the popup
+                    ui.set_max_height(100.0); // Set a max height for the popup
+                    ui.vertical_centered(|ui| {
+                        ui.add_space(10.0); // Add some padding
+                        ui.colored_label(egui::Color32::WHITE, format!("{:?}", self.panel.central_panel.active_error));
+                        ui.add_space(10.0); // Add some padding
+                    });
+                });
+        }
+
+
     }
 
     fn add_sender_graphic(&mut self, distance: f32, elem: &SimulationControllerNode, pointer: Pos2, panel_offset: Pos2, painter: &Painter, ui: &mut egui::Ui) {

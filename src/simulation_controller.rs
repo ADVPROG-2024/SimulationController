@@ -1,9 +1,11 @@
 use std::collections::HashMap;
 use std::thread;
 use std::thread::{JoinHandle};
+use std::time::Instant;
 use wg_2024;
 use crossbeam_channel::{select, unbounded, Receiver, Sender};
 use dronegowski::Dronegowski;
+use dronegowski_utils::functions::validate_network;
 use dronegowski_utils::hosts::{ClientCommand, ClientEvent, ServerCommand, ServerEvent};
 use eframe::egui;
 use wg_2024::controller::{DroneCommand, DroneEvent};
@@ -42,7 +44,6 @@ impl <'a>DronegowskiSimulationController<'a> {
                packet_node_channels: HashMap<NodeId, (Sender<Packet>, Receiver<Packet>)>,
                mut handles: &mut Vec<JoinHandle<()>>,
     ){
-
         let native_options = eframe::NativeOptions {
             viewport: egui::ViewportBuilder::default().with_fullscreen(true),
             ..Default::default()
@@ -68,7 +69,7 @@ impl <'a>DronegowskiSimulationController<'a> {
               handles: &'a mut Vec<JoinHandle<()>>,
     ) -> Self {
         Self {
-            nodi,
+            nodi: nodi.clone(),
             sc_drone_channels,
             sc_client_channels,
             sc_server_channels,
@@ -85,7 +86,6 @@ impl <'a>DronegowskiSimulationController<'a> {
 
 impl eframe::App for DronegowskiSimulationController<'_> {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-
         loop {
             select! {
                 recv(self.sc_drone_event_recv) -> drone_event_res => {
@@ -214,7 +214,7 @@ impl eframe::App for DronegowskiSimulationController<'_> {
 
         });
         egui::CentralPanel::default().frame(egui::Frame::none()).show(ctx, |ui| {
-            self.central_panel(ui);
+            self.central_panel(ui, ctx);
         });
 
         let mut popups_to_remove = vec![];
@@ -262,58 +262,70 @@ impl DronegowskiSimulationController<'_>{
             neighbour.neighbours.push(current_node_id);
 
             // Aggiorniamo la lista rimuovendo i vecchi nodi e aggiungendo quelli aggiornati
-            self.nodi[current_index] = current_node.clone();
-            self.nodi[neighbour_index] = neighbour.clone();
+            let mut node_verification = self.nodi.clone();
+            node_verification[current_index] = current_node.clone();
+            node_verification[neighbour_index] = neighbour.clone();
+            let result = validate_network(&node_verification);
+            if result.is_ok() {
+                self.nodi[current_index] = current_node.clone();
+                self.nodi[neighbour_index] = neighbour.clone();
 
-            match current_node.node_type {
-                SimulationControllerNodeType::DRONE {..} => {
-                    if let Some(controller_send_current) = self.sc_drone_channels.get(&current_node.node_id){
-                        if let Some(neighbour_send) = self.packet_node_channels.get(&neighbour.node_id) {
-                            controller_send_current.send(DroneCommand::AddSender(neighbour.node_id, neighbour_send.clone().0)).expect("Error sending the command...");
+                match current_node.node_type {
+                    SimulationControllerNodeType::DRONE { .. } => {
+                        if let Some(controller_send_current) = self.sc_drone_channels.get(&current_node.node_id) {
+                            if let Some(neighbour_send) = self.packet_node_channels.get(&neighbour.node_id) {
+                                controller_send_current.send(DroneCommand::AddSender(neighbour.node_id, neighbour_send.clone().0)).expect("Error sending the command...");
+                            }
+                        }
+                    }
+                    SimulationControllerNodeType::CLIENT { .. } => {
+                        if let Some(controller_send_current) = self.sc_client_channels.get(&current_node.node_id) {
+                            if let Some(neighbour_send) = self.packet_node_channels.get(&neighbour.node_id) {
+                                controller_send_current.send(ClientCommand::AddSender(neighbour.node_id, neighbour_send.clone().0)).expect("Error sending the command...");
+                            }
+                        }
+                    }
+                    SimulationControllerNodeType::SERVER { .. } => {
+                        if let Some(controller_send_current) = self.sc_server_channels.get(&current_node.node_id) {
+                            if let Some(neighbour_send) = self.packet_node_channels.get(&neighbour.node_id) {
+                                controller_send_current.send(ServerCommand::AddSender(neighbour.node_id, neighbour_send.clone().0)).expect("Error sending the command...");
+                            }
                         }
                     }
                 }
-                SimulationControllerNodeType::CLIENT {..} => {
-                    if let Some(controller_send_current) = self.sc_client_channels.get(&current_node.node_id){
-                        if let Some(neighbour_send) = self.packet_node_channels.get(&neighbour.node_id){
-                            controller_send_current.send(ClientCommand::AddSender(neighbour.node_id, neighbour_send.clone().0)).expect("Error sending the command...");
+
+                match neighbour.node_type {
+                    SimulationControllerNodeType::DRONE { .. } => {
+                        if let Some(controller_send_neighbour) = self.sc_drone_channels.get(&neighbour.node_id) {
+                            if let Some(current_send) = self.packet_node_channels.get(&neighbour.node_id) {
+                                controller_send_neighbour.send(DroneCommand::AddSender(current_node.node_id, current_send.clone().0)).expect("Error sending the command...");
+                            }
                         }
                     }
-                }
-                SimulationControllerNodeType::SERVER {..} => {
-                    if let Some(controller_send_current) = self.sc_server_channels.get(&current_node.node_id){
-                        if let Some(neighbour_send) = self.packet_node_channels.get(&neighbour.node_id){
-                            controller_send_current.send(ServerCommand::AddSender(neighbour.node_id, neighbour_send.clone().0)).expect("Error sending the command...");
+                    SimulationControllerNodeType::CLIENT { .. } => {
+                        if let Some(controller_send_neighbour) = self.sc_client_channels.get(&neighbour.node_id) {
+                            if let Some(current_send) = self.packet_node_channels.get(&neighbour.node_id) {
+                                controller_send_neighbour.send(ClientCommand::AddSender(current_node.node_id, current_send.clone().0)).expect("Error sending the command...");
+                            }
+                        }
+                    }
+                    SimulationControllerNodeType::SERVER { .. } => {
+                        if let Some(controller_send_neighbour) = self.sc_server_channels.get(&neighbour.node_id) {
+                            if let Some(current_send) = self.packet_node_channels.get(&neighbour.node_id) {
+                                controller_send_neighbour.send(ServerCommand::AddSender(current_node.node_id, current_send.clone().0)).expect("Error sending the command...");
+                            }
                         }
                     }
                 }
             }
+            else{
+                self.panel.central_panel.active_error = result;
+                self.panel.central_panel.popup_timer = Some(Instant::now());
 
-            match neighbour.node_type {
-                SimulationControllerNodeType::DRONE {..} => {
-                    if let Some(controller_send_neighbour) = self.sc_drone_channels.get(&neighbour.node_id){
-                        if let Some(current_send) = self.packet_node_channels.get(&neighbour.node_id){
-                            controller_send_neighbour.send(DroneCommand::AddSender(current_node.node_id, current_send.clone().0)).expect("Error sending the command...");
-                        }
-                    }
-                }
-                SimulationControllerNodeType::CLIENT {..} => {
-                    if let Some(controller_send_neighbour) = self.sc_client_channels.get(&neighbour.node_id){
-                        if let Some(current_send) = self.packet_node_channels.get(&neighbour.node_id){
-                            controller_send_neighbour.send(ClientCommand::AddSender(current_node.node_id, current_send.clone().0)).expect("Error sending the command...");
-                        }
-                    }
-                }
-                SimulationControllerNodeType::SERVER {..} => {
-                    if let Some(controller_send_neighbour) = self.sc_server_channels.get(&neighbour.node_id){
-                        if let Some(current_send) = self.packet_node_channels.get(&neighbour.node_id){
-                            controller_send_neighbour.send(ServerCommand::AddSender(current_node.node_id, current_send.clone().0)).expect("Error sending the command...");
-                        }
-                    }
-                }
+                //println!("{:?}", result);
             }
+            self.panel.reset();
         }
-        self.panel.reset();
     }
 
     pub fn remove_sender(&mut self, neighbour_id: NodeId) {
@@ -334,57 +346,79 @@ impl DronegowskiSimulationController<'_>{
             //println!("Vicini nodo {}: {:?}", current_node.node_id,current_node.neighbours);
             //println!("Vicini nodo {}: {:?}", neighbour.node_id,neighbour.neighbours);
 
-            // Aggiorniamo la lista rimuovendo i vecchi nodi e aggiungendo quelli aggiornati
-            self.nodi[current_index] = current_node.clone();
-            self.nodi[neighbour_index] = neighbour.clone();
+            let mut node_verification = self.nodi.clone();
+            node_verification[current_index] = current_node.clone();
+            node_verification[neighbour_index] = neighbour.clone();
+            let result = validate_network(&node_verification);
+            if result.is_ok() {
+                // Aggiorniamo la lista rimuovendo i vecchi nodi e aggiungendo quelli aggiornati
+                self.nodi[current_index] = current_node.clone();
+                self.nodi[neighbour_index] = neighbour.clone();
 
-            match current_node.node_type {
-                SimulationControllerNodeType::DRONE {..} => {
-                    if let Some(controller_send_current) = self.sc_drone_channels.get(&current_node.node_id){
-                        controller_send_current.send(DroneCommand::RemoveSender(neighbour.node_id)).expect("Error sending the command...");
+                match current_node.node_type {
+                    SimulationControllerNodeType::DRONE { .. } => {
+                        if let Some(controller_send_current) = self.sc_drone_channels.get(&current_node.node_id) {
+                            controller_send_current.send(DroneCommand::RemoveSender(neighbour.node_id)).expect("Error sending the command...");
+                        }
+                    }
+                    SimulationControllerNodeType::CLIENT { .. } => {
+                        if let Some(controller_send_current) = self.sc_client_channels.get(&current_node.node_id) {
+                            controller_send_current.send(ClientCommand::RemoveSender(neighbour.node_id)).expect("Error sending the command...");
+                        }
+                    }
+                    SimulationControllerNodeType::SERVER { .. } => {
+                        if let Some(controller_send_current) = self.sc_server_channels.get(&current_node.node_id) {
+                            controller_send_current.send(ServerCommand::RemoveSender(neighbour.node_id)).expect("Error sending the command...");
+                        }
                     }
                 }
-                SimulationControllerNodeType::CLIENT {..} => {
-                    if let Some(controller_send_current) = self.sc_client_channels.get(&current_node.node_id){
-                        controller_send_current.send(ClientCommand::RemoveSender(neighbour.node_id)).expect("Error sending the command...");
+
+                match neighbour.node_type {
+                    SimulationControllerNodeType::DRONE { .. } => {
+                        if let Some(controller_send_neighbour) = self.sc_drone_channels.get(&neighbour.node_id) {
+                            controller_send_neighbour.send(DroneCommand::RemoveSender(current_node.node_id)).expect("Error sending the command...");
+                        }
                     }
-                }
-                SimulationControllerNodeType::SERVER {..} => {
-                    if let Some(controller_send_current) = self.sc_server_channels.get(&current_node.node_id){
-                        controller_send_current.send(ServerCommand::RemoveSender(neighbour.node_id)).expect("Error sending the command...");
+                    SimulationControllerNodeType::CLIENT { .. } => {
+                        if let Some(controller_send_neighbour) = self.sc_client_channels.get(&neighbour.node_id) {
+                            controller_send_neighbour.send(ClientCommand::RemoveSender(current_node.node_id)).expect("Error sending the command...");
+                        }
+                    }
+                    SimulationControllerNodeType::SERVER { .. } => {
+                        if let Some(controller_send_neighbour) = self.sc_server_channels.get(&neighbour.node_id) {
+                            controller_send_neighbour.send(ServerCommand::RemoveSender(current_node.node_id)).expect("Error sending the command...");
+                        }
                     }
                 }
             }
-
-            match neighbour.node_type {
-                SimulationControllerNodeType::DRONE { .. } => {
-                    if let Some(controller_send_neighbour) = self.sc_drone_channels.get(&neighbour.node_id) {
-                        controller_send_neighbour.send(DroneCommand::RemoveSender(current_node.node_id)).expect("Error sending the command...");
-                    }
-                }
-                SimulationControllerNodeType::CLIENT { .. } => {
-                    if let Some(controller_send_neighbour) = self.sc_client_channels.get(&neighbour.node_id) {
-                        controller_send_neighbour.send(ClientCommand::RemoveSender(current_node.node_id)).expect("Error sending the command...");
-                    }
-                }
-                SimulationControllerNodeType::SERVER { .. } => {
-                    if let Some(controller_send_neighbour) = self.sc_server_channels.get(&neighbour.node_id) {
-                        controller_send_neighbour.send(ServerCommand::RemoveSender(current_node.node_id)).expect("Error sending the command...");
-                    }
-                }
+            else{
+                self.panel.central_panel.active_error = result;
+                self.panel.central_panel.popup_timer = Some(Instant::now());
+                //println!("{:?}", result);
             }
+            self.panel.reset();
         }
-        self.panel.reset();
     }
 
     pub fn crash(&mut self){
         if let Some(current_node) = self.panel.central_panel.selected_node.clone(){
-            self.nodi.retain(|node| node.node_id != current_node.node_id);
-            if let Some(controller_send) = self.sc_drone_channels.get(&current_node.node_id) {
-                controller_send.send(DroneCommand::Crash).expect("Error sending the command...");
+            let mut node_verification = self.nodi.clone();
+            node_verification.retain(|node| node.node_id != current_node.node_id);
+            let result = validate_network(&node_verification);
+            if result.is_ok() {
+                self.nodi.retain(|node| node.node_id != current_node.node_id);
+                if let Some(controller_send) = self.sc_drone_channels.get(&current_node.node_id) {
+                    controller_send.send(DroneCommand::Crash).expect("Error sending the command...");
+                }
             }
+            else{
+                self.panel.central_panel.active_error = result;
+                self.panel.central_panel.popup_timer = Some(Instant::now());
+                //println!("{:?}", result);
+            }
+            self.panel.reset();
+
         }
-        self.panel.reset();
     }
 
     pub fn set_pdr(&mut self, set_pdr: f32){
@@ -416,7 +450,6 @@ impl DronegowskiSimulationController<'_>{
         self.packet_node_channels.insert(max_id,(packet_send, packet_recv.clone()));
 
         SimulationControllerNode::new(SimulationControllerNodeType::DRONE { drone_channel: command_send, pdr }, max_id, vec![], &mut self.nodi);
-
         self.handles.push(thread::spawn(move || {
             let mut drone = Dronegowski::new(max_id, event_send, command_recv, packet_recv, HashMap::new(), pdr);
 
@@ -432,14 +465,10 @@ impl DronegowskiSimulationController<'_>{
 
     fn handle_client_event(&mut self, client_event: ClientEvent){
         self.panel.bottom_left_panel.event.push(Event::ClientEvent(client_event));
-        println!("Qualcosa client");
-        //println!("{:?}", client_event);
     }
 
     fn handle_server_event(&mut self, server_event: ServerEvent){
         self.panel.bottom_left_panel.event.push(Event::ServerEvent(server_event));
-        println!("Qualcosa server");
-
     }
 
     pub fn send_packet_test(&mut self){
