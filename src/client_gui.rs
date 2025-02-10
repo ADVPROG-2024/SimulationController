@@ -316,6 +316,8 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
                 if let Some((server_id, file)) = &received_file {
                     ui.label(RichText::new(format!("Received file (from {}):", server_id)).color(text_color));
                     let file_label = ui.add(egui::Label::new(RichText::new(file.clone().title).color(text_color)).sense(Sense::click()));
+                    let file_label = ui.add(egui::Label::new(RichText::new(file.clone().text).color(text_color)).sense(Sense::click()));
+                    let file_label = ui.add(egui::Label::new(RichText::new(format!("{:?}", file.clone().media_ids)).color(text_color)).sense(Sense::click()));
                     if file_label.clicked() {
                         ui.output_mut(|o| o.copied_text = file.clone().title);
                         ui.output_mut(|o| o.copied_text = file.clone().text);
