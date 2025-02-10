@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use crossbeam_channel::Sender;
-use dronegowski_utils::hosts::{ClientCommand, ClientEvent, ServerType, ClientType};
+use dronegowski_utils::hosts::{ClientCommand, ClientEvent, ServerType, ClientType, FileContent};
 use eframe::egui;
 use eframe::egui::{Color32, RichText, Layout, Align, WidgetText, Sense};
 use wg_2024::network::NodeId;
@@ -27,7 +27,7 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
     let (mut server_type, mut set_server_type) = get_set_state(ctx, id.with("server_type"), None::<(NodeId, ServerType)>);
     let (mut client_list, mut set_client_list) = get_set_state(ctx, id.with("client_list"), None::<(NodeId, Vec<NodeId>)>);
     let (mut files_list, mut set_files_list) = get_set_state(ctx, id.with("files_list"), None::<(NodeId, Vec<(u64, String)>)>);
-    let (mut received_file, mut set_received_file) = get_set_state(ctx, id.with("received_file"), None::<(NodeId, String)>);
+    let (mut received_file, mut set_received_file) = get_set_state(ctx, id.with("received_file"), None::<(NodeId, FileContent)>);
     let (mut received_media, mut set_received_media) = get_set_state(ctx, id.with("received_media"), None::<(NodeId, Vec<u8>)>);
     let (mut message_from, mut set_message_from) = get_set_state(ctx, id.with("message_from"), None::<(NodeId, NodeId, String)>);
     let (mut error, mut set_error) = get_set_state(ctx, id.with("error"), None::<(NodeId, String)>);
@@ -315,9 +315,11 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
 
                 if let Some((server_id, file)) = &received_file {
                     ui.label(RichText::new(format!("Received file (from {}):", server_id)).color(text_color));
-                    let file_label = ui.add(egui::Label::new(RichText::new(file).color(text_color)).sense(Sense::click()));
+                    let file_label = ui.add(egui::Label::new(RichText::new(file.clone().title).color(text_color)).sense(Sense::click()));
                     if file_label.clicked() {
-                        ui.output_mut(|o| o.copied_text = file.clone());
+                        ui.output_mut(|o| o.copied_text = file.clone().title);
+                        ui.output_mut(|o| o.copied_text = file.clone().text);
+                        ui.output_mut(|o| o.copied_text = format!("{:?}", file.clone().media_ids));
                     }
                 }
 
