@@ -422,17 +422,18 @@ impl DronegowskiSimulationController<'_>{
 
     pub fn set_pdr(&mut self, set_pdr: f32){
         if let Some(mut current_node) = self.panel.central_panel.selected_node.clone() {
-            self.nodi.retain(|node| node.node_id != current_node.node_id);
+            let node_index = self.nodi.iter().position(|node| node.node_id == current_node.node_id);
+            if let Some(index) = node_index{
+                if let SimulationControllerNodeType::DRONE { pdr, .. } = &mut current_node.node_type {
+                    *pdr = set_pdr;
+                }
+                self.nodi[index] = current_node.clone();
 
-            if let SimulationControllerNodeType::DRONE { pdr, .. } = &mut current_node.node_type {
-                *pdr = set_pdr;
+                if let Some(controller_send) = self.sc_drone_channels.get(&current_node.node_id) {
+                    controller_send.send(DroneCommand::SetPacketDropRate(set_pdr)).expect("Error sending the command...");
+                }
             }
 
-            self.nodi.push(current_node.clone());
-
-            if let Some(controller_send) = self.sc_drone_channels.get(&current_node.node_id) {
-                controller_send.send(DroneCommand::SetPacketDropRate(set_pdr)).expect("Error sending the command...");
-            }
         }
         self.panel.reset();
     }

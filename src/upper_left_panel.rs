@@ -1,6 +1,6 @@
 use dronegowski_utils::network::{SimulationControllerNode};
 use eframe::egui;
-use eframe::egui::{Color32, Direction, Layout, RichText};
+use eframe::egui::{Color32, Direction, Layout, RichText, TextBuffer};
 use crate::{DronegowskiSimulationController};
 
 impl DronegowskiSimulationController<'_> {
@@ -14,9 +14,12 @@ impl DronegowskiSimulationController<'_> {
         ui.add_space(20.);
 
         if ui.button("Spawn").clicked() && self.panel.upper_left_panel.spawn_pdr != "" {
-            let pdr = self.panel.upper_left_panel.spawn_pdr.clone().parse::<f32>().unwrap();
-            if pdr <= 1. && pdr >= 0. {
-                self.spawn(pdr);
+            let mut pdr = self.panel.upper_left_panel.spawn_pdr.clone().parse::<f32>();
+            if pdr.is_ok() {
+                if pdr.clone().unwrap() <= 1. && pdr.clone().unwrap() >= 0. {
+                    self.spawn(pdr.clone().unwrap());
+                    self.panel.upper_left_panel.spawn_pdr = "".to_string();
+                }
             }
         }
         ui.text_edit_singleline(&mut self.panel.upper_left_panel.spawn_pdr);
@@ -38,9 +41,18 @@ impl DronegowskiSimulationController<'_> {
         ui.add_space(20.);
 
         ui.vertical(|ui| {
-            if ui.button("Add Sender").clicked() {
-                self.panel.upper_left_panel.add_sender = true;
+            if ui.add(egui::Button::new(
+                egui::RichText::new("📤 Add Sender") // Add an emoji or icon
+                    .color(egui::Color32::WHITE)
+                    .size(16.0)).fill(egui::Color32::from_rgb(30, 30, 30)).min_size(egui::Vec2::new(120.0, 50.0))).clicked(){
+
+                          self.panel.upper_left_panel.add_sender = true;
             }
+            //Color32::from_rgb(0, 119, 182)
+            //Color32::from_rgb(0, 168, 150)
+            //Color32::from_rgb(244, 162, 97)
+            //Color32::from_rgb(234, 234, 234)
+            //Color32::from_rgb(136, 14, 79)
             ui.add_space(10.);
 
             if ui.button("Remove Sender").clicked() {
@@ -50,11 +62,15 @@ impl DronegowskiSimulationController<'_> {
 
             ui.horizontal(|ui|{
                 if ui.button("Set PDR").clicked() && self.panel.upper_left_panel.change_pdr != "" {
-                    let pdr = self.panel.upper_left_panel.change_pdr.clone().parse::<f32>().unwrap();
-                    if pdr <= 1. && pdr >= 0. {
-                        self.set_pdr(pdr);
+                    let mut pdr = self.panel.upper_left_panel.change_pdr.clone().parse::<f32>();
+                    if pdr.is_ok() {
+                        if pdr.clone().unwrap() <= 1. && pdr.clone().unwrap() >= 0. {
+                            self.set_pdr(pdr.clone().unwrap());
+                            self.panel.upper_left_panel.change_pdr = "".to_string();
+                        }
                     }
                 }
+
                 ui.text_edit_singleline(&mut self.panel.upper_left_panel.change_pdr);
             });
             ui.add_space(10.);
