@@ -1,11 +1,11 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap};
 use std::{fs, thread};
 use std::hash::Hash;
 use crossbeam_channel::{unbounded, Receiver, Sender};
 use wg_2024::config::Config;
 use wg_2024::drone::Drone;
 use dronegowski::Dronegowski;
-use dronegowski_utils::hosts::{ClientCommand, ClientEvent, ClientType, ServerCommand, ServerEvent, ServerType};
+use dronegowski_utils::hosts::{ClientCommand, ClientEvent, ClientType, ServerCommand, ServerEvent, ServerType as ST};
 use SimulationController::DronegowskiSimulationController;
 use wg_2024::controller::{DroneCommand, DroneEvent};
 use wg_2024::network::NodeId;
@@ -14,7 +14,7 @@ use client::DronegowskiClient;
 use dronegowski_utils::functions::simple_log;
 use dronegowski_utils::network::{SimulationControllerNode, SimulationControllerNodeType};
 use rand::Rng;
-use servers::{CommunicationServer, DronegowskiServer};
+use servers::{CommunicationServer, ContentServer, DronegowskiServer};
 
 fn main(){
     simple_log();
@@ -129,12 +129,29 @@ fn parse_node(config: Config) {
         let (command_send, command_recv) = unbounded::<ServerCommand>();
         sc_server_channels.insert(server.id, command_send.clone());
 
-        SimulationControllerNode::new(SimulationControllerNodeType::SERVER{ server_channel: command_send, server_type: ServerType::Content }, server.id, neighbours_id, & mut nodi);
+        let server_type = if rand::rngs::ThreadRng::default().random_range(0..=1) == 1 {
+            ST::Communication
+        } else {ST::Content};
 
-        handles.push(thread::spawn(move || {
-            let mut server = CommunicationServer::new(server.id, server_event_send, command_recv, packet_recv, neighbours, ServerType::Communication);
-            server.run();
-        }));
+        match server_type {
+            ST::Communication => {
+                SimulationControllerNode::new(SimulationControllerNodeType::SERVER{ server_channel: command_send, server_type: server_type.clone() }, server.id, neighbours_id, & mut nodi);
+
+                handles.push(thread::spawn(move || {
+                    let mut dronegowski_server = CommunicationServer::new(server.id, server_event_send, command_recv, packet_recv, neighbours, server_type);
+                    dronegowski_server.run();
+                }));
+            },
+            ST::Content => {
+                SimulationControllerNode::new(SimulationControllerNodeType::SERVER{ server_channel: command_send, server_type: server_type.clone() }, server.id, neighbours_id, & mut nodi);
+
+                handles.push(thread::spawn(move || {
+                    let mut dronegowski_server = ContentServer::new(server.id, server_event_send, command_recv, packet_recv, neighbours, server_type, "ContentServerData/file", "ContentServerData/media");
+                    dronegowski_server.run();
+                }));
+            }
+        }
+
     }
 
     // Passa la lista di nodi al SimulationController
