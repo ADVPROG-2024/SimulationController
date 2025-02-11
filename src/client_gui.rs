@@ -331,8 +331,7 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
                     }
 
                     if let Some((client_id, message)) = &error {
-                        log::info!("Sono qui e meno jaas");
-                        ui.label(RichText::new(format!("Error message received (from {}):", client_id)).color(text_color));
+                        ui.label(RichText::new(format!("Error message received (from {}):", client_id)).color(Color32::RED));
                         ui.label(RichText::new(format!("{:?} -> {}", client_id, message)).color(text_color));
                     }
 

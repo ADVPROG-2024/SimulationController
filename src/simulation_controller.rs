@@ -141,7 +141,6 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                                      ctx.data_mut(|data| data.insert_temp(id.with("registration_result"), Some((server_id, true))));
                                 }
                                 ClientEvent::Error(client_id, message) => {
-                                     log::info!("Sono qui SC");
                                      ctx.data_mut(|data| data.insert_temp(id.with("error"), Some((client_id, message))));
                                 }
                                 _ => {}
