@@ -88,7 +88,7 @@ impl DronegowskiSimulationController<'_> {
                                 }
                             }
                             DroneEvent::PacketDropped(packet) => {
-                                let node_id = packet.routing_header.hops[packet.routing_header.hop_index-1];
+                                let node_id = packet.routing_header.hops[packet.routing_header.hop_index];
                                 if node_id == node.node_id {
                                     self.print_drone_notify(format!("Drone {} dropped a fragment", packet.routing_header.hops[packet.routing_header.hop_index]), ui);
                                 }
@@ -96,19 +96,19 @@ impl DronegowskiSimulationController<'_> {
                             DroneEvent::ControllerShortcut(packet) => {
                                 match packet.pack_type {
                                     PacketType::Ack(_) => {
-                                        let node_id = packet.routing_header.hops[packet.routing_header.hop_index-1];
+                                        let node_id = packet.routing_header.hops[packet.routing_header.hop_index];
                                         if node_id == node.node_id {
                                             self.print_drone_notify(format!("Drone {} sent directly to SC an ACK", packet.routing_header.hops[packet.routing_header.hop_index]), ui);
                                         }
                                     }
                                     PacketType::Nack(_) => {
-                                        let node_id = packet.routing_header.hops[packet.routing_header.hop_index-1];
+                                        let node_id = packet.routing_header.hops[packet.routing_header.hop_index];
                                         if node_id == node.node_id {
                                             self.print_drone_notify(format!("Drone {} sent directly to SC a NACK", packet.routing_header.hops[packet.routing_header.hop_index]), ui);
                                         }
                                     }
                                     PacketType::FloodResponse(_) => {
-                                        let node_id = packet.routing_header.hops[packet.routing_header.hop_index-1];
+                                        let node_id = packet.routing_header.hops[packet.routing_header.hop_index];
                                         if node_id == node.node_id {
                                             self.print_drone_notify(format!("Drone {} sent directly to SC a FloodResponse", packet.routing_header.hops[packet.routing_header.hop_index]), ui);
                                         }
