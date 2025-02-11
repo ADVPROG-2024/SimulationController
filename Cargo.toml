@@ -7,6 +7,7 @@ edition = "2021"
 wg_2024 = { git = "https://github.com/WGL-2024/WGL_repo_2024.git", features = ["debug", "serialize"] }
 dronegowski = { git = "https://github.com/ADVPROG-2024/Dronegowski.git" }
 dronegowski_utils = {git = "https://github.com/ADVPROG-2024/dronegowski_utils.git"}
+rolling_drone = { git = "https://github.com/giorebecchi/RollingDrone.git"}
 client = {git = "https://github.com/ADVPROG-2024/Client.git"}
 servers = {git = "https://github.com/ADVPROG-2024/Servers.git"}
 rand = "0.9.0"

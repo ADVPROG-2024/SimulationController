@@ -11,6 +11,7 @@ use eframe::egui;
 use wg_2024::controller::{DroneCommand, DroneEvent};
 use wg_2024::network::{NodeId, SourceRoutingHeader};
 use dronegowski_utils::network::{Event, SimulationControllerNode, SimulationControllerNodeType};
+use rolling_drone::RollingDrone;
 use eframe::egui::accesskit::Node;
 use eframe::egui::Color32;
 use wg_2024::drone::Drone;
@@ -461,6 +462,13 @@ impl DronegowskiSimulationController<'_>{
     pub fn crash(&mut self){
         if let Some(current_node) = self.panel.central_panel.selected_node.clone(){
             let mut node_verification = self.nodi.clone();
+            for elem in current_node.clone().neighbours {
+                if let Some(node_index) = self.nodi.iter().position(|node| node.node_id == elem) {
+                    let mut neighbour = self.nodi[node_index].clone();
+                    neighbour.neighbours.retain(|node_id| node_id.clone() != current_node.node_id);
+                    self.nodi[node_index] = neighbour.clone();
+                }
+            }
             node_verification.retain(|node| node.node_id != current_node.node_id);
             let result = validate_network(&node_verification);
             if result.is_ok() {
@@ -509,7 +517,7 @@ impl DronegowskiSimulationController<'_>{
 
         SimulationControllerNode::new(SimulationControllerNodeType::DRONE { drone_channel: command_send, pdr }, max_id, vec![], &mut self.nodi);
         self.handles.push(thread::spawn(move || {
-            let mut drone = Dronegowski::new(max_id, event_send, command_recv, packet_recv, HashMap::new(), pdr);
+            let mut drone = RollingDrone::new(max_id, event_send, command_recv, packet_recv, HashMap::new(), pdr);
             drone.run();
         }));
     }
