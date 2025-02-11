@@ -168,6 +168,8 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                                 }
                                 _ => {}
                             }
+                            // Reset is_request_pending AFTER handling the event
+                            ctx.data_mut(|data| data.insert_temp(id.with("request_pending"), false));
                         }
                     }
                 },
