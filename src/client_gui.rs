@@ -32,7 +32,7 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
     let (received_file, _set_received_file) = get_set_state(ctx, id.with("received_file"), None::<(NodeId, FileContent)>);
     let (received_media, _set_received_media) = get_set_state(ctx, id.with("received_media"), None::<(NodeId, Vec<u8>)>);
     let (message_from, _set_message_from) = get_set_state(ctx, id.with("message_from"), None::<(NodeId, NodeId, String)>);
-    let (error, _set_error) = get_set_state(ctx, id.with("error"), None::<(NodeId, String)>);
+    let (mut error, mut set_error) = get_set_state(ctx, id.with("error"), None::<(NodeId, String)>);
     let (mut registration_result, _set_registration_result) = get_set_state(ctx, id.with("registration_result"), None::<(NodeId, bool)>);
     let (mut status_messages, mut set_status_messages) = get_set_state(ctx, id.with("status_messages"), Vec::<String>::new());
     let (mut is_request_pending, mut set_is_request_pending) = get_set_state(ctx, id.with("request_pending"), false);
@@ -331,6 +331,7 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
                     }
 
                     if let Some((client_id, message)) = &error {
+                        log::info!("Sono qui e meno jaas");
                         ui.label(RichText::new(format!("Error message received (from {}):", client_id)).color(text_color));
                         ui.label(RichText::new(format!("{:?} -> {}", client_id, message)).color(text_color));
                     }
