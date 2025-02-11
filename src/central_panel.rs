@@ -1,4 +1,4 @@
-use std::time::{Duration, Instant};
+use std::time::{Duration};
 use dronegowski_utils::network::{SimulationControllerNode, SimulationControllerNodeType};
 use eframe::egui;
 use eframe::egui::{Color32, Painter, Pos2, Stroke};
@@ -170,7 +170,7 @@ impl DronegowskiSimulationController<'_> {
                     ui.set_max_height(100.0); // Set a max height for the popup
                     ui.vertical_centered(|ui| {
                         ui.add_space(10.0); // Add some padding
-                        ui.colored_label(egui::Color32::WHITE, format!("{:?}", self.panel.central_panel.active_error));
+                        ui.colored_label(Color32::WHITE, format!("{:?}", self.panel.central_panel.active_error));
                         ui.add_space(10.0); // Add some padding
                     });
                 });
@@ -181,12 +181,9 @@ impl DronegowskiSimulationController<'_> {
 
     fn add_sender_graphic(&mut self, distance: f32, elem: &SimulationControllerNode, pointer: Pos2, panel_offset: Pos2, painter: &Painter, ui: &mut egui::Ui) {
         if distance <= 30.0 {
-            let start_pos = Pos2::new(&self.panel.central_panel.selected_node.clone().unwrap().xy.0 + panel_offset.x, &self.panel.central_panel.selected_node.clone().unwrap().xy.1 + panel_offset.y);
 
             if self.panel.central_panel.selected_node.clone().unwrap().neighbours.contains(&elem.node_id.clone()) {
-                draw_dashed_line(&painter, start_pos, pointer, Stroke::new(4.0, Color32::RED), 10.0, 5.0);
             } else {
-                draw_dashed_line(&painter, start_pos, pointer, Stroke::new(4.0, Color32::GREEN), 10.0, 5.0);
                 if ui.input(|i| i.pointer.any_click()) {
                     self.add_sender(elem.node_id);
                 }

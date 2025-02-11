@@ -1,6 +1,6 @@
 use dronegowski_utils::network::SimulationControllerNodeType;
 use eframe::egui;
-use eframe::egui::{Align, Button, Direction, Layout, RichText, Rounding, Vec2};
+use eframe::egui::{Align, Button, Direction, Layout, RichText};
 use eframe::epaint::Color32;
 use crate::DronegowskiSimulationController;
 

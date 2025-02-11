@@ -26,18 +26,18 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
     let (mut recipient_id_str, mut set_recipient_id_str) = get_set_state(ctx, id.with("recipient_id"), "".to_string());
     let (mut message_str, mut set_message_str) = get_set_state(ctx, id.with("message"), "".to_string());
     let (mut selected_server_id, mut set_selected_server_id) = get_set_state(ctx, id.with("selected_server_id"), 0);
-    let (mut server_type, mut set_server_type) = get_set_state(ctx, id.with("server_type"), None::<(NodeId, ServerType)>);
-    let (mut client_list, mut set_client_list) = get_set_state(ctx, id.with("client_list"), None::<(NodeId, Vec<NodeId>)>);
-    let (mut files_list, mut set_files_list) = get_set_state(ctx, id.with("files_list"), None::<(NodeId, Vec<(u64, String)>)>);
-    let (mut received_file, mut set_received_file) = get_set_state(ctx, id.with("received_file"), None::<(NodeId, FileContent)>);
-    let (mut received_media, mut set_received_media) = get_set_state(ctx, id.with("received_media"), None::<(NodeId, Vec<u8>)>);
-    let (mut message_from, mut set_message_from) = get_set_state(ctx, id.with("message_from"), None::<(NodeId, NodeId, String)>);
-    let (mut error, mut set_error) = get_set_state(ctx, id.with("error"), None::<(NodeId, String)>);
-    let (mut registration_result, mut set_registration_result) = get_set_state(ctx, id.with("registration_result"), None::<(NodeId, bool)>);
+    let (mut server_type, _set_server_type) = get_set_state(ctx, id.with("server_type"), None::<(NodeId, ServerType)>);
+    let (client_list, _set_client_list) = get_set_state(ctx, id.with("client_list"), None::<(NodeId, Vec<NodeId>)>);
+    let (files_list, _set_files_list) = get_set_state(ctx, id.with("files_list"), None::<(NodeId, Vec<(u64, String)>)>);
+    let (received_file, _set_received_file) = get_set_state(ctx, id.with("received_file"), None::<(NodeId, FileContent)>);
+    let (received_media, _set_received_media) = get_set_state(ctx, id.with("received_media"), None::<(NodeId, Vec<u8>)>);
+    let (message_from, _set_message_from) = get_set_state(ctx, id.with("message_from"), None::<(NodeId, NodeId, String)>);
+    let (error, _set_error) = get_set_state(ctx, id.with("error"), None::<(NodeId, String)>);
+    let (mut registration_result, _set_registration_result) = get_set_state(ctx, id.with("registration_result"), None::<(NodeId, bool)>);
     let (mut status_messages, mut set_status_messages) = get_set_state(ctx, id.with("status_messages"), Vec::<String>::new());
     let (mut is_request_pending, mut set_is_request_pending) = get_set_state(ctx, id.with("request_pending"), false);
-    let (mut connected_server, mut set_connected_server) = get_set_state(ctx, id.with("connected_server"), None::<NodeId>);
-    let (mut received_texture, mut set_received_texture) = get_set_state(ctx, id.with("received_texture"), None::<TextureHandle>);
+    let (_connected_server, _set_connected_server) = get_set_state(ctx, id.with("connected_server"), None::<NodeId>);
+    let (received_texture, mut set_received_texture) = get_set_state(ctx, id.with("received_texture"), None::<TextureHandle>);
 
 
     // --- Styling ---
@@ -284,8 +284,8 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
 
                     if let Some((server_id, file)) = &received_file {
                         ui.label(RichText::new(format!("Received file (from {}):", server_id)).color(text_color));
-                        let file_label = ui.add(egui::Label::new(RichText::new(file.clone().title).color(text_color)).sense(Sense::click()));
-                        let file_label = ui.add(egui::Label::new(RichText::new(file.clone().text).color(text_color)).sense(Sense::click()));
+                        let _file_label = ui.add(egui::Label::new(RichText::new(file.clone().title).color(text_color)).sense(Sense::click()));
+                        let _file_label = ui.add(egui::Label::new(RichText::new(file.clone().text).color(text_color)).sense(Sense::click()));
                         let file_label = ui.add(egui::Label::new(RichText::new(format!("{:?}", file.clone().media_ids)).color(text_color)).sense(Sense::click()));
                         if file_label.clicked() {
                             ui.output_mut(|o| o.copied_text = file.clone().title);

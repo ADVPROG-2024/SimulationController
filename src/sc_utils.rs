@@ -1,16 +1,13 @@
 use std::collections::HashMap;
 use std::time::Instant;
 use dronegowski_utils::functions::ValidationError;
-use dronegowski_utils::hosts::{ClientEvent, ServerEvent};
 use dronegowski_utils::network::{SimulationControllerNode, Event};
-use wg_2024::controller::DroneEvent;
 use wg_2024::network::NodeId;
 
 pub struct Panel{
     pub central_panel: CentralPanel,
     pub upper_left_panel: UpperLeftPanel,
     pub bottom_left_panel: BottomLeftPanel,
-    pub bottom_right_panel: BottomRightPanel,
 }
 
 pub struct CentralPanel {
@@ -18,12 +15,8 @@ pub struct CentralPanel {
     pub active_popups: HashMap<NodeId, SimulationControllerNode>,
     pub active_error: Result<(), ValidationError>,
     pub popup_timer: Option<Instant>,
-
 }
 
-pub struct BottomRightPanel {
-    pub displayed_events: Vec<Event>,
-}
 
 pub struct UpperLeftPanel {
     pub add_sender: bool,
@@ -45,7 +38,6 @@ impl Panel{
             central_panel: CentralPanel::new(),
             upper_left_panel: UpperLeftPanel::new(),
             bottom_left_panel: BottomLeftPanel::new(),
-            bottom_right_panel: BottomRightPanel::new(),
         }
     }
 
@@ -91,14 +83,6 @@ impl CentralPanel{
             active_error: Ok(()),
             popup_timer: None,
 
-        }
-    }
-}
-
-impl BottomRightPanel{
-    fn new() -> Self {
-        Self{
-            displayed_events: Vec::new(),
         }
     }
 }

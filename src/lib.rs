@@ -1,5 +1,5 @@
 mod simulation_controller;
-mod scheme;
+mod central_panel;
 mod upper_left_panel;
 mod sc_utils;
 

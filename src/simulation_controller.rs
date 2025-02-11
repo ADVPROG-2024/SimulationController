@@ -57,7 +57,7 @@ impl <'a>DronegowskiSimulationController<'a> {
         ).expect("Error to run the Simulation Controller");
     }
 
-    fn create(cc: &eframe::CreationContext<'_>,
+    fn create(_cc: &eframe::CreationContext<'_>,
               nodi: Vec<SimulationControllerNode>,
               sc_drone_channels: HashMap<NodeId, Sender<DroneCommand>>,
               sc_client_channels: HashMap<NodeId, Sender<ClientCommand>>,
@@ -86,7 +86,7 @@ impl <'a>DronegowskiSimulationController<'a> {
 }
 
 impl eframe::App for DronegowskiSimulationController<'_> {
-    fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         loop {
             select! {
                 recv(self.sc_drone_event_recv) -> drone_event_res => {
@@ -118,26 +118,26 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                             // Update GUI state based on the received event
                             match client_event {
                                 // SimulationController::handle_client_event
-                                ClientEvent::ServerTypeReceived(client_id, server_id, server_type) => {
+                                ClientEvent::ServerTypeReceived(_client_id, server_id, server_type) => {
                                     ctx.data_mut(|data| data.insert_temp(id.with("server_type"), Some((server_id, server_type))));
                                     log::info!("Simulation Controller: Received ClientEvent::ServerTypeReceived");
                                 }
-                                ClientEvent::ClientListReceived(client_id, server_id, clients) => {
+                                ClientEvent::ClientListReceived(_client_id, server_id, clients) => {
                                     ctx.data_mut(|data| data.insert_temp(id.with("client_list"), Some((server_id, clients))));
                                 }
-                                ClientEvent::FilesListReceived(client_id, server_id, files) => {
+                                ClientEvent::FilesListReceived(_client_id, server_id, files) => {
                                     ctx.data_mut(|data| data.insert_temp(id.with("files_list"), Some((server_id, files))));
                                 }
-                                ClientEvent::FileReceived(client_id, server_id, file_data) => {
+                                ClientEvent::FileReceived(_client_id, server_id, file_data) => {
                                     ctx.data_mut(|data| data.insert_temp(id.with("received_file"), Some((server_id, file_data))));
                                 }
-                                ClientEvent::MediaReceived(client_id, server_id, media_data) => {
+                                ClientEvent::MediaReceived(_client_id, server_id, media_data) => {
                                     ctx.data_mut(|data| data.insert_temp(id.with("received_media"), Some((server_id, media_data))));
                                 }
-                                ClientEvent::MessageFromReceived(client_id, server_id, from_id, message) => {
+                                ClientEvent::MessageFromReceived(_client_id, server_id, from_id, message) => {
                                     ctx.data_mut(|data| data.insert_temp(id.with("message_from"), Some((server_id, from_id, message))));
                                 }
-                                ClientEvent::RegistrationOk(client_id, server_id) => {
+                                ClientEvent::RegistrationOk(_client_id, server_id) => {
                                      ctx.data_mut(|data| data.insert_temp(id.with("registration_result"), Some((server_id, true))));
                                 }
                                 ClientEvent::Error(client_id, message) => {
@@ -226,7 +226,7 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                     ui.painter().rect_filled(
                         ui.available_rect_before_wrap(),
                         0.0,
-                        egui::Color32::WHITE,
+                        Color32::WHITE,
                     );
 
                     // Aggiungi una ScrollArea per il contenuto superiore con un ID univoco
@@ -247,7 +247,7 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                     ui.painter().rect_filled(
                         ui.available_rect_before_wrap(),
                         0.0,
-                        egui::Color32::DARK_GRAY,
+                        Color32::DARK_GRAY,
                     );
 
                     // Aggiungi una ScrollArea per il contenuto inferiore con un ID univoco
@@ -261,7 +261,6 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                     });
                 });
             });
-
         egui::CentralPanel::default().frame(egui::Frame::none()).show(ctx, |ui| {
             self.central_panel(ui, ctx);
         });
@@ -277,14 +276,12 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                 }
             })
             .collect();
-
         // Interfaccia del client
         for (node_id, node) in &self.panel.central_panel.active_popups {
             if let SimulationControllerNodeType::CLIENT { client_type, .. } = node.node_type.clone() { // Corrected line
                 client_gui(node_id, &ctx.clone(), &mut popups_to_remove, &available_servers, &self.sc_client_channels, client_type); // Pass client_type
             }
         }
-
         // Rimuovi i popup chiusi
         for node_id in popups_to_remove {
             self.panel.central_panel.active_popups.remove(&node_id);
@@ -440,7 +437,6 @@ impl DronegowskiSimulationController<'_>{
             else{
                 self.panel.central_panel.active_error = result;
                 self.panel.central_panel.popup_timer = Some(Instant::now());
-                //println!("{:?}", result);
             }
             self.panel.reset();
         }
@@ -461,10 +457,9 @@ impl DronegowskiSimulationController<'_>{
             else{
                 self.panel.central_panel.active_error = result;
                 self.panel.central_panel.popup_timer = Some(Instant::now());
-                //println!("{:?}", result);
             }
             self.panel.reset();
-
+            self.panel.central_panel.selected_node = None;
         }
     }
 
@@ -481,7 +476,6 @@ impl DronegowskiSimulationController<'_>{
                     controller_send.send(DroneCommand::SetPacketDropRate(set_pdr)).expect("Error sending the command...");
                 }
             }
-
         }
         self.panel.reset();
     }
@@ -489,7 +483,7 @@ impl DronegowskiSimulationController<'_>{
     pub fn spawn(&mut self, pdr: f32) {
         let (packet_send, packet_recv) = unbounded();
         let (command_send, command_recv) = unbounded::<DroneCommand>();
-        let (event_send, event_recv) = unbounded::<DroneEvent>();
+        let (event_send, _event_recv) = unbounded::<DroneEvent>();
 
         let mut max_id = self.nodi.iter().map(|n| n.node_id).max().expect("Vettore di nodi vuoto");
         max_id = max_id + 1;
@@ -500,7 +494,6 @@ impl DronegowskiSimulationController<'_>{
         SimulationControllerNode::new(SimulationControllerNodeType::DRONE { drone_channel: command_send, pdr }, max_id, vec![], &mut self.nodi);
         self.handles.push(thread::spawn(move || {
             let mut drone = Dronegowski::new(max_id, event_send, command_recv, packet_recv, HashMap::new(), pdr);
-
             drone.run();
         }));
     }
@@ -538,43 +531,10 @@ impl DronegowskiSimulationController<'_>{
     fn handle_drone_event(&mut self, drone_event: DroneEvent){
         self.panel.bottom_left_panel.event.push(Event::DroneEvent(drone_event));
     }
-
     fn handle_client_event(&mut self, client_event: ClientEvent){
         self.panel.bottom_left_panel.event.push(Event::ClientEvent(client_event));
     }
-
     fn handle_server_event(&mut self, server_event: ServerEvent){
         self.panel.bottom_left_panel.event.push(Event::ServerEvent(server_event));
-    }
-
-    pub fn send_packet_test(&mut self){
-        let fragment1 = Packet { routing_header: SourceRoutingHeader { hop_index: 0, hops: vec![1, 2, 3] }, session_id: 42, pack_type: MsgFragment(Fragment { fragment_index: 1, total_n_fragments: 2, length: 43, data: [0, 0, 0, 0, 31, 0, 0, 0, 0, 0, 0, 0, 81, 117, 101, 115, 116, 111, 32, 195, 168, 32, 117, 110, 32, 109, 101, 115, 115, 97, 103, 103, 105, 111, 32, 100, 105, 32, 116, 101, 115, 116, 33, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }) };
-
-        let fragment2 = Packet {
-            pack_type: MsgFragment(Fragment {
-                fragment_index: 0,
-                total_n_fragments: 2,
-                length: 12,
-                data: [2, 0, 0, 0, 234, 0, 0, 0, 0, 0, 0, 0, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3, 4, 5, 6, 7, 1, 3],
-            }),
-            routing_header: SourceRoutingHeader {
-                hop_index: 0,
-                hops: vec![1, 2],
-            },
-            session_id: 42,
-        };
-
-        let channel_send1 = self.packet_node_channels.get(&4);
-        let channel_send2 = self.packet_node_channels.get(&5);
-
-        if let Some(send_channel) = channel_send1{
-            send_channel.0.send(fragment1.clone()).unwrap();
-            send_channel.0.send(fragment2.clone()).unwrap();
-        }
-
-        if let Some(send_channel) = channel_send2{
-            send_channel.0.send(fragment1).unwrap();
-            send_channel.0.send(fragment2).unwrap();
-        }
     }
 }

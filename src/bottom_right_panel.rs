@@ -3,7 +3,7 @@ use dronegowski_utils::network::{Event, SimulationControllerNodeType};
 use eframe::egui;
 use eframe::egui::{Color32, Direction, Layout, RichText};
 use wg_2024::controller::DroneEvent;
-use wg_2024::packet::{NackType, Packet, PacketType};
+use wg_2024::packet::{NackType, PacketType};
 use crate::DronegowskiSimulationController;
 
 impl DronegowskiSimulationController<'_> {
@@ -243,7 +243,6 @@ impl DronegowskiSimulationController<'_> {
                     }
                 }
             }
-
         }
     }
 }

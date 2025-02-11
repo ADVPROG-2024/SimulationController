@@ -1,6 +1,6 @@
 use dronegowski_utils::network::{SimulationControllerNode};
 use eframe::egui;
-use eframe::egui::{Color32, Direction, Layout, RichText, TextBuffer, TextEdit};
+use eframe::egui::{Color32, Direction, Layout, RichText, TextEdit};
 use crate::{DronegowskiSimulationController};
 
 impl DronegowskiSimulationController<'_> {
@@ -52,8 +52,6 @@ impl DronegowskiSimulationController<'_> {
                 }
             }
         });
-
-
     }
 
     pub fn upper_left_panel_drone(&mut self, ui: &mut egui::Ui, node: SimulationControllerNode) {
