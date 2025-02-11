@@ -153,8 +153,22 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                 },
                 recv(self.sc_server_event_recv) -> server_event_res => {
                     if let Ok(server_event) = server_event_res {
-                        self.handle_server_event(server_event);
+                        self.handle_server_event(server_event.clone());
                         // No repaint request here!
+                        let client_id = match &server_event {
+                            ServerEvent::Error(_, client_id, _) => Some(client_id),
+                            _ => {None}
+                        };
+
+                        if let Some(client_id) = client_id {
+                            let id = egui::Id::new(client_id).with("client_gui_state");
+                            match server_event {
+                                ServerEvent::Error(_, client_id, message) => {
+                                    ctx.data_mut(|data| data.insert_temp(id.with("error"), Some((client_id, message))));
+                                }
+                                _ => {}
+                            }
+                        }
                     }
                 },
                 default => break, // Exit the loop if no events are ready
