@@ -1,12 +1,11 @@
 use std::fmt::Debug;
 use dronegowski_utils::hosts::{ClientCommand, ClientEvent, ServerCommand, ServerEvent};
-use dronegowski_utils::network::SimulationControllerNodeType;
+use dronegowski_utils::network::{Event, SimulationControllerNodeType};
 use eframe::egui;
 use eframe::egui::{Color32, Direction, Layout, RichText};
 use wg_2024::controller::DroneEvent;
 use wg_2024::packet::{NackType, PacketType};
 use crate::DronegowskiSimulationController;
-use crate::sc_utils::Event;
 
 impl DronegowskiSimulationController<'_> {
     pub fn bottom_left_panel(&mut self, ui: &mut egui::Ui){
@@ -33,6 +32,7 @@ impl DronegowskiSimulationController<'_> {
                                 }
                                 PacketType::Nack(nack) => {
                                     match nack.nack_type {
+
                                         NackType::ErrorInRouting(_) => {
                                             self.print_drone_notify(format!("Drone {} sent an ErrorInRouting NACK to Node {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]), ui);
                                         }
@@ -97,6 +97,7 @@ impl DronegowskiSimulationController<'_> {
                 Event::ClientEvent (client_event) => {
                     match client_event {
                         ClientEvent::PacketSent (packet) => {
+
                             match packet.clone().pack_type {
                                 PacketType::MsgFragment(_) => {
                                     self.print_client_notify(format!("Client {} sent a fragment to Drone {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]), ui);
@@ -136,6 +137,7 @@ impl DronegowskiSimulationController<'_> {
                 Event::ServerEvent (server_event) => {
                     match server_event {
                         ServerEvent::PacketSent (packet) => {
+
                             match packet.clone().pack_type {
                                 PacketType::MsgFragment(_) => {
                                     self.print_server_notify(format!("Server {} sent a fragment to Drone {}", packet.routing_header.hops[packet.routing_header.hop_index-1], packet.routing_header.hops[packet.routing_header.hop_index]), ui);
@@ -175,7 +177,7 @@ impl DronegowskiSimulationController<'_> {
         }
     }
 
-    fn print_drone_notify(&self, text: String, ui: &mut egui::Ui) {
+    pub(crate) fn print_drone_notify(&self, text: String, ui: &mut egui::Ui) {
         ui.horizontal(|ui| {
             ui.add_space(8.);
             ui.label(RichText::new(text).size(15.0).color(Color32::LIGHT_BLUE));
@@ -184,7 +186,7 @@ impl DronegowskiSimulationController<'_> {
         ui.add_space(8.);
     }
 
-    fn print_client_notify(&self, text: String, ui: &mut egui::Ui) {
+    pub(crate) fn print_client_notify(&self, text: String, ui: &mut egui::Ui) {
         ui.horizontal(|ui|{
             ui.add_space(8.);
             ui.label(RichText::new(text).size(15.0).color(Color32::LIGHT_GREEN));
@@ -194,7 +196,7 @@ impl DronegowskiSimulationController<'_> {
 
     }
 
-    fn print_server_notify(&self, text: String, ui: &mut egui::Ui) {
+    pub(crate) fn print_server_notify(&self, text: String, ui: &mut egui::Ui) {
         ui.horizontal(|ui| {
             ui.add_space(8.);
             ui.label(RichText::new(text).size(15.0).color(Color32::LIGHT_RED));

@@ -5,7 +5,7 @@ use eframe::epaint::Color32;
 use crate::DronegowskiSimulationController;
 
 impl DronegowskiSimulationController<'_> {
-    pub fn right_panel(&mut self, ui: &mut egui::Ui) {
+    pub fn upper_right_panel(&mut self, ui: &mut egui::Ui) {
         ui.add_space(5.);
         ui.horizontal(|ui|{
             ui.with_layout(Layout::right_to_left(Align::RIGHT), |ui| {

@@ -10,14 +10,14 @@ use dronegowski_utils::hosts::{ClientCommand, ClientEvent, ServerCommand, Server
 use eframe::egui;
 use wg_2024::controller::{DroneCommand, DroneEvent};
 use wg_2024::network::{NodeId, SourceRoutingHeader};
-use dronegowski_utils::network::{SimulationControllerNode, SimulationControllerNodeType};
+use dronegowski_utils::network::{Event, SimulationControllerNode, SimulationControllerNodeType};
 use eframe::egui::accesskit::Node;
 use eframe::egui::Color32;
 use wg_2024::drone::Drone;
 use wg_2024::packet::{Fragment, Packet};
 use wg_2024::packet::PacketType::MsgFragment;
 use crate::client_gui::client_gui;
-use crate::sc_utils::{Event, Panel};
+use crate::sc_utils::Panel;
 
 pub struct DronegowskiSimulationController<'a> {
     pub nodi: Vec<SimulationControllerNode>,
@@ -212,10 +212,56 @@ impl eframe::App for DronegowskiSimulationController<'_> {
         });
 
 
-        egui::SidePanel::right("right_panel").resizable(false).exact_width(300.0).frame(egui::Frame::none().fill(Color32::WHITE)).show(ctx, |ui| {
-            self.right_panel(ui);
+        egui::SidePanel::right("right_panel")
+            .resizable(false)
+            .exact_width(300.0)
+            .frame(egui::Frame::none())
+            .show(ctx, |ui| {
+                ui.spacing_mut().item_spacing = egui::Vec2::ZERO;
 
-        });
+                // Upper right part
+                ui.vertical(|ui| {
+                    // Imposta un'altezza fissa per il pannello superiore
+                    ui.set_height(ui.available_height() / 2.0 + 150.0); // Metà altezza + 150 pixel
+                    ui.painter().rect_filled(
+                        ui.available_rect_before_wrap(),
+                        0.0,
+                        egui::Color32::WHITE,
+                    );
+
+                    // Aggiungi una ScrollArea per il contenuto superiore con un ID univoco
+                    ui.push_id("upper_right_scroll", |ui| {
+                        egui::ScrollArea::vertical()
+                            .auto_shrink(false) // Disabilita l'auto-shrink
+                            .max_height(ui.available_height()) // Usa l'altezza disponibile
+                            .show(ui, |ui| {
+                                self.upper_right_panel(ui);
+                            });
+                    });
+                });
+
+                // Bottom right part
+                ui.vertical(|ui| {
+                    // Imposta un'altezza fissa per il pannello inferiore
+                    ui.set_height(ui.available_height()); // Usa l'altezza rimanente
+                    ui.painter().rect_filled(
+                        ui.available_rect_before_wrap(),
+                        0.0,
+                        egui::Color32::DARK_GRAY,
+                    );
+
+                    // Aggiungi una ScrollArea per il contenuto inferiore con un ID univoco
+                    ui.push_id("bottom_right_scroll", |ui| {
+                        egui::ScrollArea::vertical()
+                            .auto_shrink(false) // Disabilita l'auto-shrink
+                            .max_height(ui.available_height()) // Usa l'altezza disponibile
+                            .show(ui, |ui| {
+                                self.bottom_right_panel(ui);
+                            });
+                    });
+                });
+            });
+
         egui::CentralPanel::default().frame(egui::Frame::none()).show(ctx, |ui| {
             self.central_panel(ui, ctx);
         });
