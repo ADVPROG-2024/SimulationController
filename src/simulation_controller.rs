@@ -463,10 +463,10 @@ impl DronegowskiSimulationController<'_>{
         if let Some(current_node) = self.panel.central_panel.selected_node.clone(){
             let mut node_verification = self.nodi.clone();
             for elem in current_node.clone().neighbours {
-                if let Some(node_index) = self.nodi.iter().position(|node| node.node_id == elem) {
-                    let mut neighbour = self.nodi[node_index].clone();
+                if let Some(node_index) = node_verification.iter().position(|node| node.node_id == elem) {
+                    let mut neighbour = node_verification[node_index].clone();
                     neighbour.neighbours.retain(|node_id| node_id.clone() != current_node.node_id);
-                    self.nodi[node_index] = neighbour.clone();
+                    node_verification[node_index] = neighbour.clone();
                 }
             }
             node_verification.retain(|node| node.node_id != current_node.node_id);
