@@ -6,7 +6,9 @@ use wg_2024;
 use crossbeam_channel::{select, unbounded, Receiver, Sender};
 use dronegowski::Dronegowski;
 use dronegowski_utils::functions::validate_network;
-use dronegowski_utils::hosts::{ClientCommand, ClientEvent, ServerCommand, ServerEvent};
+use dronegowski_utils::hosts::{ClientCommand, ClientEvent, ClientType, ServerCommand, ServerEvent};
+use dronegowski_utils::hosts::ClientMessages::ServerType;
+use dronegowski_utils::hosts::ServerType as ST;
 use eframe::egui;
 use wg_2024::controller::{DroneCommand, DroneEvent};
 use wg_2024::network::{NodeId, SourceRoutingHeader};
@@ -14,8 +16,11 @@ use dronegowski_utils::network::{Event, SimulationControllerNode, SimulationCont
 use rolling_drone::RollingDrone;
 use eframe::egui::accesskit::Node;
 use eframe::egui::Color32;
+use servers::{ContentServer, DronegowskiServer};
+use wg_2024::config::Server;
 use wg_2024::drone::Drone;
 use wg_2024::packet::{Fragment, Packet};
+use wg_2024::packet::NodeType::Server;
 use wg_2024::packet::PacketType::MsgFragment;
 use crate::client_gui::client_gui;
 use crate::sc_utils::Panel;
@@ -504,7 +509,7 @@ impl DronegowskiSimulationController<'_>{
         self.panel.reset();
     }
 
-    pub fn spawn(&mut self, pdr: f32) {
+    pub fn spawn_drone(&mut self, pdr: f32) {
         let (packet_send, packet_recv) = unbounded();
         let (command_send, command_recv) = unbounded::<DroneCommand>();
         let (event_send, _event_recv) = unbounded::<DroneEvent>();
@@ -519,6 +524,42 @@ impl DronegowskiSimulationController<'_>{
         self.handles.push(thread::spawn(move || {
             let mut drone = RollingDrone::new(max_id, event_send, command_recv, packet_recv, HashMap::new(), pdr);
             drone.run();
+        }));
+    }
+
+    // pub fn spawn_client(&mut self, pdr: f32) {
+    //     let (packet_send, packet_recv) = unbounded();
+    //     let (command_send, command_recv) = unbounded::<DroneCommand>();
+    //     let (event_send, _event_recv) = unbounded::<DroneEvent>();
+    //
+    //     let mut max_id = self.nodi.iter().map(|n| n.node_id).max().expect("Vettore di nodi vuoto");
+    //     max_id = max_id + 1;
+    //
+    //     self.sc_drone_channels.insert(max_id, command_send.clone());
+    //     self.packet_node_channels.insert(max_id, (packet_send, packet_recv.clone()));
+    //
+    //     SimulationControllerNode::new(SimulationControllerNodeType::DRONE { drone_channel: command_send, pdr }, max_id, vec![], &mut self.nodi);
+    //     self.handles.push(thread::spawn(move || {
+    //         let mut drone = RollingDrone::new(max_id, event_send, command_recv, packet_recv, HashMap::new(), pdr);
+    //         drone.run();
+    //     }));
+    // }
+
+    pub fn spawn_server(&mut self) {
+        let (packet_send, packet_recv) = unbounded();
+        let (command_send, command_recv) = unbounded::<ServerCommand>();
+        let (event_send, _event_recv) = unbounded::<ServerEvent>();
+
+        let mut max_id = self.nodi.iter().map(|n| n.node_id).max().expect("Vettore di nodi vuoto");
+        max_id = max_id + 1;
+
+        self.sc_server_channels.insert(max_id, command_send.clone());
+        self.packet_node_channels.insert(max_id, (packet_send, packet_recv.clone()));
+
+        SimulationControllerNode::new(SimulationControllerNodeType::SERVER { server_channel: command_send, server_type: ST::Content }, max_id, vec![], &mut self.nodi);
+        self.handles.push(thread::spawn(move || {
+            let mut server = ContentServer::new(max_id, event_send, command_recv, packet_recv, HashMap::new(), ST::Content, "ContentServerData/file", "ContentServerData/media");
+            server.run();
         }));
     }
 
