@@ -20,7 +20,6 @@ use servers::{ContentServer, DronegowskiServer};
 use wg_2024::config::Server;
 use wg_2024::drone::Drone;
 use wg_2024::packet::{Fragment, Packet};
-use wg_2024::packet::NodeType::Server;
 use wg_2024::packet::PacketType::MsgFragment;
 use crate::client_gui::client_gui;
 use crate::sc_utils::Panel;
