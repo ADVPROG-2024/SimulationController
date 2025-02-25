@@ -114,6 +114,7 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                             ClientEvent::RegistrationOk(client_id, _) => Some(client_id),
                             ClientEvent::Error(client_id, _) => Some(client_id),
                             ClientEvent::MessageReceived(_) => None,
+                            ClientEvent::Route(_) => None,  // todo: add client id
                             _ => {None}
                         };
 

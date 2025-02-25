@@ -149,6 +149,9 @@ impl DronegowskiSimulationController<'_> {
                                 _ => {}
                             }
                         }
+                        ClientEvent::Route(route)=>{
+                            self.print_client_notify(format!("Client sent packet using Route {}", route), ui);
+                        }
                         _ => {}
                     }
                 }
@@ -190,6 +193,9 @@ impl DronegowskiSimulationController<'_> {
                                 }
                                 _ => {}
                             }
+                        }
+                        ServerEvent::Route(route)=>{
+                            self.print_server_notify(format!("Server ID sending though Route {}", route), ui);
                         }
                         _ => {}
                     }
