@@ -40,8 +40,7 @@ impl DronegowskiSimulationController<'_> {
         ui.horizontal(|ui|{
             ui.add_space(232.);
             if ui.add(egui::Button::new(
-
-                RichText::new("Spawn").color(Color32::WHITE)
+                RichText::new("Spawn Drone").color(Color32::WHITE)
                     .size(15.0)).fill(Color32::from_rgb(0, 119, 182)).min_size(egui::Vec2::new(60.0, 30.0))).clicked() && self.panel.upper_left_panel.spawn_pdr != "" {
                 let mut pdr = self.panel.upper_left_panel.spawn_pdr.clone().parse::<f32>();
                 if pdr.is_ok() {
@@ -51,6 +50,11 @@ impl DronegowskiSimulationController<'_> {
                     }
                 }
             }
+            if ui.add(egui::Button::new(
+                RichText::new("Spawn Content Server").color(Color32::WHITE)
+                    .size(15.0)).fill(Color32::from_rgb(0, 119, 182)).min_size(egui::Vec2::new(60.0, 30.0))).clicked() && self.panel.upper_left_panel.spawn_pdr != "" {
+                        self.spawn_server();
+                }
         });
     }
 
@@ -177,17 +181,7 @@ impl DronegowskiSimulationController<'_> {
         ui.add_space(50.);
 
         ui.horizontal(|ui|{
-
-            ui.add_space(232.);
-
-            if ui.add(egui::Button::new(
-                RichText::new("Spawn").color(Color32::WHITE)
-                    .size(15.0)).fill(Color32::from_rgb(0, 119, 182)).min_size(egui::Vec2::new(60.0, 30.0))).clicked() && self.panel.upper_left_panel.spawn_pdr != "" {
-                        self.spawn_server();
-            }
-
             ui.add_space(20.);
-
             if ui.add(egui::Button::new(
                 RichText::new("Add Sender") // Add an emoji or icon
                     .color(Color32::WHITE)
