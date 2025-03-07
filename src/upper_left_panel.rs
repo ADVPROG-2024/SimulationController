@@ -92,7 +92,7 @@ impl DronegowskiSimulationController<'_> {
             if ui.add(egui::Button::new(
 
                 RichText::new("Change").color(Color32::WHITE)
-                    .size(15.0)).fill(Color32::from_rgb(0, 119, 182)).min_size(egui::Vec2::new(60.0, 30.0))).clicked() && self.panel.upper_left_panel.spawn_pdr != "" {
+                    .size(15.0)).fill(Color32::from_rgb(0, 119, 182)).min_size(egui::Vec2::new(60.0, 30.0))).clicked() && self.panel.upper_left_panel.change_pdr != "" {
                 let mut pdr = self.panel.upper_left_panel.change_pdr.clone().parse::<f32>();
                 if pdr.is_ok() {
                     if pdr.clone().unwrap() <= 1. && pdr.clone().unwrap() >= 0. {
@@ -111,11 +111,7 @@ impl DronegowskiSimulationController<'_> {
                     .size(16.0)).fill(Color32::GREEN).min_size(egui::Vec2::new(110.0, 50.0))).clicked(){
                 self.panel.upper_left_panel.add_sender = true;
             }
-            //Color32::from_rgb(0, 119, 182)
-            //Color32::from_rgb(0, 168, 150)
-            //Color32::from_rgb(244, 162, 97)
-            //Color32::from_rgb(234, 234, 234)
-            //Color32::from_rgb(136, 14, 79)
+
             ui.add_space(20.);
 
             if ui.add(egui::Button::new(
