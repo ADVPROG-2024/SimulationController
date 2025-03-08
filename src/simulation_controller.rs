@@ -359,30 +359,34 @@ impl DronegowskiSimulationController<'_>{
                         }
                     }
                 }
+                //println!("Aggiungo nodo {} ai vicini del nodo {}", neighbour.node_id, current_node.node_id);
+
 
                 match neighbour.node_type {
                     SimulationControllerNodeType::DRONE { .. } => {
                         if let Some(controller_send_neighbour) = self.sc_drone_channels.get(&neighbour.node_id) {
-                            if let Some(current_send) = self.packet_node_channels.get(&neighbour.node_id) {
+                            if let Some(current_send) = self.packet_node_channels.get(&current_node.node_id) {
                                 controller_send_neighbour.send(DroneCommand::AddSender(current_node.node_id, current_send.clone().0)).expect("Error sending the command...");
                             }
                         }
                     }
                     SimulationControllerNodeType::CLIENT { .. } => {
                         if let Some(controller_send_neighbour) = self.sc_client_channels.get(&neighbour.node_id) {
-                            if let Some(current_send) = self.packet_node_channels.get(&neighbour.node_id) {
+                            if let Some(current_send) = self.packet_node_channels.get(&current_node.node_id) {
                                 controller_send_neighbour.send(ClientCommand::AddSender(current_node.node_id, current_send.clone().0)).expect("Error sending the command...");
                             }
                         }
                     }
                     SimulationControllerNodeType::SERVER { .. } => {
                         if let Some(controller_send_neighbour) = self.sc_server_channels.get(&neighbour.node_id) {
-                            if let Some(current_send) = self.packet_node_channels.get(&neighbour.node_id) {
+                            if let Some(current_send) = self.packet_node_channels.get(&current_node.node_id) {
                                 controller_send_neighbour.send(ServerCommand::AddSender(current_node.node_id, current_send.clone().0)).expect("Error sending the command...");
                             }
                         }
                     }
                 }
+                //println!("Aggiungo nodo {} ai vicini del nodo {}", current_node.node_id, neighbour.node_id);
+
             }
             else{
                 self.panel.central_panel.active_error = result;
@@ -406,9 +410,6 @@ impl DronegowskiSimulationController<'_>{
             // Aggiorniamo le liste di vicini
             current_node.neighbours.retain(|&node| node != neighbour.node_id);
             neighbour.neighbours.retain(|&node| node != current_node.node_id);
-
-            //println!("Vicini nodo {}: {:?}", current_node.node_id,current_node.neighbours);
-            //println!("Vicini nodo {}: {:?}", neighbour.node_id,neighbour.neighbours);
 
             let mut node_verification = self.nodi.clone();
             node_verification[current_index] = current_node.clone();
@@ -436,6 +437,7 @@ impl DronegowskiSimulationController<'_>{
                         }
                     }
                 }
+                //println!("Rimuovo nodo {} dai vicini del nodo {}", neighbour.node_id, current_node.node_id);
 
                 match neighbour.node_type {
                     SimulationControllerNodeType::DRONE { .. } => {
@@ -454,6 +456,8 @@ impl DronegowskiSimulationController<'_>{
                         }
                     }
                 }
+                //println!("Rimuovo nodo {} dai vicini del nodo {}", current_node.node_id, neighbour.node_id);
+
             }
             else{
                 self.panel.central_panel.active_error = result;
@@ -511,7 +515,6 @@ impl DronegowskiSimulationController<'_>{
     pub fn spawn_drone(&mut self, pdr: f32) {
         let (packet_send, packet_recv) = unbounded();
         let (command_send, command_recv) = unbounded::<DroneCommand>();
-        let (event_send, _event_recv) = unbounded::<DroneEvent>();
 
         let mut max_id = self.nodi.iter().map(|n| n.node_id).max().expect("Vettore di nodi vuoto");
         max_id = max_id + 1;
@@ -520,8 +523,9 @@ impl DronegowskiSimulationController<'_>{
         self.packet_node_channels.insert(max_id, (packet_send, packet_recv.clone()));
 
         SimulationControllerNode::new(SimulationControllerNodeType::DRONE { drone_channel: command_send, pdr }, max_id, vec![], &mut self.nodi);
+        let event_send = self.sc_drone_event_send.clone();
         self.handles.push(thread::spawn(move || {
-            let mut drone = RollingDrone::new(max_id, event_send, command_recv, packet_recv, HashMap::new(), pdr);
+            let mut drone = Dronegowski::new(max_id, event_send, command_recv, packet_recv, HashMap::new(), pdr);
             drone.run();
         }));
     }

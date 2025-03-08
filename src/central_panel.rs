@@ -175,8 +175,6 @@ impl DronegowskiSimulationController<'_> {
                     });
                 });
         }
-
-
     }
 
     fn add_sender_graphic(&mut self, distance: f32, elem: &SimulationControllerNode, pointer: Pos2, panel_offset: Pos2, painter: &Painter, ui: &mut egui::Ui) {
