@@ -211,6 +211,9 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
 
 
                 if send_button.clicked() {
+                    // Clear error message when Send is clicked
+                    set_error(None);
+
                     // --- Conditional Command Creation (adjusted for ClientType) ---
                     let command = match (client_type.clone(), selected_option.as_str()) {
                         (ClientType::WebBrowsers, "ServerType") => ClientCommand::ServerType(selected_server_id),
