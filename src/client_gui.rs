@@ -235,7 +235,13 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
                     };
 
                     if let Some(client_sender) = sc_client_channels.get(node_id) {
-                        set_is_request_pending(true);
+
+                        match (client_type.clone(), selected_option.as_str()) {
+                            (ClientType::ChatClients, "MessageFor") => {
+                                set_is_request_pending(false)
+                            }
+                            _ => set_is_request_pending(true),
+                        };
 
                         let mut current_messages_send = status_messages.clone();
                         current_messages_send.push(format!("Sending command: {:?}", command));
