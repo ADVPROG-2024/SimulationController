@@ -10,12 +10,20 @@ use wg_2024::controller::{DroneCommand, DroneEvent};
 use wg_2024::network::NodeId;
 use wg_2024::packet::Packet;
 use client::DronegowskiClient;
-use dronegowski::Dronegowski;
 use dronegowski_utils::functions::{simple_log, validate_network};
 use dronegowski_utils::network::{SimulationControllerNode, SimulationControllerNodeType};
+use null_pointer_drone::MyDrone;
 use rolling_drone::RollingDrone;
+use rust_do_it::RustDoIt;
 use rand::Rng;
 use servers::{CommunicationServer, ContentServer, DronegowskiServer};
+use skylink::SkyLinkDrone;
+use bagel_bomber::BagelBomber;
+use rustbusters_drone::RustBustersDrone;
+use rusty_drones::RustyDrone;
+use lockheedrustin_drone::LockheedRustin;
+use bobry_w_locie::drone::BoberDrone;
+use rustastic_drone::RustasticDrone;
 
 fn main(){
     simple_log();
@@ -91,12 +99,12 @@ fn parse_node(config: Config) {
 
         SimulationControllerNode::new(SimulationControllerNodeType::DRONE{ drone_channel: command_send, pdr: drone.pdr }, drone.id, neighbours_id, &mut nodi);
 
-        //let impl_name = drone_implementations[drone_index % num_implementations].clone();
+        let impl_name = drone_implementations[drone_index % num_implementations].clone();
         let drone_id = drone.id;
         let drone_pdr = drone.pdr;
 
         handles.push(thread::spawn(move || {
-            /*match impl_name {
+            match impl_name {
                 "RustDoIt" => {
                     println!("RustDoIt {}", drone_id);
                     let mut drone = RustDoIt::new(drone_id, drone_event_send, command_recv, packet_recv, neighbours, drone_pdr);
@@ -149,10 +157,7 @@ fn parse_node(config: Config) {
                     drone.run();
                 }
                 &_ => {}
-
-            }*/
-            let mut drone = Dronegowski::new(drone_id, drone_event_send, command_recv, packet_recv, neighbours, drone_pdr);
-            drone.run();
+            }
         }));
     }
 
