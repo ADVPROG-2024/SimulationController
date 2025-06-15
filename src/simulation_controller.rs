@@ -73,7 +73,7 @@ impl <'a>DronegowskiSimulationController<'a> {
               handles: &'a mut Vec<JoinHandle<()>>,
     ) -> Self {
         Self {
-            nodi: nodi.clone(),
+            nodi,
             sc_drone_channels,
             sc_client_channels,
             sc_server_channels,
@@ -101,7 +101,7 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                 recv(self.sc_client_event_recv) -> client_event_res => {
                     if let Ok(client_event) = client_event_res {
                         self.handle_client_event(client_event.clone());
-                        let client_id = match &client_event {
+                        let client_id_option = match &client_event {
                             ClientEvent::PacketSent(_) => None,
                             ClientEvent::ServerTypeReceived(client_id, _, _) => Some(client_id),
                             ClientEvent::ClientListReceived(client_id, _, _) => Some(client_id),
@@ -115,7 +115,7 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                             _ => {None}
                         };
 
-                        if let Some(client_id) = client_id {
+                        if let Some(client_id) = client_id_option {
                             let id = egui::Id::new(client_id).with("client_gui_state");
 
                             // Update GUI state based on the received event
@@ -401,7 +401,7 @@ impl DronegowskiSimulationController<'_>{
         let current_node_index = self.nodi.iter().position(|node| node.node_id == current_node_id);
         let neighbour_index = self.nodi.iter().position(|node| node.node_id == neighbour_id);
 
-        if let (Some(current_index), Some(neighbour_index)) = (current_node_index, neighbour_index) {
+         if let (Some(current_index), Some(neighbour_index)) = (current_node_index, neighbour_index) {
             let mut current_node = self.nodi[current_index].clone();
             let mut neighbour = self.nodi[neighbour_index].clone();
 
