@@ -158,20 +158,15 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                     if let Ok(server_event) = server_event_res {
                         self.handle_server_event(server_event.clone());
                         // No repaint request here!
-                        let client_id = match &server_event {
-                            ServerEvent::Error(_, client_id, _) => Some(client_id),
-                            _ => {None}
-                        };
-
-                        if let Some(client_id) = client_id {
+                         if let ServerEvent::Error(_, client_id, message) = server_event {
+                            // Ottieni l'ID univoco per lo stato della GUI del client specifico
                             let id = egui::Id::new(client_id).with("client_gui_state");
-                            match server_event {
-                                ServerEvent::Error(_, client_id, message) => {
-                                    ctx.data_mut(|data| data.insert_temp(id.with("error"), Some((client_id, message))));
-                                }
-                                _ => {}
-                            }
-                            // Reset is_request_pending AFTER handling the event
+                            log::warn!("Server returned an error for client {}: {}", client_id, message);
+                
+                            // 3. Aggiorna lo stato della GUI del client con il messaggio di errore
+                            ctx.data_mut(|data| data.insert_temp(id.with("error"), Some((client_id, message))));
+                
+                            // 4. Critico: reimposta lo stato 'is_request_pending' per sbloccare la GUI
                             ctx.data_mut(|data| data.insert_temp(id.with("request_pending"), false));
                         }
                     }
