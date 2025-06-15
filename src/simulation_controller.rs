@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::fmt::Debug;
 use std::thread;
 use std::thread::{JoinHandle};
 use std::time::Instant;
@@ -14,6 +15,7 @@ use dronegowski_utils::network::{Event, SimulationControllerNode, SimulationCont
 use rolling_drone::RollingDrone;
 use eframe::egui::accesskit::Node;
 use eframe::egui::Color32;
+use rustastic_drone::RustasticDrone;
 use wg_2024::drone::Drone;
 use wg_2024::packet::{Fragment, Packet};
 use wg_2024::packet::PacketType::MsgFragment;
@@ -382,7 +384,12 @@ impl DronegowskiSimulationController<'_>{
                     }
                 }
                 //println!("Aggiungo nodo {} ai vicini del nodo {}", current_node.node_id, neighbour.node_id);
-
+                for client_command in self.sc_client_channels.clone(){
+                    client_command.1.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
+                }
+                for server_command in self.sc_server_channels.clone(){
+                    server_command.1.send(ServerCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
+                }
             }
             else{
                 self.panel.central_panel.active_error = result;
@@ -453,7 +460,12 @@ impl DronegowskiSimulationController<'_>{
                     }
                 }
                 //println!("Rimuovo nodo {} dai vicini del nodo {}", current_node.node_id, neighbour.node_id);
-
+                for client_command in self.sc_client_channels.clone(){
+                    client_command.1.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
+                }
+                for server_command in self.sc_server_channels.clone(){
+                    server_command.1.send(ServerCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
+                }
             }
             else{
                 self.panel.central_panel.active_error = result;
@@ -480,6 +492,12 @@ impl DronegowskiSimulationController<'_>{
                 self.nodi.retain(|node| node.node_id != current_node.node_id);
                 if let Some(controller_send) = self.sc_drone_channels.get(&current_node.node_id) {
                     controller_send.send(DroneCommand::Crash).expect("Error sending the command...");
+                }
+                for client_command in self.sc_client_channels.clone(){
+                    client_command.1.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
+                }
+                for server_command in self.sc_server_channels.clone(){
+                    server_command.1.send(ServerCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
                 }
             }
             else{

@@ -149,6 +149,9 @@ impl DronegowskiSimulationController<'_> {
                                 _ => {}
                             }
                         }
+                        ClientEvent::Route(route) => {
+                            self.print_client_notify(format!("Client {} sendin a packet using this route: {:?}", route[0], route), ui);
+                        }
                         _ => {}
                     }
                 }
