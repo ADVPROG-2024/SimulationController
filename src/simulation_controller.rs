@@ -576,11 +576,11 @@ impl DronegowskiSimulationController<'_>{
         }
         sleep(Duration::from_millis(100));
         for client_command in self.sc_client_channels.values(){
-            warn!("SC : removed sender and requesting client {} to update network", client_command.0);
+            warn!("SC : removed sender and requesting client {} to update network", client_command);
             client_command.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
         }
         for server_command in self.sc_server_channels.values(){
-            warn!("SC : removed sender and requesting server {} to update network", server_command.0);
+            warn!("SC : removed sender and requesting server {} to update network", server_command);
             server_command.send(ServerCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
         }
     }
