@@ -498,7 +498,7 @@ impl DronegowskiSimulationController<'_>{
                 if let Some(controller_send) = self.sc_drone_channels.get(&current_node.node_id) {
                     controller_send.send(DroneCommand::Crash).expect("Error sending the command...");
                 }
-                // sleep(Duration::from_millis(50));
+                // sleep(Duration::from_millis(50))
             }
             else{
                 self.panel.central_panel.active_error = result;
