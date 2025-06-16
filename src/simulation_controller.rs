@@ -384,7 +384,7 @@ impl DronegowskiSimulationController<'_>{
                         }
                     }
                 }
-                /*sleep(Duration::from_millis(100));
+                sleep(Duration::from_millis(100));
                 for client_command in self.sc_client_channels.clone(){
                     warn!("SC : added sender and requesting client {} to update network", client_command.0);
                     client_command.1.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
@@ -392,7 +392,7 @@ impl DronegowskiSimulationController<'_>{
                 for server_command in self.sc_server_channels.clone(){
                     warn!("SC : added sender and requesting server {} to update network", server_command.0);
                     server_command.1.send(ServerCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
-                }*/
+                }
             }
             else{
                 self.panel.central_panel.active_error = result;
@@ -462,7 +462,7 @@ impl DronegowskiSimulationController<'_>{
                         }
                     }
                 }
-                /*sleep(Duration::from_millis(100));
+                sleep(Duration::from_millis(100));
                 for client_command in self.sc_client_channels.clone(){
                     warn!("SC : removed sender and requesting client {} to update network", client_command.0);
                     client_command.1.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
@@ -470,7 +470,7 @@ impl DronegowskiSimulationController<'_>{
                 for server_command in self.sc_server_channels.clone(){
                     warn!("SC : removed sender and requesting server {} to update network", server_command.0);
                     server_command.1.send(ServerCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
-                }*/
+                }
             }
             else{
                 self.panel.central_panel.active_error = result;
@@ -569,7 +569,7 @@ impl DronegowskiSimulationController<'_>{
                 }
             }
         }
-        /*sleep(Duration::from_millis(100));
+        sleep(Duration::from_millis(100));
         for client_command in self.sc_client_channels.clone(){
             warn!("SC : removed sender and requesting client {} to update network", client_command.0);
             client_command.1.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
@@ -577,7 +577,7 @@ impl DronegowskiSimulationController<'_>{
         for server_command in self.sc_server_channels.clone(){
             warn!("SC : removed sender and requesting server {} to update network", server_command.0);
             server_command.1.send(ServerCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
-        }*/
+        }
     }
 }
 
