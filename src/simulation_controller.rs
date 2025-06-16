@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 use std::fmt::Debug;
 use std::thread;
-use std::thread::{JoinHandle};
-use std::time::Instant;
+use std::thread::{sleep, JoinHandle};
+use std::time::{Duration, Instant};
 use wg_2024;
 use crossbeam_channel::{select, unbounded, Receiver, Sender};
 use dronegowski::Dronegowski;
@@ -163,10 +163,13 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                             _ => {None}
                         };
 
+
+
                         if let Some(client_id) = client_id {
                             let id = egui::Id::new(client_id).with("client_gui_state");
                             match server_event {
                                 ServerEvent::Error(_, client_id, message) => {
+                                    log::info!("Simulation Controller: Received ServerEvent::Error {:?} ", client_id);
                                     ctx.data_mut(|data| data.insert_temp(id.with("error"), Some((client_id, message))));
                                 }
                                 _ => {}
@@ -383,6 +386,7 @@ impl DronegowskiSimulationController<'_>{
                         }
                     }
                 }
+                // sleep(Duration::from_millis(50));
                 //println!("Aggiungo nodo {} ai vicini del nodo {}", current_node.node_id, neighbour.node_id);
                 for client_command in self.sc_client_channels.clone(){
                     client_command.1.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
@@ -459,7 +463,8 @@ impl DronegowskiSimulationController<'_>{
                         }
                     }
                 }
-                //println!("Rimuovo nodo {} dai vicini del nodo {}", current_node.node_id, neighbour.node_id);
+                // //println!("Rimuovo nodo {} dai vicini del nodo {}", current_node.node_id, neighbour.node_id);
+                // sleep(Duration::from_millis(50));
                 for client_command in self.sc_client_channels.clone(){
                     client_command.1.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
                 }
@@ -493,12 +498,7 @@ impl DronegowskiSimulationController<'_>{
                 if let Some(controller_send) = self.sc_drone_channels.get(&current_node.node_id) {
                     controller_send.send(DroneCommand::Crash).expect("Error sending the command...");
                 }
-                for client_command in self.sc_client_channels.clone(){
-                    client_command.1.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
-                }
-                for server_command in self.sc_server_channels.clone(){
-                    server_command.1.send(ServerCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
-                }
+                // sleep(Duration::from_millis(50));
             }
             else{
                 self.panel.central_panel.active_error = result;
@@ -561,7 +561,6 @@ impl DronegowskiSimulationController<'_>{
                             channel.send(ClientCommand::RemoveSender(node.node_id)).expect("Error sending the command");
                         }
                     }
-
                     SimulationControllerNodeType::DRONE { .. } => {
                         if let Some(channel) = self.sc_drone_channels.get(&elem){
                             channel.send(DroneCommand::RemoveSender(node.node_id)).expect("Error sending the command");
@@ -570,17 +569,43 @@ impl DronegowskiSimulationController<'_>{
                 }
             }
         }
+        for client_command in self.sc_client_channels.clone(){
+            client_command.1.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
+        }
+        for server_command in self.sc_server_channels.clone(){
+            server_command.1.send(ServerCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
+        }
     }
 }
 
 impl DronegowskiSimulationController<'_>{
     fn handle_drone_event(&mut self, drone_event: DroneEvent){
-        self.panel.bottom_left_panel.event.push(Event::DroneEvent(drone_event));
+        // self.panel.bottom_left_panel.event.push(Event::DroneEvent(drone_event));
     }
     fn handle_client_event(&mut self, client_event: ClientEvent){
-        self.panel.bottom_left_panel.event.push(Event::ClientEvent(client_event));
+        match client_event.clone() {
+            ClientEvent::DebugMessage(..) => {
+                sleep(Duration::from_millis(50));
+                self.panel.bottom_left_panel.event.push(Event::ClientEvent(client_event));
+            }
+            ClientEvent::Route(..) => {
+                sleep(Duration::from_millis(50));
+                self.panel.bottom_left_panel.event.push(Event::ClientEvent(client_event));
+            }
+            _ => {}
+        }
     }
     fn handle_server_event(&mut self, server_event: ServerEvent){
-        self.panel.bottom_left_panel.event.push(Event::ServerEvent(server_event));
+        match server_event.clone() {
+            ServerEvent::DebugMessage(..) => {
+                sleep(Duration::from_millis(50));
+                self.panel.bottom_left_panel.event.push(Event::ServerEvent(server_event));
+            }
+            ServerEvent::Route(..) => {
+                sleep(Duration::from_millis(50));
+                self.panel.bottom_left_panel.event.push(Event::ServerEvent(server_event));
+            }
+            _ => {}
+        }
     }
 }

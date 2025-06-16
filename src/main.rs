@@ -205,9 +205,11 @@ fn parse_node(config: Config) {
         let (command_send, command_recv) = unbounded::<ServerCommand>();
         sc_server_channels.insert(server.id, command_send.clone());
 
-        let server_type = if rand::rngs::ThreadRng::default().random_range(0..=1) == 1 {
-            ST::Content
-        } else {ST::Communication};
+        // let server_type = if rand::rngs::ThreadRng::default().random_range(0..=1) == 1 {
+        //     ST::Content
+        // } else {ST::Communication};
+
+        let server_type = ST::Communication;
 
         match server_type {
             ST::Communication => {
