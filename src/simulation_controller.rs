@@ -21,6 +21,7 @@ use wg_2024::packet::{Fragment, Packet};
 use wg_2024::packet::PacketType::MsgFragment;
 use crate::client_gui::client_gui;
 use crate::sc_utils::Panel;
+use log::{debug, error, info, warn};
 
 pub struct DronegowskiSimulationController<'a> {
     pub nodi: Vec<SimulationControllerNode>,
@@ -388,9 +389,11 @@ impl DronegowskiSimulationController<'_>{
                 }
                 sleep(Duration::from_millis(100));
                 for client_command in self.sc_client_channels.values(){
+                    warn!("SC : added sender and requesting client {} to update network", client_command);
                     client_command.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
                 }
                 for server_command in self.sc_server_channels.values(){
+                    warn!("SC : added sender and requesting server {} to update network", server_command);
                     server_command.send(ServerCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
                 }
             }
@@ -465,9 +468,11 @@ impl DronegowskiSimulationController<'_>{
                 // //println!("Rimuovo nodo {} dai vicini del nodo {}", current_node.node_id, neighbour.node_id);
                 sleep(Duration::from_millis(100));
                 for client_command in self.sc_client_channels.values(){
+                    warn!("SC : removed sender and requesting client {} to update network", client_command);
                     client_command.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
                 }
                 for server_command in self.sc_server_channels.values(){
+                    warn!("SC : removed sender and requesting server {} to update network", server_command);
                     server_command.send(ServerCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
                 }
             }
@@ -571,9 +576,11 @@ impl DronegowskiSimulationController<'_>{
         }
         sleep(Duration::from_millis(100));
         for client_command in self.sc_client_channels.values(){
+            warn!("SC : removed sender and requesting client {} to update network", client_command.0);
             client_command.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
         }
         for server_command in self.sc_server_channels.values(){
+            warn!("SC : removed sender and requesting server {} to update network", server_command.0);
             server_command.send(ServerCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
         }
     }
