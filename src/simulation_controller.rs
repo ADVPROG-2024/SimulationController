@@ -386,13 +386,12 @@ impl DronegowskiSimulationController<'_>{
                         }
                     }
                 }
-                // sleep(Duration::from_millis(50));
-                //println!("Aggiungo nodo {} ai vicini del nodo {}", current_node.node_id, neighbour.node_id);
-                for client_command in self.sc_client_channels.clone(){
-                    client_command.1.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
+                sleep(Duration::from_millis(100));
+                for client_command in self.sc_client_channels.values(){
+                    client_command.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
                 }
-                for server_command in self.sc_server_channels.clone(){
-                    server_command.1.send(ServerCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
+                for server_command in self.sc_server_channels.values(){
+                    server_command.send(ServerCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
                 }
             }
             else{
@@ -464,12 +463,12 @@ impl DronegowskiSimulationController<'_>{
                     }
                 }
                 // //println!("Rimuovo nodo {} dai vicini del nodo {}", current_node.node_id, neighbour.node_id);
-                // sleep(Duration::from_millis(50));
-                for client_command in self.sc_client_channels.clone(){
-                    client_command.1.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
+                sleep(Duration::from_millis(100));
+                for client_command in self.sc_client_channels.values(){
+                    client_command.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
                 }
-                for server_command in self.sc_server_channels.clone(){
-                    server_command.1.send(ServerCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
+                for server_command in self.sc_server_channels.values(){
+                    server_command.send(ServerCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
                 }
             }
             else{
@@ -539,7 +538,8 @@ impl DronegowskiSimulationController<'_>{
         SimulationControllerNode::new(SimulationControllerNodeType::DRONE { drone_channel: command_send, pdr }, max_id, vec![], &mut self.nodi);
         let event_send = self.sc_drone_event_send.clone();
         self.handles.push(thread::spawn(move || {
-            let mut drone = Dronegowski::new(max_id, event_send, command_recv, packet_recv, HashMap::new(), pdr);
+            let mut drone = RustasticDrone::new(max_id, event_send, command_recv, packet_recv, HashMap::new(), pdr);
+            drone.buffer.edit_max_size_buffer(0);
             drone.run();
         }));
     }
@@ -569,11 +569,12 @@ impl DronegowskiSimulationController<'_>{
                 }
             }
         }
-        for client_command in self.sc_client_channels.clone(){
-            client_command.1.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
+        sleep(Duration::from_millis(100));
+        for client_command in self.sc_client_channels.values(){
+            client_command.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
         }
-        for server_command in self.sc_server_channels.clone(){
-            server_command.1.send(ServerCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
+        for server_command in self.sc_server_channels.values(){
+            server_command.send(ServerCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
         }
     }
 }
