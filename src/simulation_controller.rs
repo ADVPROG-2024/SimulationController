@@ -17,7 +17,7 @@ use eframe::egui::accesskit::Node;
 use eframe::egui::Color32;
 use rustastic_drone::RustasticDrone;
 use wg_2024::drone::Drone;
-use wg_2024::packet::{Fragment, Packet};
+use wg_2024::packet::{Fragment, NodeType, Packet};
 use wg_2024::packet::PacketType::MsgFragment;
 use crate::client_gui::client_gui;
 use crate::sc_utils::Panel;
@@ -163,14 +163,11 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                             ServerEvent::Error(_, client_id, _) => Some(client_id),
                             _ => {None}
                         };
-
-
-
                         if let Some(client_id) = client_id {
                             let id = egui::Id::new(client_id).with("client_gui_state");
                             match server_event {
                                 ServerEvent::Error(_, client_id, message) => {
-                                    log::info!("Simulation Controller: Received ServerEvent::Error {:?} ", client_id);
+                                    info!("Simulation Controller: Received ServerEvent::Error {:?} ", client_id);
                                     ctx.data_mut(|data| data.insert_temp(id.with("error"), Some((client_id, message))));
                                 }
                                 _ => {}
@@ -387,7 +384,7 @@ impl DronegowskiSimulationController<'_>{
                         }
                     }
                 }
-                sleep(Duration::from_millis(100));
+                /*sleep(Duration::from_millis(100));
                 for client_command in self.sc_client_channels.clone(){
                     warn!("SC : added sender and requesting client {} to update network", client_command.0);
                     client_command.1.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
@@ -395,7 +392,7 @@ impl DronegowskiSimulationController<'_>{
                 for server_command in self.sc_server_channels.clone(){
                     warn!("SC : added sender and requesting server {} to update network", server_command.0);
                     server_command.1.send(ServerCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
-                }
+                }*/
             }
             else{
                 self.panel.central_panel.active_error = result;
@@ -465,8 +462,7 @@ impl DronegowskiSimulationController<'_>{
                         }
                     }
                 }
-                // //println!("Rimuovo nodo {} dai vicini del nodo {}", current_node.node_id, neighbour.node_id);
-                sleep(Duration::from_millis(100));
+                /*sleep(Duration::from_millis(100));
                 for client_command in self.sc_client_channels.clone(){
                     warn!("SC : removed sender and requesting client {} to update network", client_command.0);
                     client_command.1.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
@@ -474,7 +470,7 @@ impl DronegowskiSimulationController<'_>{
                 for server_command in self.sc_server_channels.clone(){
                     warn!("SC : removed sender and requesting server {} to update network", server_command.0);
                     server_command.1.send(ServerCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
-                }
+                }*/
             }
             else{
                 self.panel.central_panel.active_error = result;
@@ -502,7 +498,6 @@ impl DronegowskiSimulationController<'_>{
                 if let Some(controller_send) = self.sc_drone_channels.get(&current_node.node_id) {
                     controller_send.send(DroneCommand::Crash).expect("Error sending the command...");
                 }
-                // sleep(Duration::from_millis(50))
             }
             else{
                 self.panel.central_panel.active_error = result;
@@ -574,7 +569,7 @@ impl DronegowskiSimulationController<'_>{
                 }
             }
         }
-        sleep(Duration::from_millis(100));
+        /*sleep(Duration::from_millis(100));
         for client_command in self.sc_client_channels.clone(){
             warn!("SC : removed sender and requesting client {} to update network", client_command.0);
             client_command.1.send(ClientCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
@@ -582,13 +577,39 @@ impl DronegowskiSimulationController<'_>{
         for server_command in self.sc_server_channels.clone(){
             warn!("SC : removed sender and requesting server {} to update network", server_command.0);
             server_command.1.send(ServerCommand::RequestNetworkDiscovery).expect("Error sending Request Network Discovery");
-        }
+        }*/
     }
 }
 
 impl DronegowskiSimulationController<'_>{
     fn handle_drone_event(&mut self, drone_event: DroneEvent){
         // self.panel.bottom_left_panel.event.push(Event::DroneEvent(drone_event));
+        match drone_event {
+            DroneEvent::ControllerShortcut(packet) => {
+                let node_id = packet.clone().routing_header.hops[packet.routing_header.hops.len()-1];
+                let node_index = self.nodi.iter().position(|node| node.node_id == node_id);
+                if let Some(idx) = node_index {
+                    let mut node = self.nodi[idx].clone();
+                    match node.node_type {
+                        SimulationControllerNodeType::CLIENT { .. } => {
+                            println!("Sto inviando un controller shortcut al client {}", node_id);
+                            if let Some(controller_send_current) = self.sc_client_channels.get(&node.node_id) {
+                                controller_send_current.send(ClientCommand::ControllerShortcut(packet)).expect("Error sending a controller shortcut to a client");
+                            }
+                        }
+                        SimulationControllerNodeType::SERVER { .. } => {
+                            println!("Sto inviando un controller shortcut al server {}", node_id);
+                            if let Some(controller_send_current) = self.sc_server_channels.get(&node.node_id) {
+                                controller_send_current.send(ServerCommand::ControllerShortcut(packet)).expect("Error sending a controller shortcut to a server");
+                            }
+                        }
+                        _ => {}
+                    }
+                }
+
+            }
+            _ => {}
+        }
     }
     fn handle_client_event(&mut self, client_event: ClientEvent){
         match client_event.clone() {
