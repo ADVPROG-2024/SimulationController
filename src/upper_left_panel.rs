@@ -1,6 +1,6 @@
-use dronegowski_utils::network::{SimulationControllerNode};
+use dronegowski_utils::network::{SimulationControllerNode, SimulationControllerNodeType};
 use eframe::egui;
-use eframe::egui::{Color32, Direction, Layout, RichText, TextEdit};
+use eframe::egui::{Align, Color32, Direction, Layout, RichText, TextEdit};
 use crate::{DronegowskiSimulationController};
 
 impl DronegowskiSimulationController<'_> {
@@ -56,32 +56,37 @@ impl DronegowskiSimulationController<'_> {
 
     pub fn upper_left_panel_drone(&mut self, ui: &mut egui::Ui, node: SimulationControllerNode) {
         ui.add_space(20.);
-        ui.horizontal(|ui|{
-            ui.with_layout(Layout::centered_and_justified(Direction::LeftToRight), |ui| {
-                ui.heading(RichText::new(format!("DRONE {} COMMANDS", node.node_id)).size(25.0).color(Color32::BLACK));
-            });
+        
+        ui.with_layout(Layout::top_down(Align::Center), |ui| {
+            ui.heading(RichText::new(format!("DRONE {} COMMANDS", node.node_id)).size(25.0).color(Color32::BLACK));
+            
+            if let SimulationControllerNodeType::DRONE { ref drone_type, .. } = node.node_type {
+                ui.label(
+                    RichText::new(format!("{}", drone_type))
+                        .size(20.0) 
+                        .color(Color32::DARK_GRAY) 
+                );
+            }
         });
-        ui.add_space(50.);
+        ui.add_space(40.);
 
         ui.horizontal(|ui| {
             ui.add_space(5.);
-            // Imposta la dimensione del campo di testo con `.min_size(width, height)`
             let response = ui.add(
                 TextEdit::singleline(&mut self.panel.upper_left_panel.change_pdr)
-                    .min_size(egui::Vec2::new(200.0, 40.0)) // Larghezza: 300, Altezza: 50
-                    .font(egui::FontId::new(30.0, egui::FontFamily::Proportional)) // Grandezza del testo: 20.0
-                    .frame(true) // Abilita il frame intorno al campo
-                    .background_color(Color32::WHITE), // Colore di sfondo
+                    .min_size(egui::Vec2::new(200.0, 40.0)) 
+                    .font(egui::FontId::new(30.0, egui::FontFamily::Proportional)) 
+                    .frame(true) 
+                    .background_color(Color32::WHITE), 
             );
-
-            // Se il campo di testo è vuoto e non ha il focus, disegna il placeholder con testo più grande
+            
             if self.panel.upper_left_panel.change_pdr.is_empty() && !response.has_focus() {
                 ui.painter().text(
                     response.rect.left_center(),
                     egui::Align2::LEFT_CENTER,
                     "Set PDR",
-                    egui::FontId::new(30.0, egui::FontFamily::Proportional), // Grandezza del placeholder: 20.0
-                    ui.style().visuals.text_color().gamma_multiply(0.8), // Colore grigio per il placeholder
+                    egui::FontId::new(30.0, egui::FontFamily::Proportional), 
+                    ui.style().visuals.text_color().gamma_multiply(0.8), 
                 );
             }
         });

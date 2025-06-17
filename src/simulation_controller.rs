@@ -535,11 +535,10 @@ impl DronegowskiSimulationController<'_>{
         self.sc_drone_channels.insert(max_id, command_send.clone());
         self.packet_node_channels.insert(max_id, (packet_send, packet_recv.clone()));
 
-        SimulationControllerNode::new(SimulationControllerNodeType::DRONE { drone_channel: command_send, pdr }, max_id, vec![], &mut self.nodi);
+        SimulationControllerNode::new(SimulationControllerNodeType::DRONE { drone_channel: command_send, pdr, drone_type: "Dronegowski".to_string() }, max_id, vec![], &mut self.nodi);
         let event_send = self.sc_drone_event_send.clone();
         self.handles.push(thread::spawn(move || {
-            let mut drone = RustasticDrone::new(max_id, event_send, command_recv, packet_recv, HashMap::new(), pdr);
-            drone.buffer.edit_max_size_buffer(0);
+            let mut drone = Dronegowski::new(max_id, event_send, command_recv, packet_recv, HashMap::new(), pdr);
             drone.run();
         }));
     }
