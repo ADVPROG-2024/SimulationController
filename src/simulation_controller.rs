@@ -616,11 +616,11 @@ impl DronegowskiSimulationController<'_>{
     fn handle_client_event(&mut self, client_event: ClientEvent){
         match client_event.clone() {
             ClientEvent::DebugMessage(..) => {
-                sleep(Duration::from_millis(50));
+                // sleep(Duration::from_millis(50));
                 self.panel.bottom_left_panel.event.push(Event::ClientEvent(client_event));
             }
             ClientEvent::Route(..) => {
-                sleep(Duration::from_millis(50));
+                // sleep(Duration::from_millis(50));
                 self.panel.bottom_left_panel.event.push(Event::ClientEvent(client_event));
             }
             _ => {}
@@ -633,7 +633,7 @@ impl DronegowskiSimulationController<'_>{
                 self.panel.bottom_left_panel.event.push(Event::ServerEvent(server_event));
             }
             ServerEvent::Route(..) => {
-                sleep(Duration::from_millis(50));
+                // sleep(Duration::from_millis(50));
                 self.panel.bottom_left_panel.event.push(Event::ServerEvent(server_event));
             }
             _ => {}
