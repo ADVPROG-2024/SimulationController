@@ -212,14 +212,9 @@ impl DronegowskiSimulationController<'_> {
 
     /// Helper function to display a drone-related notification in the UI.
     pub fn print_drone_notify(&self, text: String, ui: &mut egui::Ui) {
-<<<<<<< Updated upstream
-        ui.vertical(|ui| {
-            ui.add_space(8.);
-=======
         ui.add_space(4.0);
         ui.vertical(|ui| {
             ui.add_space(8.0);
->>>>>>> Stashed changes
             ui.label(RichText::new(text).size(15.0).color(Color32::LIGHT_BLUE));
         });
         ui.add_space(4.0);
@@ -227,14 +222,9 @@ impl DronegowskiSimulationController<'_> {
 
     /// Helper function to display a client-related notification in the UI.
     pub fn print_client_notify(&self, text: String, ui: &mut egui::Ui) {
-<<<<<<< Updated upstream
-        ui.vertical(|ui| {
-            ui.add_space(8.);
-=======
         ui.add_space(4.0);
         ui.vertical(|ui| {
             ui.add_space(8.0);
->>>>>>> Stashed changes
             ui.label(RichText::new(text).size(15.0).color(Color32::LIGHT_GREEN));
         });
         ui.add_space(4.0);
@@ -242,14 +232,9 @@ impl DronegowskiSimulationController<'_> {
 
     /// Helper function to display a server-related notification in the UI.
     pub fn print_server_notify(&self, text: String, ui: &mut egui::Ui) {
-<<<<<<< Updated upstream
-        ui.vertical(|ui| {
-            ui.add_space(8.);
-=======
         ui.add_space(4.0);
         ui.vertical(|ui| {
             ui.add_space(8.0);
->>>>>>> Stashed changes
             ui.label(RichText::new(text).size(15.0).color(Color32::LIGHT_RED));
         });
         ui.add_space(4.0);
