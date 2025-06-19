@@ -15,23 +15,21 @@ impl DronegowskiSimulationController<'_> {
 
         ui.horizontal(|ui| {
             ui.add_space(5.);
-                // Imposta la dimensione del campo di testo con `.min_size(width, height)`
             let response = ui.add(
                 TextEdit::singleline(&mut self.panel.upper_left_panel.spawn_pdr)
-                    .min_size(egui::Vec2::new(200.0, 40.0)) // Larghezza: 300, Altezza: 50
-                    .font(egui::FontId::new(30.0, egui::FontFamily::Proportional)) // Grandezza del testo: 20.0
-                    .frame(true) // Abilita il frame intorno al campo
-                    .background_color(Color32::WHITE), // Colore di sfondo
+                    .min_size(egui::Vec2::new(200.0, 40.0))
+                    .font(egui::FontId::new(30.0, egui::FontFamily::Proportional))
+                    .frame(true)
+                    .background_color(Color32::WHITE),
             );
 
-            // Se il campo di testo è vuoto e non ha il focus, disegna il placeholder con testo più grande
             if self.panel.upper_left_panel.spawn_pdr.is_empty() && !response.has_focus() {
                 ui.painter().text(
                     response.rect.left_center(),
                     egui::Align2::LEFT_CENTER,
                     "Set PDR",
-                    egui::FontId::new(30.0, egui::FontFamily::Proportional), // Grandezza del placeholder: 20.0
-                    ui.style().visuals.text_color().gamma_multiply(0.8), // Colore grigio per il placeholder
+                    egui::FontId::new(30.0, egui::FontFamily::Proportional),
+                    ui.style().visuals.text_color().gamma_multiply(0.8),
                 );
             }
         });
@@ -111,7 +109,7 @@ impl DronegowskiSimulationController<'_> {
         ui.horizontal(|ui|{
             ui.add_space(20.);
             if ui.add(egui::Button::new(
-                RichText::new("Add Sender") // Add an emoji or icon
+                RichText::new("Add Sender")
                     .color(Color32::WHITE)
                     .size(16.0)).fill(Color32::GREEN).min_size(egui::Vec2::new(110.0, 50.0))).clicked(){
                 self.panel.upper_left_panel.add_sender = true;
@@ -120,7 +118,7 @@ impl DronegowskiSimulationController<'_> {
             ui.add_space(20.);
 
             if ui.add(egui::Button::new(
-                RichText::new("Remove Sender") // Add an emoji or icon
+                RichText::new("Remove Sender")
                     .color(Color32::WHITE)
                     .size(16.0)).fill(Color32::RED).min_size(egui::Vec2::new(110.0, 50.0))).clicked(){
                 self.panel.upper_left_panel.remove_sender = true;
@@ -131,7 +129,7 @@ impl DronegowskiSimulationController<'_> {
         ui.horizontal(|ui|{
             ui.add_space(100.);
             if ui.add(egui::Button::new(
-                RichText::new("Crash") // Add an emoji or icon
+                RichText::new("Crash")
                     .color(Color32::WHITE)
                     .size(16.0)).fill(Color32::DARK_RED).min_size(egui::Vec2::new(90.0, 45.0))).clicked(){
                 self.panel.upper_left_panel.crash = true;
@@ -151,7 +149,7 @@ impl DronegowskiSimulationController<'_> {
         ui.horizontal(|ui|{
             ui.add_space(20.);
             if ui.add(egui::Button::new(
-                RichText::new("Add Sender") // Add an emoji or icon
+                RichText::new("Add Sender")
                     .color(Color32::WHITE)
                     .size(16.0)).fill(Color32::GREEN).min_size(egui::Vec2::new(110.0, 50.0))).clicked(){
                 self.panel.upper_left_panel.add_sender = true;
@@ -159,7 +157,7 @@ impl DronegowskiSimulationController<'_> {
             ui.add_space(20.);
 
             if ui.add(egui::Button::new(
-                RichText::new("Remove Sender") // Add an emoji or icon
+                RichText::new("Remove Sender")
                     .color(Color32::WHITE)
                     .size(16.0)).fill(Color32::RED).min_size(egui::Vec2::new(110.0, 50.0))).clicked(){
                 self.panel.upper_left_panel.remove_sender = true;
@@ -180,7 +178,7 @@ impl DronegowskiSimulationController<'_> {
         ui.horizontal(|ui|{
             ui.add_space(20.);
             if ui.add(egui::Button::new(
-                RichText::new("Add Sender") // Add an emoji or icon
+                RichText::new("Add Sender")
                     .color(Color32::WHITE)
                     .size(16.0)).fill(Color32::GREEN).min_size(egui::Vec2::new(110.0, 50.0))).clicked(){
                 self.panel.upper_left_panel.add_sender = true;
@@ -189,7 +187,7 @@ impl DronegowskiSimulationController<'_> {
             ui.add_space(20.);
 
             if ui.add(egui::Button::new(
-                RichText::new("Remove Sender") // Add an emoji or icon
+                RichText::new("Remove Sender")
                     .color(Color32::WHITE)
                     .size(16.0)).fill(Color32::RED).min_size(egui::Vec2::new(110.0, 50.0))).clicked(){
                 self.panel.upper_left_panel.remove_sender = true;
@@ -198,6 +196,3 @@ impl DronegowskiSimulationController<'_> {
         });
     }
 }
-
-
-

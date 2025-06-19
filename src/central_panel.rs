@@ -15,17 +15,15 @@ impl DronegowskiSimulationController<'_> {
 
         let mut clicked_node_id: Option<SimulationControllerNode> = None;
 
-        // Disegna le linee
         for elem in &self.nodi {
             for &neighbour in &elem.neighbours {
                 if let Some(neighbour_node) = self.nodi.iter().find(|node| node.node_id == neighbour) {
                     let is_connected_to_clicked = if let Some(selected_node) = &self.panel.central_panel.selected_node {
                         selected_node.node_id == elem.node_id || selected_node.node_id == neighbour_node.node_id
                     } else {
-                        false // Se non c'è nessun nodo selezionato, non consideriamo una connessione
+                        false
                     };
 
-                    // Linee collegate al nodo selezionato diventano grigie
                     let line_color = if is_connected_to_clicked {
                         Color32::DARK_GRAY
                     } else {
@@ -44,7 +42,6 @@ impl DronegowskiSimulationController<'_> {
         }
 
 
-        // Determina quale nodo è stato cliccato
         for elem in &self.nodi.clone() {
             let position = Pos2::new(elem.xy.0 + panel_offset.x, elem.xy.1 + panel_offset.y);
 
@@ -75,7 +72,7 @@ impl DronegowskiSimulationController<'_> {
             }
         }
 
-        let central_panel_rect = response.rect; // Rettangolo che rappresenta l'area del central panel
+        let central_panel_rect = response.rect;
 
         if ui.input(|i| i.pointer.any_click()) {
             if let Some(pointer) = pointer_position {
@@ -88,7 +85,6 @@ impl DronegowskiSimulationController<'_> {
             }
         }
 
-        // Disegna i nodi
         for elem in &mut self.nodi {
             let rect = egui::Rect::from_center_size(
                 Pos2::new(elem.xy.0 + panel_offset.x, elem.xy.1 + panel_offset.y),
@@ -104,16 +100,13 @@ impl DronegowskiSimulationController<'_> {
                 SimulationControllerNodeType::DRONE { .. } => Color32::LIGHT_BLUE,
             };
 
-            // Verifica se il nodo è selezionato
             let is_selected = if let Some(selected_node) = &self.panel.central_panel.selected_node {
                 selected_node.node_id == elem.node_id
             } else { false };
 
-            // Determina spessore e colore del bordo
             let stroke_thickness = if is_selected { 6.0 } else { 4.0 };
             let stroke_color = Color32::BLACK;
 
-            // Disegna il cerchio
             painter.circle(
                 position,
                 30.0,
@@ -121,12 +114,10 @@ impl DronegowskiSimulationController<'_> {
                 Stroke::new(stroke_thickness, stroke_color),
             );
 
-            // Dimensione, stile e colore della label
             let font_size = if is_selected { 40.0 } else { 30.0 };
             let font_weight = if is_selected { egui::FontId::monospace(font_size) } else { egui::FontId::proportional(font_size) };
             let label_color = Color32::BLACK;
 
-            // Label del nodo
             let letter = match elem.node_type {
                 SimulationControllerNodeType::SERVER { .. } => "S",
                 SimulationControllerNodeType::CLIENT { .. } => "C",
@@ -141,7 +132,6 @@ impl DronegowskiSimulationController<'_> {
                 label_color,
             );
 
-            // Aggiorna la posizione del nodo durante il drag
             if response.dragged() {
                 let drag_delta = response.drag_delta();
                 elem.xy.0 += drag_delta.x;
@@ -149,7 +139,7 @@ impl DronegowskiSimulationController<'_> {
             }
         }
         if self.panel.central_panel.active_error.is_err(){
-            let popup_duration = Duration::from_secs(3); // Popup will disappear after 3 seconds
+            let popup_duration = Duration::from_secs(3);
 
             if let Some(timer) = self.panel.central_panel.popup_timer{
                 if timer.elapsed() >= popup_duration {
@@ -158,20 +148,19 @@ impl DronegowskiSimulationController<'_> {
                 }
             }
 
-            // Draw the popup
             egui::Window::new("Error")
                 .anchor(egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)
                 .resizable(false)
                 .collapsible(false)
                 .title_bar(false)
-                .frame(egui::Frame::popup(&ctx.style()).fill(Color32::RED)) // Use a popup frame style
+                .frame(egui::Frame::popup(&ctx.style()).fill(Color32::RED))
                 .show(ctx, |ui| {
-                    ui.set_max_width(200.0); // Set a max width for the popup
-                    ui.set_max_height(100.0); // Set a max height for the popup
+                    ui.set_max_width(200.0);
+                    ui.set_max_height(100.0);
                     ui.vertical_centered(|ui| {
-                        ui.add_space(10.0); // Add some padding
+                        ui.add_space(10.0);
                         ui.colored_label(Color32::WHITE, format!("{:?}", self.panel.central_panel.active_error));
-                        ui.add_space(10.0); // Add some padding
+                        ui.add_space(10.0);
                     });
                 });
         }
@@ -209,7 +198,6 @@ impl DronegowskiSimulationController<'_> {
     }
 
     pub fn open_client_popup(&mut self, node: &SimulationControllerNode) {
-        // Aggiungi un popup per il nodo specifico
         self.panel.central_panel.active_popups.insert(node.node_id, node.clone());
     }
 }

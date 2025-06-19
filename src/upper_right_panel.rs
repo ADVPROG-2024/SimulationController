@@ -12,7 +12,6 @@ impl DronegowskiSimulationController<'_> {
                 ui.add_space(5.);
                 let close_button = Button::new(RichText::new("X").size(14.0).color(Color32::WHITE)).fill(Color32::RED);
                 if ui.add(close_button).clicked() {
-                    // Chiudi la finestra
                     ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close);
                 }
             });
@@ -38,7 +37,6 @@ impl DronegowskiSimulationController<'_> {
                 let label = RichText::new(label_text).color(Color32::BLACK).size(20.0);
                 let response = ui.label(label);
 
-                // Cambia il cursore in una manina se il mouse è sopra la label
                 if response.hovered() {
                     ui.ctx().set_cursor_icon(egui::CursorIcon::PointingHand);
                 }
@@ -47,7 +45,6 @@ impl DronegowskiSimulationController<'_> {
                     elem.details = !elem.details;
                 }
 
-                // Mostra una freccetta (icona) cliccabile
                 let freccetta = if elem.details {
                     "v"
                 } else {
@@ -56,7 +53,6 @@ impl DronegowskiSimulationController<'_> {
 
                 let arrow_response = ui.label(RichText::new(freccetta).size(20.).color(Color32::BLACK));
 
-                // Cambia il cursore in una manina se il mouse è sopra la freccetta
                 if arrow_response.hovered() {
                     ui.ctx().set_cursor_icon(egui::CursorIcon::PointingHand);
                 }

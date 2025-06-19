@@ -57,7 +57,7 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
         .resizable(true)
         .frame(egui::Frame::window(&ctx.style()))
         .show(ctx, |ui| {
-            egui::ScrollArea::vertical().show(ui, |ui| { // Wrap the content in a ScrollArea
+            egui::ScrollArea::vertical().show(ui, |ui| {
 
                 ui.horizontal(|ui| {
                     ui.label(RichText::new(format!("Node Details: Node ID:{}", node_id)).size(16.0).color(text_color));
@@ -262,7 +262,6 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
                         let mut current_messages_no_channel = status_messages.clone();
                         current_messages_no_channel.push(format!("No communication channel for client {}", node_id));
                         set_status_messages(current_messages_no_channel);
-                        // Also reset here, since we couldn't even send
                         set_is_request_pending(false);
                     }
                 }
@@ -350,7 +349,6 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
                     }
                 });
 
-                // Status Messages Display
                 ui.add_space(10.0);
                 ui.separator();
                 ui.label(RichText::new("Status Messages:").size(14.0).color(text_color));
@@ -361,6 +359,6 @@ pub fn client_gui(node_id: &NodeId, ctx: &egui::Context, popups_to_remove: &mut 
                             ui.label(RichText::new(msg).color(text_color));
                         }
                     });
-            }); // End of ScrollArea
+            });
         });
 }
