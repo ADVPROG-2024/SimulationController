@@ -150,10 +150,10 @@ impl DronegowskiSimulationController<'_> {
                             }
                         }
                         ClientEvent::Route(route) => {
-                            self.print_client_notify(format!("[debug] Client {} send {:?}", route[0], route), ui);
+                            self.print_client_notify(format!("Client {} send {:?}", route[0], route), ui);
                         }
                         ClientEvent::DebugMessage(a, mess) => {
-                            self.print_client_notify(format!("[debug] {:?}", mess), ui);
+                            self.print_client_notify(format!("{:?}", mess), ui);
                         }
                         _ => {}
                     }
@@ -198,10 +198,10 @@ impl DronegowskiSimulationController<'_> {
                             }
                         }
                         ServerEvent::Route(route) => {
-                            self.print_client_notify(format!("[debug] Server {} send {:?}", route[0], route), ui);
+                            self.print_client_notify(format!("Server {} send {:?}", route[0], route), ui);
                         }
                         ServerEvent::DebugMessage(a, mess) => {
-                            self.print_client_notify(format!("[debug] {:?}", mess), ui);
+                            self.print_client_notify(format!("{:?}", mess), ui);
                         }
                         _ => {}
                     }
