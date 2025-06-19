@@ -97,7 +97,6 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                 recv(self.sc_drone_event_recv) -> drone_event_res => {
                     if let Ok(drone_event) = drone_event_res {
                         self.handle_drone_event(drone_event);
-                        // No repaint request here!
                     }
                 },
                 recv(self.sc_client_event_recv) -> client_event_res => {
@@ -120,9 +119,7 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                         if let Some(client_id) = client_id {
                             let id = egui::Id::new(client_id).with("client_gui_state");
 
-                            // Update GUI state based on the received event
                             match client_event {
-                                // SimulationController::handle_client_event
                                 ClientEvent::ServerTypeReceived(_client_id, server_id, server_type) => {
                                     ctx.data_mut(|data| data.insert_temp(id.with("server_type"), Some((server_id, server_type))));
                                     log::info!("Simulation Controller: Received ClientEvent::ServerTypeReceived");
@@ -150,16 +147,13 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                                 }
                                 _ => {}
                             }
-                            // Reset is_request_pending AFTER handling the event
                             ctx.data_mut(|data| data.insert_temp(id.with("request_pending"), false));
-                            // No repaint request *inside* the match!
                         }
                     }
                 },
                 recv(self.sc_server_event_recv) -> server_event_res => {
                     if let Ok(server_event) = server_event_res {
                         self.handle_server_event(server_event.clone());
-                        // No repaint request here!
                         let client_id = match &server_event {
                             ServerEvent::Error(_, client_id, _) => Some(client_id),
                             _ => {None}
@@ -173,7 +167,6 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                                 }
                                 _ => {}
                             }
-                            // Reset is_request_pending AFTER handling the event
                             ctx.data_mut(|data| data.insert_temp(id.with("request_pending"), false));
                         }
                     }
@@ -182,17 +175,15 @@ impl eframe::App for DronegowskiSimulationController<'_> {
             }
         } // End of the select! loop
 
-        // 2. Request repaint *after* handling ALL events
         ctx.request_repaint();
 
 
         egui::SidePanel::left("left_panel").resizable(false).exact_width(300.0).frame(egui::Frame::none()).show(ctx, |ui| {
-            // Remove default margins and spacing
             ui.spacing_mut().item_spacing = egui::Vec2::ZERO;
 
             // Upper left part
             ui.vertical(|ui| {
-                ui.set_height(ui.available_height() / 2.0 - 100.); // Half height
+                ui.set_height(ui.available_height() / 2.0 - 100.);
                 ui.painter().rect_filled(
                     ui.available_rect_before_wrap(),
                     0.0,
@@ -215,7 +206,6 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                         }
                     }
                 }
-                // Add your elements for the upper left part here
             });
 
             // Bottom left part
@@ -228,7 +218,6 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                 egui::ScrollArea::vertical().show(ui, |ui| {
                     self.bottom_left_panel(ui);
                 });
-                // Add your elements for the bottom left part here
             });
         });
 
@@ -242,19 +231,17 @@ impl eframe::App for DronegowskiSimulationController<'_> {
 
                 // Upper right part
                 ui.vertical(|ui| {
-                    // Imposta un'altezza fissa per il pannello superiore
-                    ui.set_height(ui.available_height() / 2.0 + 150.0); // Metà altezza + 150 pixel
+                    ui.set_height(ui.available_height() / 2.0 + 150.0);
                     ui.painter().rect_filled(
                         ui.available_rect_before_wrap(),
                         0.0,
                         Color32::WHITE,
                     );
 
-                    // Aggiungi una ScrollArea per il contenuto superiore con un ID univoco
                     ui.push_id("upper_right_scroll", |ui| {
                         egui::ScrollArea::vertical()
-                            .auto_shrink(false) // Disabilita l'auto-shrink
-                            .max_height(ui.available_height()) // Usa l'altezza disponibile
+                            .auto_shrink(false)
+                            .max_height(ui.available_height())
                             .show(ui, |ui| {
                                 self.upper_right_panel(ui);
                             });
@@ -263,19 +250,17 @@ impl eframe::App for DronegowskiSimulationController<'_> {
 
                 // Bottom right part
                 ui.vertical(|ui| {
-                    // Imposta un'altezza fissa per il pannello inferiore
-                    ui.set_height(ui.available_height()); // Usa l'altezza rimanente
+                    ui.set_height(ui.available_height());
                     ui.painter().rect_filled(
                         ui.available_rect_before_wrap(),
                         0.0,
                         Color32::DARK_GRAY,
                     );
 
-                    // Aggiungi una ScrollArea per il contenuto inferiore con un ID univoco
                     ui.push_id("bottom_right_scroll", |ui| {
                         egui::ScrollArea::vertical()
-                            .auto_shrink(false) // Disabilita l'auto-shrink
-                            .max_height(ui.available_height()) // Usa l'altezza disponibile
+                            .auto_shrink(false)
+                            .max_height(ui.available_height())
                             .show(ui, |ui| {
                                 self.bottom_right_panel(ui);
                             });
@@ -297,13 +282,11 @@ impl eframe::App for DronegowskiSimulationController<'_> {
                 }
             })
             .collect();
-        // Interfaccia del client
         for (node_id, node) in &self.panel.central_panel.active_popups {
-            if let SimulationControllerNodeType::CLIENT { client_type, .. } = node.node_type.clone() { // Corrected line
+            if let SimulationControllerNodeType::CLIENT { client_type, .. } = node.node_type.clone() {
                 client_gui(node_id, &ctx.clone(), &mut popups_to_remove, &available_servers, &self.sc_client_channels, client_type); // Pass client_type
             }
         }
-        // Rimuovi i popup chiusi
         for node_id in popups_to_remove {
             self.panel.central_panel.active_popups.remove(&node_id);
         }
@@ -314,20 +297,16 @@ impl DronegowskiSimulationController<'_>{
     pub fn add_sender(&mut self, neighbour_id: NodeId){
         let current_node_id = self.panel.central_panel.selected_node.clone().unwrap().node_id;
 
-        // Trova gli indici dei nodi invece di tenerne il riferimento diretto
         let current_node_index = self.nodi.iter().position(|node| node.node_id == current_node_id);
         let neighbour_index = self.nodi.iter().position(|node| node.node_id == neighbour_id);
 
         if let (Some(current_index), Some(neighbour_index)) = (current_node_index, neighbour_index) {
-            // Cloniamo i nodi per poterli modificare
             let mut current_node = self.nodi[current_index].clone();
             let mut neighbour = self.nodi[neighbour_index].clone();
 
-            // Aggiorniamo le liste di vicini
             current_node.neighbours.push(neighbour_id);
             neighbour.neighbours.push(current_node_id);
 
-            // Aggiorniamo la lista rimuovendo i vecchi nodi e aggiungendo quelli aggiornati
             let mut node_verification = self.nodi.clone();
             node_verification[current_index] = current_node.clone();
             node_verification[neighbour_index] = neighbour.clone();
@@ -360,8 +339,6 @@ impl DronegowskiSimulationController<'_>{
                             }
                         }
                     }
-                    //println!("Aggiungo nodo {} ai vicini del nodo {}", neighbour.node_id, current_node.node_id);
-
 
                     match neighbour.node_type {
                         SimulationControllerNodeType::DRONE { .. } => {
@@ -408,7 +385,6 @@ impl DronegowskiSimulationController<'_>{
     pub fn remove_sender(&mut self, neighbour_id: NodeId) {
         let current_node_id = self.panel.central_panel.selected_node.clone().unwrap().node_id;
 
-        // Trova gli indici dei nodi invece di tenerne il riferimento diretto
         let current_node_index = self.nodi.iter().position(|node| node.node_id == current_node_id);
         let neighbour_index = self.nodi.iter().position(|node| node.node_id == neighbour_id);
 
@@ -416,7 +392,6 @@ impl DronegowskiSimulationController<'_>{
             let mut current_node = self.nodi[current_index].clone();
             let mut neighbour = self.nodi[neighbour_index].clone();
 
-            // Aggiorniamo le liste di vicini
             current_node.neighbours.retain(|&node| node != neighbour.node_id);
             neighbour.neighbours.retain(|&node| node != current_node.node_id);
 
@@ -425,7 +400,6 @@ impl DronegowskiSimulationController<'_>{
             node_verification[neighbour_index] = neighbour.clone();
             let result = validate_network(&node_verification);
             if result.is_ok() {
-                // Aggiorniamo la lista rimuovendo i vecchi nodi e aggiungendo quelli aggiornati
                 self.nodi[current_index] = current_node.clone();
                 self.nodi[neighbour_index] = neighbour.clone();
 
@@ -446,7 +420,6 @@ impl DronegowskiSimulationController<'_>{
                         }
                     }
                 }
-                //println!("Rimuovo nodo {} dai vicini del nodo {}", neighbour.node_id, current_node.node_id);
 
                 match neighbour.node_type {
                     SimulationControllerNodeType::DRONE { .. } => {
@@ -585,7 +558,6 @@ impl DronegowskiSimulationController<'_>{
 
 impl DronegowskiSimulationController<'_>{
     fn handle_drone_event(&mut self, drone_event: DroneEvent){
-        // self.panel.bottom_left_panel.event.push(Event::DroneEvent(drone_event));
         match drone_event {
             DroneEvent::ControllerShortcut(packet) => {
                 let node_id = packet.clone().routing_header.hops[packet.routing_header.hops.len()-1];
@@ -616,11 +588,9 @@ impl DronegowskiSimulationController<'_>{
     fn handle_client_event(&mut self, client_event: ClientEvent){
         match client_event.clone() {
             ClientEvent::DebugMessage(..) => {
-                // sleep(Duration::from_millis(50));
                 self.panel.bottom_left_panel.event.push(Event::ClientEvent(client_event));
             }
             ClientEvent::Route(..) => {
-                // sleep(Duration::from_millis(50));
                 self.panel.bottom_left_panel.event.push(Event::ClientEvent(client_event));
             }
             _ => {}
@@ -629,11 +599,9 @@ impl DronegowskiSimulationController<'_>{
     fn handle_server_event(&mut self, server_event: ServerEvent){
         match server_event.clone() {
             ServerEvent::DebugMessage(..) => {
-                sleep(Duration::from_millis(50));
                 self.panel.bottom_left_panel.event.push(Event::ServerEvent(server_event));
             }
             ServerEvent::Route(..) => {
-                // sleep(Duration::from_millis(50));
                 self.panel.bottom_left_panel.event.push(Event::ServerEvent(server_event));
             }
             _ => {}
